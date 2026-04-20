@@ -75,11 +75,12 @@
             width: 42px;
             height: 42px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #DC2626, #B91C1C);
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+            padding: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
         }
 
@@ -1052,10 +1053,10 @@
         }
 
         .footer-logo-icon {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
-            background: linear-gradient(135deg, #DC2626, #B91C1C);
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1258,9 +1259,7 @@
     <nav class="beranda-nav" id="berandaNav">
         <a href="#hero" class="nav-logo">
             <div class="nav-logo-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+                <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom" style="width: 85%; height: auto;">
             </div>
             <div class="nav-logo-text">
                 <div class="nav-logo-title">Monitoring Proyek</div>
