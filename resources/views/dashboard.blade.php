@@ -60,7 +60,7 @@
     <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-6">
         
         <!-- HEADER TEXT -->
-        <div class="text-center mb-12 animate-fade-in-down">
+        <div class="text-center mb-12">
             <span class="inline-block py-1 px-3 rounded-full bg-red-600/20 border border-red-500/30 text-red-100 text-xs font-semibold tracking-wider uppercase mb-4 backdrop-blur-sm">
                 Project Dashboard
             </span>

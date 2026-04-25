@@ -96,11 +96,10 @@
                             </path>
                         </svg>
                     </div>
-                    <span class="text-[10px] font-black uppercase tracking-[0.25em]" style="color:#fca5a5;">Progress
-                        Overview</span>
+                    <span class="text-[10px] font-black uppercase tracking-[0.25em]" style="color:#fca5a5;">Live Monitoring</span>
                 </div>
                 <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Monitoring Progress Deployment</h1>
-                <p class="text-xs mt-1" style="color:#94a3b8;">Grafik distribusi tahapan progress seluruh deployment</p>
+                
             </div>
 
             {{-- Live Clock & Actions --}}
@@ -427,8 +426,8 @@
                         global_cap: 10,
                         selectedDay: null,
                         showModal: false,
-                        currentYear: new Date().getFullYear(),
-                        currentMonth: new Date().getMonth() + 1,
+                        currentYear: {{ now()->year }},
+                        currentMonth: {{ now()->month }},
                         months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
                         openDetails(day) {
                             if (day.count > 0) {
@@ -455,8 +454,8 @@
                             this.fetchWorkload();
                         },
                         resetToCurrent() {
-                            this.currentMonth = new Date().getMonth() + 1;
-                            this.currentYear = new Date().getFullYear();
+                            this.currentMonth = {{ now()->month }};
+                            this.currentYear = {{ now()->year }};
                             this.fetchWorkload();
                         },
                         async fetchWorkload() {
@@ -481,7 +480,7 @@
                         <div class="flex items-center gap-1.5 flex-wrap justify-end">
                             <!-- Reset Button -->
                             <button @click="resetToCurrent()" 
-                                x-show="currentMonth !== new Date().getMonth() + 1 || currentYear !== new Date().getFullYear()" x-cloak
+                                x-show="currentMonth !== {{ now()->month }} || currentYear !== {{ now()->year }}" x-cloak
                                 class="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-extrabold text-[10px] uppercase tracking-wider rounded-lg transition-colors border border-blue-200 shadow-sm mr-1">
                                 Bulan Ini
                             </button>
@@ -493,14 +492,23 @@
                                 </button>
                                 <div class="flex items-center font-extrabold text-xs text-slate-700 px-1 justify-center tracking-tight">
                                     <select x-model.number="currentMonth" @change="fetchWorkload()" class="bg-transparent border-none py-0 pl-2 pr-6 text-xs font-extrabold text-slate-700 focus:ring-0 cursor-pointer hover:text-blue-600 transition-colors" style="background-position: right 0.2rem center;">
-                                        <template x-for="(m, i) in months" :key="i">
-                                            <option :value="i + 1" x-text="m"></option>
-                                        </template>
+                                        <option value="1">Januari</option>
+                                        <option value="2">Februari</option>
+                                        <option value="3">Maret</option>
+                                        <option value="4">April</option>
+                                        <option value="5">Mei</option>
+                                        <option value="6">Juni</option>
+                                        <option value="7">Juli</option>
+                                        <option value="8">Agustus</option>
+                                        <option value="9">September</option>
+                                        <option value="10">Oktober</option>
+                                        <option value="11">November</option>
+                                        <option value="12">Desember</option>
                                     </select>
                                     <select x-model.number="currentYear" @change="fetchWorkload()" class="bg-transparent border-none py-0 pl-1 pr-6 text-xs font-extrabold text-slate-700 focus:ring-0 cursor-pointer hover:text-blue-600 transition-colors -ml-2" style="background-position: right 0.2rem center;">
-                                        <template x-for="y in Array.from({length: 11}, (_, i) => new Date().getFullYear() - 5 + i)" :key="y">
-                                            <option :value="y" x-text="y"></option>
-                                        </template>
+                                        @for ($i = now()->year - 5; $i <= now()->year + 5; $i++)
+                                            <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
                                     </select>
                                 </div>
                                 <button @click="nextMonth()" class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-white hover:shadow-sm rounded-lg transition-all focus:outline-none">

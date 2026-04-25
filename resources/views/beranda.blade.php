@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beranda — Unit Optima · PT Telkom Indonesia</title>
     <meta name="description" content="Halaman resmi Unit Optima PT Telkom Indonesia. Monitoring proyek deployment, perencanaan jaringan, dan pengelolaan data terpusat.">
+    <meta name="turbo-visit-control" content="reload">
+
+    <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
+
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -231,14 +237,16 @@
             max-width: 1280px;
             margin: 0 auto;
             padding: 8rem 2rem 4rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            text-align: center;
         }
 
         .hero-text {
-            max-width: 620px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .hero-badge {
@@ -291,7 +299,9 @@
             color: var(--clr-text-muted);
             line-height: 1.75;
             margin-bottom: 2.5rem;
-            max-width: 500px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-actions {
@@ -474,40 +484,6 @@
             font-size: 0.68rem;
             color: rgba(255, 255, 255, 0.5);
         }
-
-        /* ========================================
-           SCROLL ANIMATIONS
-        ======================================== */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .animate-on-scroll.slide-left {
-            transform: translateX(-60px);
-        }
-
-        .animate-on-scroll.slide-right {
-            transform: translateX(60px);
-        }
-
-        .animate-on-scroll.zoom-in {
-            transform: scale(0.85);
-        }
-
-        .animate-on-scroll.visible {
-            opacity: 1;
-            transform: translateY(0) translateX(0) scale(1);
-        }
-
-        /* Stagger children */
-        .stagger-children .animate-on-scroll:nth-child(1) { transition-delay: 0s; }
-        .stagger-children .animate-on-scroll:nth-child(2) { transition-delay: 0.1s; }
-        .stagger-children .animate-on-scroll:nth-child(3) { transition-delay: 0.2s; }
-        .stagger-children .animate-on-scroll:nth-child(4) { transition-delay: 0.3s; }
-        .stagger-children .animate-on-scroll:nth-child(5) { transition-delay: 0.4s; }
-        .stagger-children .animate-on-scroll:nth-child(6) { transition-delay: 0.5s; }
 
         /* ========================================
            SECTION COMMON
@@ -1324,47 +1300,37 @@
         <div class="hero-particles" id="heroParticles"></div>
 
         <div class="hero-content">
-            <div class="hero-text">
+            <div class="hero-text" data-aos="fade-up">
                 
 
-                <h1>Sistem <span>Monitoring</span> Proyek Deployment</h1>
+                <h1 data-aos="fade-up" data-aos-delay="100">Sistem <span>Monitoring</span> Proyek Deployment</h1>
 
-                <p class="hero-desc">
-                    Platform terpusat untuk memantau progres deployment jaringan, perencanaan proyek, dan pengelolaan data order secara real-time bagi Unit Optima Telkom Witel Jakarta Barat.
+                <p class="hero-desc" data-aos="fade-up" data-aos-delay="200">
+                    Platform terpusat untuk memantau progres deployment jaringan, perencanaan proyek, dan pengelolaan data order secara real-time bagi Unit Optima Telkom.
                 </p>
 
-                <div class="hero-actions">
-                    <a href="{{ route('login') }}" class="btn-hero-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                        </svg>
-                        Masuk ke Dashboard
-                    </a>
-                    <a href="#about" class="btn-hero-secondary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                        </svg>
-                        Pelajari Lebih Lanjut
-                    </a>
-                </div>
-
-                <div class="hero-stats">
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-value">Real-time</div>
-                        <div class="hero-stat-label">Monitoring Data</div>
+                
+                <div style="margin-top: 3rem; display: flex; flex-wrap: wrap; gap: 1.5rem 2rem; justify-content: center; color: var(--clr-text-muted); font-size: 0.95rem; font-weight: 500;" data-aos="fade-up" data-aos-delay="400">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(34, 197, 94, 0.15); color: #22C55E;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                        </span>
+                        Pemantauan Real-time
                     </div>
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-value">Terpusat</div>
-                        <div class="hero-stat-label">Integrasi Sistem</div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(34, 197, 94, 0.15); color: #22C55E;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                        </span>
+                        Rekap Data Otomatis
                     </div>
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-value">Otomatis</div>
-                        <div class="hero-stat-label">Pelaporan Harian</div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(34, 197, 94, 0.15); color: #22C55E;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                        </span>
+                        Transparansi Mitra
                     </div>
-                </div>
+                </div>   
             </div>
-
-            
         </div>
     </section>
 
@@ -1372,14 +1338,14 @@
     <section class="section about" id="about">
         <div class="section-container">
             <div class="about-grid">
-                <div class="about-image-wrapper animate-on-scroll slide-left">
+                <div class="about-image-wrapper" data-aos="fade-right">
                     <div class="about-image">
                         <img src="{{ asset('images/about-team.png') }}" alt="Tim Unit Optima" loading="lazy">
                     </div>
                     <div class="about-image-accent"></div>
                 </div>
 
-                <div class="about-content animate-on-scroll slide-right">
+                <div class="about-content" data-aos="fade-left">
                     <h2>Tentang Unit Optima</h2>
 
                     <p>
@@ -1394,7 +1360,7 @@
                     </p>
 
                     <div class="about-features stagger-children">
-                        <div class="about-feature-item animate-on-scroll slide-up">
+                        <div class="about-feature-item" data-aos="fade-up">
                             <div class="about-feature-icon red">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1402,7 +1368,7 @@
                             </div>
                             <div class="about-feature-label">Akurasi Tinggi</div>
                         </div>
-                        <div class="about-feature-item animate-on-scroll slide-up">
+                        <div class="about-feature-item" data-aos="fade-up">
                             <div class="about-feature-icon blue">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1410,7 +1376,7 @@
                             </div>
                             <div class="about-feature-label">Real-time Data</div>
                         </div>
-                        <div class="about-feature-item animate-on-scroll slide-up">
+                        <div class="about-feature-item" data-aos="fade-up">
                             <div class="about-feature-icon green">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -1418,7 +1384,7 @@
                             </div>
                             <div class="about-feature-label">Eksekusi Cepat</div>
                         </div>
-                        <div class="about-feature-item animate-on-scroll slide-up">
+                        <div class="about-feature-item" data-aos="fade-up">
                             <div class="about-feature-icon purple">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -1435,7 +1401,7 @@
     <!-- ============ GALLERY SECTION ============ -->
     <section class="section gallery" id="gallery">
         <div class="section-container">
-            <div class="section-header animate-on-scroll slide-up">
+            <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">Dokumentasi Proyek</h2>
                 <p class="section-subtitle">
                     Dokumentasi visual dari berbagai proyek deployment yang telah berhasil
@@ -1444,28 +1410,28 @@
             </div>
 
             <div class="gallery-grid stagger-children">
-                <div class="gallery-card animate-on-scroll zoom-in">
+                <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-deployment.png') }}" alt="Deployment Lapangan" loading="lazy">
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Instalasi Kabel Optik</div>
                         <div class="gallery-card-desc">STO Kebon Jeruk</div>
                     </div>
                 </div>
-                <div class="gallery-card animate-on-scroll zoom-in">
+                <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-completed.png') }}" alt="Penyeleseaian Proyek" loading="lazy">
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Selesai Fisik ODP</div>
                         <div class="gallery-card-desc">Area Cengkareng</div>
                     </div>
                 </div>
-                <div class="gallery-card animate-on-scroll zoom-in">
+                <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-server.png') }}" alt="Ruang Server" loading="lazy">
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Integrasi ODC Server</div>
                         <div class="gallery-card-desc">STO Palmerah</div>
                     </div>
                 </div>
-                <div class="gallery-card animate-on-scroll zoom-in">
+                <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-survey.png') }}" alt="Survey Lapangan" loading="lazy">
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Survey Pra-Deployment</div>
@@ -1480,7 +1446,7 @@
     <section class="section location" id="location">
         <div class="section-container">
             <div class="location-grid">
-                <div class="location-info animate-on-scroll slide-right">
+                <div class="location-info" data-aos="fade-left">
                     <h3>Lokasi Kantor</h3>
                     <p>
                         Pusat administrasi dan koordinasi tim deployment Unit Optima
@@ -1513,7 +1479,7 @@
                     </div>
                 </div>
 
-                <div class="location-map animate-on-scroll slide-left">
+                <div class="location-map" data-aos="fade-right">
                     <iframe 
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15866.529340989087!2d106.7828062!3d-6.1804245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f6f6d0f1bd73%3A0xc85926ec38290fa8!2sTelkom%20Witel%20Jakarta%20Barat!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
                         allowfullscreen="" 
@@ -1528,7 +1494,7 @@
     <!-- ============ CONTACT SECTION ============ -->
     <section class="section contact" id="contact">
         <div class="section-container">
-            <div class="section-header animate-on-scroll slide-up">
+            <div class="section-header" data-aos="fade-up">
                 <h2 class="section-title">Kontak Kami</h2>
                 <p class="section-subtitle">
                     Punya pertanyaan mengenai koordinasi pesanan atau dokumentasi deployment?
@@ -1537,7 +1503,7 @@
             </div>
 
             <div class="contact-cards stagger-children">
-                <div class="contact-card animate-on-scroll">
+                <div class="contact-card" data-aos="fade-up">
                     <div class="contact-avatar">AS</div>
                     <div class="contact-name">Agus Setiawan</div>
                     <div class="contact-role">Manager Unit Optima</div>
@@ -1554,7 +1520,7 @@
                     </div>
                 </div>
 
-                <div class="contact-card animate-on-scroll">
+                <div class="contact-card" data-aos="fade-up">
                     <div class="contact-avatar">RH</div>
                     <div class="contact-name">Rizki Hidayat</div>
                     <div class="contact-role">Koordinator Lapangan</div>
@@ -1571,7 +1537,7 @@
                     </div>
                 </div>
 
-                <div class="contact-card animate-on-scroll">
+                <div class="contact-card" data-aos="fade-up">
                     <div class="contact-avatar">DW</div>
                     <div class="contact-name">Dewi Wulandari</div>
                     <div class="contact-role">Admin & Support</div>
@@ -1595,7 +1561,7 @@
     <footer class="footer">
 
         <p class="footer-desc">
-            Platform monitoring proyek deployment Unit Optima — Telkom Witel Jakarta Barat.
+            Platform monitoring proyek deployment Unit Optima — Telkom  Jakarta Barat.
         </p>
         <div class="footer-divider"></div>
         <p class="footer-copy">&copy; {{ date('Y') }} PT Telkom Indonesia Tbk. All rights reserved.</p>
@@ -1608,24 +1574,19 @@
         </svg>
     </button>
 
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <!-- ============ SCRIPTS ============ -->
     <script>
-        // ——— SCROLL ANIMATIONS (Intersection Observer) ———
-        document.addEventListener('DOMContentLoaded', function() {
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                        }
-                    });
-                },
-                { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-            );
-
-            document.querySelectorAll('.animate-on-scroll').forEach(el => {
-                observer.observe(el);
+                // ——— SCROLL ANIMATIONS (AOS) & JS INIT ———
+        function initBeranda() {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 50,
             });
+            setTimeout(() => AOS.refresh(), 100);
 
             // ——— NAVBAR SCROLL EFFECT ———
             const nav = document.getElementById('berandaNav');
@@ -1719,7 +1680,11 @@
                     }
                 });
             }
-        });
+        } // End of initBeranda
+
+        // Initialize on normal load and Turbo load
+        document.addEventListener('DOMContentLoaded', initBeranda);
+        document.addEventListener('turbo:load', initBeranda);
     </script>
 </body>
 </html>

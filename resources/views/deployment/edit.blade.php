@@ -235,10 +235,23 @@
 
                     // TEXT & NUMBER
                     if (['text', 'number', 'date'].includes(field.type)) {
+                        let inputType = field.type;
+                        let extraAttr = '';
+                        let displayValue = value;
+
+                        if (field.type === 'number') {
+                            inputType = 'text';
+                            extraAttr = `inputmode="numeric" oninput="let val = this.value.replace(/[^0-9]/g, ''); this.value = val.replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');"`;
+                            
+                            if (displayValue) {
+                                displayValue = String(displayValue).replace(/\./g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                            }
+                        }
+
                        html += `
                             <div class="${field.fullWidth ? 'col-span-2' : ''}">
                                 <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">${field.label}</label>
-                                <input type="${field.type}" name="${field.name}" value="${value}"
+                                <input type="${inputType}" name="${field.name}" value="${displayValue}" ${extraAttr}
                                     class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition bg-white">
                             </div>
                         `;

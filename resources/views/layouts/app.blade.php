@@ -11,6 +11,7 @@
     <!-- Turbo: jangan cache halaman agar redirect tidak menyebabkan bounce-back -->
     <meta name="turbo-cache-control" content="no-cache">
 
+    <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -250,11 +251,8 @@
                 {{-- Project Title: Visible Everywhere --}}
                 <div class="flex items-center gap-2">
                     {{-- Mobile Logo --}}
-                    <div class="lg:hidden w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
+                    <div class="lg:hidden w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0 p-1 opacity-95">
+                        <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom Logo" class="w-full">
                     </div>
 
                 </div>
@@ -263,22 +261,201 @@
             <!-- RIGHT: User Dropdown -->
             <div class="flex items-center gap-3">
 
-                {{-- Notification Bell --}}
+                {{-- Notification Widget --}}
                 @if (auth()->user()->role !== 'admin')
-                    <a href="{{ route('notifications.index') }}"
-                        class="relative p-2 rounded-lg hover:bg-slate-100 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-500" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                        </svg>
-                        @if (isset($overdueCount) && $overdueCount > 0)
-                            <span
-                                class="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-500 rounded-full">
-                                {{ $overdueCount }}
-                            </span>
-                        @endif
-                    </a>
+                    <div x-data="{ notifOpen: false }" class="relative">
+
+                        {{-- Bell Button --}}
+                        <button @click="notifOpen = !notifOpen"
+                            id="notif-bell-btn"
+                            class="relative group p-2.5 rounded-xl transition-all duration-200
+                                   hover:bg-red-50 hover:shadow-sm
+                                   focus:outline-none focus:ring-2 focus:ring-red-200">
+                            @if (isset($overdueCount) && $overdueCount > 0)
+                                {{-- Bell shakes when there are alerts --}}
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-[18px] h-[18px] text-red-500 notif-bell-shake"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                </svg>
+                                {{-- Badge --}}
+                                <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white
+                                             animate-ping opacity-75"></span>
+                                <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                            @else
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-[18px] h-[18px] text-slate-400 group-hover:text-slate-600 transition-colors"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                </svg>
+                            @endif
+                        </button>
+
+                        {{-- ======= NOTIFICATION WIDGET PANEL ======= --}}
+                        <div x-show="notifOpen"
+                            @click.outside="notifOpen = false"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                            x-transition:leave-end="opacity-0 translate-y-2 scale-95"
+                            x-cloak
+                            class="absolute right-0 mt-3 w-[360px] z-50
+                                   rounded-2xl overflow-hidden
+                                   border border-slate-200/80
+                                   shadow-[0_8px_30px_rgba(0,0,0,0.12)]
+                                   bg-white">
+
+                            {{-- Arrow pointer --}}
+                            <div class="absolute -top-2 right-3.5 w-4 h-4 bg-white border-l border-t border-slate-200/80
+                                        rotate-45 rounded-tl-sm z-10"></div>
+
+                            {{-- ── WIDGET HEADER ── --}}
+                            <div class="relative px-4 pt-4 pb-3 bg-gradient-to-br from-red-500 to-rose-600 overflow-hidden">
+                                {{-- decorative circles --}}
+                                <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10"></div>
+                                <div class="absolute -bottom-6 -left-4 w-24 h-24 rounded-full bg-white/5"></div>
+
+                                <div class="relative flex items-center justify-between">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                            </svg>
+                                            <h3 class="text-sm font-bold text-white tracking-wide">Notifikasi</h3>
+                                        </div>
+                                        @if (isset($overdueCount) && $overdueCount > 0)
+                                            <p class="text-[11px] text-white/70 mt-0.5">
+                                                {{ $overdueCount }} order melewati tanggal komitmen
+                                            </p>
+                                        @else
+                                            <p class="text-[11px] text-white/70 mt-0.5">Semua order dalam kondisi baik</p>
+                                        @endif
+                                    </div>
+                                    @if (isset($overdueCount) && $overdueCount > 0)
+                                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm">
+                                            <span class="text-lg font-black text-white leading-none">{{ $overdueCount }}</span>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white/20">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- ── NOTIFICATION CARDS ── --}}
+                            <div class="max-h-[320px] overflow-y-auto">
+                                @if (isset($overdueOrders) && $overdueOrders->count() > 0)
+                                    <div class="p-3 space-y-2">
+                                        @foreach ($overdueOrders->take(5) as $notifOrder)
+                                            @php
+                                                $daysOverdue = (int) floor(\Carbon\Carbon::parse($notifOrder->data['commitment_date'])->diffInDays(\Carbon\Carbon::now()));
+                                                $urgencyClass = $daysOverdue >= 7
+                                                    ? 'border-red-300 bg-red-50'
+                                                    : ($daysOverdue >= 3
+                                                        ? 'border-orange-200 bg-orange-50'
+                                                        : 'border-yellow-200 bg-yellow-50');
+                                                $dotClass = $daysOverdue >= 7
+                                                    ? 'bg-red-500'
+                                                    : ($daysOverdue >= 3
+                                                        ? 'bg-orange-400'
+                                                        : 'bg-yellow-400');
+                                                $badgeClass = $daysOverdue >= 7
+                                                    ? 'bg-red-100 text-red-700'
+                                                    : ($daysOverdue >= 3
+                                                        ? 'bg-orange-100 text-orange-700'
+                                                        : 'bg-yellow-100 text-yellow-700');
+                                            @endphp
+                                            <div class="rounded-xl border {{ $urgencyClass }} p-3 transition-all duration-150 hover:shadow-sm group/card">
+                                                <div class="flex items-start gap-2.5">
+                                                    {{-- Urgency dot --}}
+                                                    <div class="mt-1.5 w-2 h-2 rounded-full {{ $dotClass }} shrink-0 ring-2 ring-white shadow-sm"></div>
+
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="flex items-start justify-between gap-2">
+                                                            <div class="min-w-0">
+                                                                <p class="text-[11px] font-bold text-slate-800 truncate leading-tight">
+                                                                    {{ $notifOrder->star_click_id }}
+                                                                </p>
+                                                                <p class="text-[10px] text-slate-500 truncate mt-0.5">
+                                                                    {{ $notifOrder->nama_customer }}
+                                                                </p>
+                                                            </div>
+                                                            <span class="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-md {{ $badgeClass }}">
+                                                                {{ $daysOverdue }} hr lalu
+                                                            </span>
+                                                        </div>
+                                                        <div class="flex items-center justify-between mt-2">
+                                                            <div class="flex items-center gap-1.5 text-[10px] text-slate-400">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
+                                                                </svg>
+                                                                {{ \Carbon\Carbon::parse($notifOrder->data['commitment_date'])->format('d M Y') }}
+                                                                <span class="text-slate-300">·</span>
+                                                                {{ $notifOrder->datel ?? '-' }}
+                                                            </div>
+                                                            <a href="{{ route('deployment.edit', $notifOrder->id) }}"
+                                                                class="inline-flex items-center gap-1 text-[10px] font-semibold text-white
+                                                                       bg-slate-700 hover:bg-slate-900 rounded-lg px-2 py-1 transition-all duration-150
+                                                                       opacity-0 group-hover/card:opacity-100 translate-x-1 group-hover/card:translate-x-0">
+                                                                Update
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                                                </svg>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+
+                                @else
+                                    {{-- Empty State --}}
+                                    <div class="flex flex-col items-center justify-center py-10 px-4 text-center">
+                                        <div class="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center mb-3 shadow-inner">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm font-semibold text-slate-700 flex items-center justify-center gap-1.5">
+                                            Semua beres!
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-400" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                                            </svg>
+                                        </p>
+                                        <p class="text-[11px] text-slate-400 mt-1 max-w-[200px] leading-relaxed">
+                                            Tidak ada order yang melewati tanggal komitmen
+                                        </p>
+                                    </div>
+                                @endif
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {{-- Bell shake animation --}}
+                    <style>
+                        @keyframes bell-shake {
+                            0%, 100% { transform: rotate(0deg); }
+                            15%       { transform: rotate(10deg); }
+                            30%       { transform: rotate(-8deg); }
+                            45%       { transform: rotate(6deg); }
+                            60%       { transform: rotate(-4deg); }
+                            75%       { transform: rotate(2deg); }
+                        }
+                        .notif-bell-shake {
+                            animation: bell-shake 2.5s ease-in-out infinite;
+                            transform-origin: top center;
+                        }
+                    </style>
                 @endif
 
                 {{-- Role Badge --}}
