@@ -120,14 +120,15 @@
                     </div>
                 </div>
             </template>
-        </div>
 
-        {{-- TOAST NOTIFICATION --}}
+            {{-- TOAST NOTIFICATION --}}
         <div x-show="toast.show"
-             x-transition:enter="toast-enter"
-             x-transition:enter-active="toast-enter-active"
-             x-transition:leave="toast-exit"
-             x-transition:leave-active="toast-exit-active"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-x-full"
+             x-transition:enter-end="opacity-100 translate-x-0"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100 translate-x-0"
+             x-transition:leave-end="opacity-0 translate-x-full"
              class="fixed top-4 right-4 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl"
              :class="toast.type === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'"
              style="display: none;">
@@ -152,6 +153,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
+        </div>
         </div>
 
         {{-- ===== LIVE MONITORING HEADER ===== --}}
@@ -499,7 +501,7 @@
             <div class="lg:col-span-8 bg-white rounded-[2.5rem] p-8 shadow-xl border overflow-x-auto"
                 style="border-color:#e0e7ff; box-shadow: 0 20px 40px rgba(59,130,246,0.06);" 
                     x-data="{ 
-                        loading: true,
+                        loading: false,
                         dates: [],
                         global_cap: 10,
                         selectedDay: null,
@@ -545,8 +547,9 @@
                                 this.global_cap = data.global_cap || 10;
                             } catch(e) {
                                 console.error('Error fetching Workload Day:', e);
+                            } finally {
+                                this.loading = false;
                             }
-                            this.loading = false;
                         }
                     }" x-init="fetchWorkload()">
                     
@@ -637,6 +640,14 @@
                         <div x-show="loading" class="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-20">
                             <svg class="animate-spin h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </div>
+
+                        <!-- Empty State -->
+                        <div x-show="!loading && dates.length === 0" class="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm z-10">
+                            <svg class="w-12 h-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"></path>
+                            </svg>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Belum Ada Data</p>
+                        </div>
                     </div>
 
                     <!-- Modal Details Overlay -->
@@ -711,10 +722,11 @@
                                 this.mitras = await res.json();
                             } catch(e) {
                                 console.error('Error fetching Top Mitras:', e);
+                            } finally {
+                                this.loading = false;
                             }
-                            this.loading = false;
                         }
-                    }">
+                    }" x-init="fetchMitras()">
                     <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-8">
                         <div>
                             <h3 class="text-lg font-extrabold tracking-tight" style="color:#1a1a2e;">Top Mitra</h3>
@@ -856,7 +868,7 @@
                         </span>
                         ${log.commitment_date ? `
                                     <span class="text-[8px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-md flex items-center gap-1" style="background:#fffbeb; color:#d97706;">
-                                        <svg class="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        <svg class="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"></path></svg>
                                         ${log.commitment_date}
                                     </span>` : ''}
                     </div>
@@ -1211,25 +1223,3 @@
     </script>
 @endsection
 
-@push('styles')
-<style>
-    .toast-enter {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    .toast-enter-active {
-        transform: translateX(0);
-        opacity: 1;
-        transition: all 0.3s ease-out;
-    }
-    .toast-exit {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    .toast-exit-active {
-        transform: translateX(100%);
-        opacity: 0;
-        transition: all 0.3s ease-in;
-    }
-</style>
-@endpush

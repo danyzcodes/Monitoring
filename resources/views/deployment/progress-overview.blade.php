@@ -556,11 +556,13 @@
                     } = chart;
                     ctx.save();
                     data.datasets[0].data.forEach((value, index) => {
-                        const label = mitraAvgTextLabels[index] || '';
+                        const avgLabel = mitraAvgTextLabels[index] || '';
+                        const detail = mitraAvgDetails[index];
                         const meta = chart.getDatasetMeta(0);
                         const bar = meta.data[index];
                         if (!bar) return;
 
+                        // Draw average label
                         ctx.font = 'bold 10px Inter, sans-serif';
                         ctx.fillStyle = '#db2777'; // Pink-600 logic
                         ctx.textAlign = 'center';
@@ -568,11 +570,18 @@
 
                         // Placement: slightly above the bar end
                         const posX = bar.x;
-                        const posY = bar.y - 8;
+                        const posY = bar.y - 20;
 
                         // Only draw if within chart area
                         if (posY > top) {
-                            ctx.fillText(label, posX, posY);
+                            ctx.fillText(avgLabel, posX, posY);
+
+                            // Draw order count below average label
+                            if (detail && detail.count) {
+                                ctx.font = '9px Inter, sans-serif';
+                                ctx.fillStyle = '#64748b'; // Slate-500
+                                ctx.fillText(`${detail.count} order`, posX, posY + 12);
+                            }
                         }
                     });
                     ctx.restore();
@@ -961,6 +970,7 @@
             // --- MITRA AVG DURATION CHART ---
             const mitraAvgLabels = @json($mitraAvgLabels ?? []);
             const mitraAvgValues = @json($mitraAvgValues ?? []);
+            const mitraAvgDetails = @json($mitraAvgArray ?? []);
 
             if (ctxMitraAvg && mitraAvgLabels.length > 0) {
                 // Create gradient for each bar
@@ -1028,10 +1038,22 @@
                                 displayColors: false,
                                 boxPadding: 6,
                                 callbacks: {
+                                    title: function(context) {
+                                        const index = context[0].dataIndex;
+                                        const detail = mitraAvgDetails[index];
+                                        return detail ? detail.mitra : '';
+                                    },
                                     label: function(context) {
                                         const index = context.dataIndex;
-                                        const fullLabel = mitraAvgTextLabels[index] || '';
-                                        return ` Rata-rata: ${fullLabel}`;
+                                        const detail = mitraAvgDetails[index];
+                                        if (!detail) return '';
+
+                                        const lines = [
+                                            `Rata-rata: ${detail.avg_label}`,
+                                            `Jumlah Order: ${detail.count} order`,
+                                            `Total Durasi: ${detail.total_label}`
+                                        ];
+                                        return lines;
                                     }
                                 }
                             }

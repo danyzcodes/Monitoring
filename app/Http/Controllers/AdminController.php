@@ -800,10 +800,19 @@ class AdminController extends Controller
                 $labelStr = "{$days} Hari";
                 if ($hours > 0) $labelStr .= " {$hours} Jam";
 
+                // Calculate total days for display
+                $totalDays = floor($stat['total_minutes'] / 1440);
+                $totalHours = floor(($stat['total_minutes'] % 1440) / 60);
+                $totalLabel = "{$totalDays} Hari";
+                if ($totalHours > 0) $totalLabel .= " {$totalHours} Jam";
+
                 $mitraAvgArray[] = [
                     'mitra' => $mitra,
                     'avg_raw' => round($avgDaysRaw, 2),
-                    'avg_label' => $labelStr
+                    'avg_label' => $labelStr,
+                    'count' => $stat['count'],
+                    'total_minutes' => $stat['total_minutes'],
+                    'total_label' => $totalLabel
                 ];
             }
         }
