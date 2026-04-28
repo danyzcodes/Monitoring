@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register — Monitoring Proyek</title>
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
+
+    {{-- Preconnect to critical external origins --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.telkom.co.id">
+    <link rel="dns-prefetch" href="https://www.telkom.co.id">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -78,7 +85,7 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-slate-900 overflow-x-hidden">
+<body class="min-h-screen bg-slate-900 overflow-hidden" data-turbo="false">
 
     {{-- ─── BACKGROUND (original) ─── --}}
     <div class="fixed inset-0">
@@ -98,7 +105,7 @@
             <div>
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-lg shadow-red-600/30 p-1.5">
-                        <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom" class="w-full">
+                        <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom" class="w-full" fetchpriority="high" decoding="async">
                     </div>
                     <div>
                         <div class="text-white font-bold text-lg tracking-tight">Monitoring Proyek</div>
@@ -158,7 +165,7 @@
                 {{-- Mobile Logo --}}
                 <div class="lg:hidden flex items-center gap-2.5 mb-6">
                     <div class="w-9 h-9 rounded-xl bg-white shadow border border-slate-100 flex items-center justify-center p-1">
-                        <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom" class="w-full">
+                        <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom" class="w-full" fetchpriority="high" decoding="async">
                     </div>
                     <span class="text-slate-800 font-bold text-sm">Monitoring Proyek</span>
                 </div>

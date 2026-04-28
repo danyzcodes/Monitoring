@@ -78,6 +78,9 @@ Route::middleware(['auth', 'role:optima,admin,tif,telkom_akses'])->group(functio
     Route::get('/deployment/api/search-starclick', [EbisManualInputController::class, 'searchStarclick'])
         ->name('deployment.api.search-starclick');
 
+    Route::get('/deployment/api/check-starclick', [EbisManualInputController::class, 'checkStarclickExists'])
+        ->name('deployment.api.check-starclick');
+
     /* ================= LIHAT DATA ================= */
     Route::get('/deployment/lihat-data', [EbisPlanningController::class, 'lihatData'])
         ->name('deployment.lihat-data');

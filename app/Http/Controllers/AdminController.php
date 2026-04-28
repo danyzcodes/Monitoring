@@ -18,9 +18,21 @@ class AdminController extends Controller
     {
         try {
             (new TelegramService())->sendDailyReport();
+            
+            // Return JSON for AJAX requests
+            if (request()->expectsJson()) {
+                return response()->json(['success' => true, 'message' => 'Laporan harian berhasil dikirim ke Telegram!']);
+            }
+            
             return back()->with('success', 'Laporan harian berhasil dikirim ke Telegram!');
         } catch (\Exception $e) {
             \Log::error('Gagal kirim laporan harian Telegram via UI: ' . $e->getMessage());
+            
+            // Return JSON for AJAX requests
+            if (request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Gagal mengirim laporan Telegram. Cek logs.'], 500);
+            }
+            
             return back()->with('error', 'Gagal mengirim laporan Telegram. Cek logs.');
         }
     }
@@ -489,38 +501,42 @@ class AdminController extends Controller
 
     public function getLiveTracking()
     {
-        $logs = EbisPlanningProgressLog::with(['user', 'planning'])
-            ->latest()
-            ->take(10)
-            ->get()
-            ->map(function ($log) {
+        $data = cache()->remember('dashboard.live-tracking', 10, function () {
+            $logs = EbisPlanningProgressLog::with(['user', 'planning'])
+                ->latest()
+                ->take(10)
+                ->get()
+                ->map(function ($log) {
+                    return [
+                        'user_name'     => $log->user->name ?? 'System',
+                        'user_initials' => strtoupper(substr($log->user->name ?? '?', 0, 2)),
+                        'star_click_id' => $log->planning->star_click_id ?? 'N/A',
+                        'progres'       => $log->progres,
+                        'time_ago'      => $log->created_at->diffForHumans(null, true, true),
+                        'commitment_date' => isset($log->data['commitment_date'])
+                            ? \Carbon\Carbon::parse($log->data['commitment_date'])->format('d M')
+                            : null,
+                    ];
+                });
+
+            $waitingUsers = User::where('role', 'waiting')->get()->map(function ($user) {
                 return [
-                    'user_name'     => $log->user->name ?? 'System',
-                    'user_initials' => strtoupper(substr($log->user->name ?? '?', 0, 2)),
-                    'star_click_id' => $log->planning->star_click_id ?? 'N/A',
-                    'progres'       => $log->progres,
-                    'time_ago'      => $log->created_at->diffForHumans(null, true, true),
-                    'commitment_date' => isset($log->data['commitment_date'])
-                        ? \Carbon\Carbon::parse($log->data['commitment_date'])->format('d M')
-                        : null,
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'initial' => strtoupper(substr($user->name, 0, 1)),
+                    'requested_role' => $user->requested_role ? ucfirst($user->requested_role) : null,
+                    'time_ago' => $user->created_at->diffForHumans(),
+                    'route' => route('admin.users')
                 ];
             });
 
-        $waitingUsers = User::where('role', 'waiting')->get()->map(function ($user) {
             return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'initial' => strtoupper(substr($user->name, 0, 1)),
-                'requested_role' => $user->requested_role ? ucfirst($user->requested_role) : null,
-                'time_ago' => $user->created_at->diffForHumans(),
-                'route' => route('admin.users')
+                'activities' => $logs,
+                'waiting' => $waitingUsers
             ];
         });
 
-        return response()->json([
-            'activities' => $logs,
-            'waiting' => $waitingUsers
-        ]);
+        return response()->json($data);
     }
 
     public function getTrendData(Request $request)

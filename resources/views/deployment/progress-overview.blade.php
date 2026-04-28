@@ -470,11 +470,14 @@
         </div>
 
         {{-- ===== RATA-RATA DURASI SELESAI PER MITRA CHART ===== --}}
-        <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-xl border mt-6"
-            style="border-color:#fce7f3; box-shadow: 0 20px 40px rgba(236,72,153,0.06);">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        <div class="bg-white rounded-[2.5rem] p-6 sm:p-8 shadow-xl border mt-6 relative overflow-hidden"
+            style="border-color:#fde8e8; box-shadow: 0 20px 50px rgba(227,43,43,0.08);">
+            {{-- Decorative gradient accent --}}
+            <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-red-50 to-transparent rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 relative z-10">
                 <div class="flex items-center gap-4">
-                    <div class="p-3 rounded-2xl" style="background:#fdf2f8; color:#db2777;">
+                    <div class="p-3.5 rounded-2xl shadow-lg" style="background: linear-gradient(135deg, #fef2f2, #fee2e2); color:#e32b2b;">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                 d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
@@ -490,7 +493,7 @@
             </div>
 
             {{-- Full Width Chart --}}
-            <div class="relative w-full h-[400px]">
+            <div class="relative w-full h-[400px] rounded-2xl overflow-hidden z-10" style="background: linear-gradient(180deg, #ffffff, #fafbfc);">
                 <canvas id="mitraAvgChart"></canvas>
             </div>
         </div>
@@ -960,6 +963,19 @@
             const mitraAvgValues = @json($mitraAvgValues ?? []);
 
             if (ctxMitraAvg && mitraAvgLabels.length > 0) {
+                // Create gradient for each bar
+                const ctx = ctxMitraAvg.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(220, 38, 38, 0.9)');
+                gradient.addColorStop(0.5, 'rgba(220, 38, 38, 0.7)');
+                gradient.addColorStop(1, 'rgba(220, 38, 38, 0.4)');
+
+                // Create hover gradient
+                const hoverGradient = ctx.createLinearGradient(0, 0, 0, 400);
+                hoverGradient.addColorStop(0, 'rgba(185, 28, 28, 0.95)');
+                hoverGradient.addColorStop(0.5, 'rgba(185, 28, 28, 0.75)');
+                hoverGradient.addColorStop(1, 'rgba(185, 28, 28, 0.5)');
+
                 window._mitraAvgChart = new Chart(ctxMitraAvg.getContext('2d'), {
                     type: 'bar',
                     data: {
@@ -967,22 +983,31 @@
                         datasets: [{
                             label: 'Rata-rata Hari',
                             data: mitraAvgValues,
-                            backgroundColor: 'rgba(236, 72, 153, 0.85)',
-                            borderColor: '#db2777',
-                            borderWidth: 1,
+                            backgroundColor: gradient,
+                            hoverBackgroundColor: hoverGradient,
+                            borderColor: 'rgba(220, 38, 38, 0.3)',
+                            hoverBorderColor: 'rgba(185, 28, 28, 0.5)',
+                            borderWidth: 2,
                             borderRadius: {
-                                topLeft: 4,
-                                topRight: 4
+                                topLeft: 12,
+                                topRight: 12,
+                                bottomLeft: 4,
+                                bottomRight: 4
                             },
+                            borderSkipped: false,
+                            barPercentage: 0.65,
+                            categoryPercentage: 0.8,
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        indexAxis: 'x', // Vertical style
+                        indexAxis: 'x',
                         layout: {
                             padding: {
-                                top: 40 // Leave space for the labels above bars
+                                top: 50,
+                                left: 10,
+                                right: 10
                             }
                         },
                         plugins: {
@@ -990,7 +1015,7 @@
                                 display: false
                             },
                             tooltip: {
-                                backgroundColor: '#1a1a2e',
+                                backgroundColor: 'rgba(26, 26, 46, 0.95)',
                                 titleFont: {
                                     weight: 'bold',
                                     size: 13
@@ -999,7 +1024,9 @@
                                     size: 12
                                 },
                                 cornerRadius: 12,
-                                padding: 12,
+                                padding: 14,
+                                displayColors: false,
+                                boxPadding: 6,
                                 callbacks: {
                                     label: function(context) {
                                         const index = context.dataIndex;
@@ -1012,47 +1039,68 @@
                         scales: {
                             x: {
                                 grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    font: {
-                                        weight: 'bold',
-                                        size: 9
-                                    },
-                                    color: '#6b7280',
-                                    autoSkip: false,
-                                    maxRotation: 45,
-                                    minRotation: 45
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                grace: '20%', // Added grace to ensure top labels are not cut off
-                                grid: {
-                                    color: 'rgba(243, 244, 246, 1)',
+                                    display: false,
                                     drawBorder: false
                                 },
                                 ticks: {
                                     font: {
-                                        weight: 'bold',
+                                        weight: '600',
+                                        size: 10
+                                    },
+                                    color: '#64748b',
+                                    autoSkip: false,
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    padding: 8
+                                },
+                                border: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grace: '25%',
+                                grid: {
+                                    color: 'rgba(226, 232, 240, 0.6)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    font: {
+                                        weight: '600',
                                         size: 11
                                     },
-                                    color: '#9ca3af'
+                                    color: '#94a3b8',
+                                    padding: 10
                                 },
                                 title: {
                                     display: true,
                                     text: 'Hari',
                                     font: {
                                         weight: 'bold',
-                                        size: 12
+                                        size: 11
                                     },
-                                    color: '#6b7280'
+                                    color: '#64748b',
+                                    padding: { top: 0, bottom: 10 }
+                                },
+                                border: {
+                                    display: false
                                 }
                             }
                         },
                         animation: {
-                            duration: 1200,
-                            easing: 'easeOutQuart'
+                            duration: 1500,
+                            easing: 'easeOutQuart',
+                            delay: (context) => {
+                                return context.dataIndex * 150;
+                            }
+                        },
+                        hover: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
                         }
                     },
                     plugins: [barLabelsPluginFilter]

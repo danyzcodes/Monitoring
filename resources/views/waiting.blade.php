@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menunggu Persetujuan Admin — Monitoring Proyek</title>
+
+    {{-- Preconnect to critical external origins --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.telkom.co.id">
+    <link rel="dns-prefetch" href="https://www.telkom.co.id">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -37,7 +44,7 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-slate-900 overflow-hidden flex items-center justify-center p-4">
+<body class="min-h-screen bg-slate-900 overflow-hidden flex items-center justify-center p-4" data-turbo="false">
 
     <!-- BACKGROUND PATTERN -->
     <div class="absolute inset-0">

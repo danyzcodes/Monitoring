@@ -43,7 +43,9 @@ class TelegramService
      */
     public function notifyNewOrder(EbisManualInput $order): void
     {
-        $text  = "🆕 <b>ORDER BARU DIBUAT</b>\n";
+        $text  = "📢 <b>[NOTIFIKASI ORDER BARU]</b>\n";
+        $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
+        $text .= "🆕 <b>ORDER BARU DIBUAT</b>\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
         $text .= "📌 <b>Star Click ID:</b> {$order->star_click_id}\n";
         $text .= "👤 <b>Customer:</b> {$order->nama_customer}\n";
@@ -67,7 +69,9 @@ class TelegramService
      */
     public function notifyProgressUpdate(EbisManualInput $order, string $progres, ?string $keterangan = null): void
     {
-        $text  = "📋 <b>UPDATE PROGRESS DEPLOYMENT</b>\n";
+        $text  = "� <b>[NOTIFIKASI UPDATE PROGRESS]</b>\n";
+        $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
+        $text .= "� <b>UPDATE PROGRESS DEPLOYMENT</b>\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
         $text .= "📌 <b>Star Click ID:</b> {$order->star_click_id}\n";
         $text .= "👤 <b>Customer:</b> {$order->nama_customer}\n";
@@ -100,50 +104,158 @@ class TelegramService
     }
 
     /**
-     * Laporan Harian: Semua progress hari ini.
+     * Laporan Harian: Semua progress hari ini dengan format lengkap.
      */
     public function sendDailyReport(): void
     {
-        // Ambil semua log hari ini
-        $logs = EbisPlanningProgressLog::with(['planning.manualInput', 'user'])
-            ->whereDate('created_at', now()->format('Y-m-d'))
-            ->orderBy('created_at', 'asc')
-            ->get();
-
         $dateStr = now()->format('d M Y');
 
-        if ($logs->isEmpty()) {
-            $text  = "📅 <b>LAPORAN HARIAN DEPLOYMENT</b>\n";
-            $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
-            $text .= "Hari/Tgl: <b>{$dateStr}</b>\n\n";
-            $text .= "<i>Tidak ada update progress hari ini.</i> 📭\n";
-            
-            $this->sendMessage($text);
-            return;
-        }
-
-        $text  = "📅 <b>LAPORAN HARIAN DEPLOYMENT</b>\n";
+        $text  = "📢 <b>[LAPORAN HARIAN OTOMATIS]</b>\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
-        $text .= "Hari/Tgl: <b>{$dateStr}</b>\n";
-        $text .= "Total Update: <b>{$logs->count()} Aktivitas</b>\n\n";
+        $text .= "🌅 <b>SEMANGAT PAGI!</b> ☀️\n\n";
+        $text .= "Berikut kami sampaikan Progress Order UNSC JT EBIS PT3 by IHLD – Hari Ini\n";
+        $text .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+        $text .= "📊 <b>FORMAT DATA</b>\n\n";
+        $text .= "Kategori Umur | Wilayah Telkom | Nomor NDE JT | Starclick ID/NCX | Nama Pelanggan | Nama Mitra | Status Order | Status Tomps | Status Alokasi Alpro\n\n";
+        $text .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
 
-        // Grouping logs (optional) or just list them sequentially
-        foreach ($logs as $i => $log) {
-            $no = $i + 1;
-            $order = $log->planning->manualInput ?? null;
-            
-            $customer = $order ? $order->nama_customer : 'Unknown Customer';
-            $starclick = $order ? $order->star_click_id : '-';
-            
-            $user = $log->user->name ?? 'System';
-            $time = $log->created_at->format('H:i');
-            $progres = $log->progres;
+        // Status mapping
+        $statuses = [
+            'NEW ORDER' => ['NEW ORDER', 'NEW'],
+            'ON DESK' => ['ON DESK'],
+            'SURVEY' => ['SURVEY'],
+            'PERIJINAN' => ['PERIJINAN', 'IJIN'],
+            'DRM' => ['DRM'],
+            'APPROVED BY EBIS' => ['APPROVED BY EBIS', 'APPROVED'],
+            'MATDEV' => ['MATDEV'],
+            'INSTALASI' => ['INSTALASI'],
+            'SELESAI FISIK' => ['SELESAI FISIK', 'SELESAI'],
+            'GO LIVE' => ['GO LIVE', 'GOLIVE'],
+            'PS' => ['PS'],
+            'KENDALA' => ['KENDALA', 'GAGAL', 'CANCEL'],
+            'UJI TERIMA' => ['UJI TERIMA'],
+            'REKON' => ['REKON'],
+        ];
 
-            $text .= "<b>{$no}. {$customer}</b> ({$starclick})\n";
-            $text .= "   👉 <b>{$progres}</b> pada {$time} (oleh <i>{$user}</i>)\n\n";
+        $statusEmojis = [
+            'NEW ORDER' => '🆕',
+            'ON DESK' => '🆕',
+            'SURVEY' => '📍',
+            'PERIJINAN' => '📝',
+            'DRM' => '⚙️',
+            'APPROVED BY EBIS' => '⏳',
+            'MATDEV' => '🏗️',
+            'INSTALASI' => '🔌',
+            'SELESAI FISIK' => '🏁',
+            'GO LIVE' => '🚀',
+            'PS' => '📦',
+            'KENDALA' => '⚠️',
+            'UJI TERIMA' => '✅',
+            'REKON' => '📑',
+        ];
+
+        // Get all active orders (not completed)
+        $orders = \App\Models\EbisManualInput::with(['planning'])
+            ->whereNotIn('progres', ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON', 'GAGAL', 'CANCEL'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Also get completed orders today
+        $completedToday = \App\Models\EbisManualInput::with(['planning'])
+            ->whereIn('progres', ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON'])
+            ->whereDate('updated_at', now()->format('Y-m-d'))
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        $totalOrders = $orders->count();
+        $totalCompletedToday = $completedToday->count();
+
+        $text .= "<b>📈 SUMMARY</b>\n";
+        $text .= "━━━━━━━━━━━━━━━━━━━━\n";
+        $text .= "Total Order Aktif: <b>{$totalOrders}</b>\n";
+        $text .= "Selesai Hari Ini: <b>{$totalCompletedToday}</b>\n";
+        $text .= "Tanggal Report: <b>{$dateStr}</b>\n\n";
+        $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+        foreach ($statuses as $statusLabel => $statusKeywords) {
+            $text .= "<b>{$statusEmojis[$statusLabel]} {$statusLabel}</b>\n";
+            $text .= "────────────────────────────\n\n";
+
+            $filteredOrders = $orders->filter(function($order) use ($statusKeywords) {
+                foreach ($statusKeywords as $keyword) {
+                    if (stripos($order->progres, $keyword) !== false) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            if ($filteredOrders->isEmpty()) {
+                $text .= "(Belum ada data)\n\n";
+            } else {
+                foreach ($filteredOrders as $order) {
+                    // Calculate duration in days from creation (rounded to whole number)
+                    $daysSinceCreated = round($order->created_at->diffInDays(now()));
+                    if ($daysSinceCreated <= 6) {
+                        $ageCategory = '≤6HR';
+                    } elseif ($daysSinceCreated <= 14) {
+                        $ageCategory = '>6HR ≤14HR';
+                    } else {
+                        $ageCategory = '>14HR';
+                    }
+
+                    $nde = $order->nde_jt ?? '-';
+                    $starclick = $order->star_click_id ?? '-';
+                    $customer = $order->nama_customer ?? '-';
+                    $mitra = $order->nama_mitra ?? '-';
+                    $statusOrder = $order->progres ?? '-';
+                    $datel = strtoupper($order->datel ?? '-');
+
+                    // Get tomps status from planning
+                    $tompsStatus = '-';
+                    $alproStatus = 'Waiting for Allocation';
+                    if ($order->planning) {
+                        $tompsStatus = $order->planning->status_tomps ?? '-';
+                        $alproStatus = $order->planning->status_alokasi_alpro ?? 'Waiting for Allocation';
+                    }
+
+                    // Format as pipe-separated line
+                    $text .= "{$ageCategory} | {$datel} | {$nde} | {$starclick} | {$customer} | {$mitra} | {$statusOrder} | {$tompsStatus} | {$alproStatus}\n\n";
+                }
+            }
         }
 
-        $text .= "Semangat terus rekan-rekan! 🚀";
+        // Add completed orders section
+        if ($completedToday->isNotEmpty()) {
+            $text .= "<b>🚀 SELESAI HARI INI</b>\n";
+            $text .= "────────────────────────────\n\n";
+
+            foreach ($completedToday as $order) {
+                // Calculate duration from creation to completion (rounded to whole number)
+                $daysToComplete = round($order->created_at->diffInDays($order->updated_at));
+                $ageCategory = $daysToComplete . ' HR';
+
+                $nde = $order->nde_jt ?? '-';
+                $starclick = $order->star_click_id ?? '-';
+                $customer = $order->nama_customer ?? '-';
+                $mitra = $order->nama_mitra ?? '-';
+                $statusOrder = $order->progres ?? '-';
+                $datel = strtoupper($order->datel ?? '-');
+
+                // Get tomps status from planning
+                $tompsStatus = '-';
+                $alproStatus = 'Waiting for Allocation';
+                if ($order->planning) {
+                    $tompsStatus = $order->planning->status_tomps ?? '-';
+                    $alproStatus = $order->planning->status_alokasi_alpro ?? 'Waiting for Allocation';
+                }
+
+                $text .= "{$ageCategory} | {$datel} | {$nde} | {$starclick} | {$customer} | {$mitra} | {$statusOrder} | {$tompsStatus} | {$alproStatus}\n\n";
+            }
+        }
+
+        $text .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+        $text .= "<i>Laporan di-generate otomatis oleh sistem pada {$dateStr} pukul " . now()->format('H:i') . " WIB</i>";
 
         $this->sendMessage($text);
     }

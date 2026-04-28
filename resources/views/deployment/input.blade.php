@@ -413,104 +413,25 @@
                     {{-- ====================== CONFIRM MODAL ====================== --}}
                     <template x-teleport="body">
                         <div x-show="confirmOpen" x-cloak
-                            class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4">
-
-                            {{-- Backdrop --}}
-                            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-                                @click="confirmOpen = false"
-                                x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0"
-                                x-transition:enter-end="opacity-100"
-                                x-transition:leave="transition ease-in duration-150"
-                                x-transition:leave-start="opacity-100"
-                                x-transition:leave-end="opacity-0">
-                            </div>
+                            class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50">
 
                             {{-- Modal Card --}}
-                            <div class="relative z-10 w-full max-w-xs"
-                                x-transition:enter="transition ease-out duration-250"
-                                x-transition:enter-start="opacity-0 translate-y-4 scale-95"
-                                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                                x-transition:leave="transition ease-in duration-150"
-                                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                                x-transition:leave-end="opacity-0 translate-y-4 scale-95">
+                            <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6">
+                                <h3 class="text-lg font-bold text-slate-800 mb-2">Konfirmasi Simpan</h3>
+                                <p class="text-sm text-slate-600 mb-6">Apakah data sudah benar dan ingin disimpan?</p>
 
-                                <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+                                {{-- Action Buttons --}}
+                                <div class="flex flex-col gap-3">
+                                    <button type="button" @click="finalSubmit()"
+                                        :disabled="submitting"
+                                        class="w-full py-3 px-4 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <span x-text="submitting ? 'Menyimpan...' : 'Ya, Simpan'"></span>
+                                    </button>
 
-                                    {{-- ── Gradient Header ── --}}
-                                    <div class="relative px-6 pt-6 pb-5 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
-                                        {{-- Decorative --}}
-                                        <div class="absolute -top-6 -right-6 w-28 h-28 rounded-full bg-white/5"></div>
-                                        <div class="absolute -bottom-4 -left-4 w-20 h-20 rounded-full bg-white/5"></div>
-
-                                        <div class="relative flex items-start gap-4">
-                                            {{-- Icon --}}
-                                            <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                                                </svg>
-                                            </div>
-                                            <div class="pt-0.5">
-                                                <h3 class="text-lg font-bold text-white leading-tight">Konfirmasi Simpan</h3>
-                                                <p class="text-sm text-white/60 mt-0.5">Pastikan data sudah benar sebelum disimpan</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- ── Data Preview ── --}}
-                                   
-
-                                    {{-- ── Action Buttons ── --}}
-                                    <div class="px-4 py-4 flex flex-col gap-2">
-
-                                        {{-- Primary: Simpan --}}
-                                        <button type="button" @click="finalSubmit()"
-                                            :disabled="submitting"
-                                            class="group relative w-full flex items-center justify-center gap-2.5
-                                                   px-5 py-3 rounded-2xl overflow-hidden
-                                                   bg-gradient-to-r from-red-600 to-rose-500
-                                                   hover:from-red-700 hover:to-rose-600
-                                                   shadow-md shadow-red-500/25
-                                                   transition-all duration-200
-                                                   disabled:opacity-70 disabled:cursor-not-allowed
-                                                   focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2">
-                                            {{-- Spinner (muncul saat submitting) --}}
-                                            <svg x-show="submitting" class="animate-spin w-4 h-4 text-white shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                            {{-- Centang icon (normal) --}}
-                                            <svg x-show="!submitting" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                            </svg>
-                                            <span class="text-sm font-bold text-white" x-text="submitting ? 'Menyimpan...' : 'Ya, Simpan Data'"></span>
-                                        </button>
-
-                                        {{-- Secondary: Batalkan --}}
-                                        <button type="button" @click="confirmOpen = false"
-                                            class="group w-full flex items-center justify-between
-                                                   px-5 py-3.5 rounded-2xl
-                                                   bg-slate-100 hover:bg-slate-200
-                                                   transition-all duration-200
-                                                   focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-8 h-8 rounded-xl bg-slate-200 group-hover:bg-slate-300 flex items-center justify-center transition-colors">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                                    </svg>
-                                                </div>
-                                                <div class="text-left">
-                                                    <p class="text-sm font-semibold text-slate-700 leading-tight">Batalkan</p>
-                                                    <p class="text-[10px] text-slate-400 leading-none mt-0.5">Kembali untuk periksa data</p>
-                                                </div>
-                                            </div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-                                            </svg>
-                                        </button>
-
-                                    </div>
-
+                                    <button type="button" @click="confirmOpen = false"
+                                        class="w-full py-3 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold">
+                                        Batalkan
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -747,14 +668,14 @@
             }
 
             new TomSelect('#star_click_id', {
-                wrapperClass: 'ts-wrapper single starclick-select', 
+                wrapperClass: 'ts-wrapper single starclick-select',
                 valueField: 'id',
                 labelField: 'text',
                 searchField: ['id', 'text'],
                 placeholder: 'Ketik ID Starclick...',
                 dropdownParent: 'body',
 
-                preload: true, 
+                preload: true,
 
                 create: function(input) {
                     return {
@@ -768,6 +689,7 @@
                         .then(r => r.json())
                         .then(json => {
                             // 🔥 pastikan format aman tanpa ubah desain
+                            // Note: API already filters out used Starclick IDs
                             const data = (json || []).map(item => ({
                                 id: item.id,
                                 text: item.text || item.id,
@@ -776,16 +698,6 @@
                             callback(data);
                         })
                         .catch(() => callback());
-                },
-
-                onChange: function(value) {
-                    const item = this.options[value];
-                    if (item && item.id !== item.text) {
-                        const nameInput = document.querySelector('input[name="nama_customer"]');
-                        if (nameInput && item.nama_customer) {
-                            nameInput.value = item.nama_customer;
-                        }
-                    }
                 }
             });
         }

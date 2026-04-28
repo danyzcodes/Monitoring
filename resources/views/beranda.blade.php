@@ -308,6 +308,7 @@
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .btn-hero-primary {
@@ -650,32 +651,41 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.6rem 0;
-            color: #475569;
-            font-size: 0.9rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .about-feature-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-color: rgba(220, 38, 38, 0.2);
         }
 
         .about-feature-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            background: rgba(220, 38, 38, 0.06);
+            background: rgba(220, 38, 38, 0.08);
             color: #DC2626;
         }
 
-        .about-feature-icon.red,
-        .about-feature-icon.blue,
-        .about-feature-icon.green,
-        .about-feature-icon.purple { background: rgba(220, 38, 38, 0.06); color: #DC2626; }
+        .about-feature-icon.red { background: rgba(220, 38, 38, 0.1); color: #DC2626; }
+        .about-feature-icon.blue { background: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+        .about-feature-icon.green { background: rgba(34, 197, 94, 0.1); color: #22C55E; }
+        .about-feature-icon.purple { background: rgba(168, 85, 247, 0.1); color: #A855F7; }
 
         .about-feature-label {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: #334155;
+            color: #1E293B;
         }
 
         /* ========================================
@@ -705,7 +715,13 @@
             border-radius: 20px;
             overflow: hidden;
             cursor: pointer;
-            group: true;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
         }
 
         .gallery-card img {
@@ -716,16 +732,16 @@
         }
 
         .gallery-card:hover img {
-            transform: scale(1.08);
+            transform: scale(1.1);
         }
 
         .gallery-card-overlay {
             position: absolute;
             inset: 0;
             background: linear-gradient(to top,
-                rgba(15, 23, 42, 0.9) 0%,
-                rgba(15, 23, 42, 0.3) 40%,
-                transparent 70%
+                rgba(15, 23, 42, 0.95) 0%,
+                rgba(15, 23, 42, 0.5) 50%,
+                transparent 100%
             );
             display: flex;
             flex-direction: column;
@@ -742,35 +758,48 @@
         .gallery-card-title {
             color: white;
             font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
+            font-size: 1.05rem;
+            margin-bottom: 0.35rem;
+            transform: translateY(10px);
+            transition: transform 0.4s ease 0.1s;
+        }
+
+        .gallery-card:hover .gallery-card-title {
+            transform: translateY(0);
         }
 
         .gallery-card-desc {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            transform: translateY(10px);
+            transition: transform 0.4s ease 0.15s;
+        }
+
+        .gallery-card:hover .gallery-card-desc {
+            transform: translateY(0);
         }
 
         .gallery-card-icon {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(220, 38, 38, 0.9);
             backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s ease 0.1s;
+            transform: translateY(-10px) scale(0.9);
+            transition: all 0.4s ease 0.05s;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
         }
 
         .gallery-card:hover .gallery-card-icon {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         /* ========================================
@@ -904,14 +933,14 @@
         }
 
         .contact-card {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.25rem;
             text-align: center;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
@@ -922,49 +951,72 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: #DC2626;
+            height: 3px;
+            background: linear-gradient(90deg, #DC2626, #EF4444);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
+        .contact-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
         .contact-card:hover {
-            background: rgba(255, 255, 255, 0.07);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-            border-color: rgba(255, 255, 255, 0.12);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.15);
         }
 
         .contact-card:hover::before {
             opacity: 1;
         }
 
+        .contact-card:hover::after {
+            opacity: 1;
+        }
+
         .contact-avatar {
-            width: 56px;
-            height: 56px;
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
-            background: #DC2626;
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.1rem;
+            margin: 0 auto 1.25rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: white;
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+            position: relative;
+            z-index: 1;
         }
 
         .contact-name {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: white;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.35rem;
+            position: relative;
+            z-index: 1;
         }
 
         .contact-role {
-            font-size: 0.78rem;
+            font-size: 0.82rem;
             color: var(--clr-text-muted);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
+            position: relative;
+            z-index: 1;
         }
 
         .contact-links {
@@ -1207,7 +1259,6 @@
             .hero-desc { margin: 0 auto 2.5rem; }
             .hero-actions { justify-content: center; }
             .hero-stats { justify-content: center; }
-            .hero-visual { display: none; }
             .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
             .location-grid { grid-template-columns: 1fr; }
             .nav-links { display: none; }
@@ -1301,7 +1352,11 @@
 
         <div class="hero-content">
             <div class="hero-text" data-aos="fade-up">
-                
+
+                <div class="hero-badge" data-aos="fade-up">
+                    <div class="hero-badge-dot"></div>
+                    <span>UNIT OPTIMA TELKOM</span>
+                </div>
 
                 <h1 data-aos="fade-up" data-aos-delay="100">Sistem <span>Monitoring</span> Proyek Deployment</h1>
 
@@ -1309,7 +1364,23 @@
                     Platform terpusat untuk memantau progres deployment jaringan, perencanaan proyek, dan pengelolaan data order secara real-time bagi Unit Optima Telkom.
                 </p>
 
-                
+                {{-- CTA Buttons --}}
+                <div class="hero-actions" data-aos="fade-up" data-aos-delay="300">
+                    <a href="{{ route('login') }}" class="btn-hero-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                        </svg>
+                        Masuk Dashboard
+                    </a>
+                    <a href="#about" class="btn-hero-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Pelajari
+                    </a>
+                </div>
+
+                {{-- Feature Highlights --}}
                 <div style="margin-top: 3rem; display: flex; flex-wrap: wrap; gap: 1.5rem 2rem; justify-content: center; color: var(--clr-text-muted); font-size: 0.95rem; font-weight: 500;" data-aos="fade-up" data-aos-delay="400">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(34, 197, 94, 0.15); color: #22C55E;">
@@ -1329,7 +1400,7 @@
                         </span>
                         Transparansi Mitra
                     </div>
-                </div>   
+                </div>
             </div>
         </div>
     </section>
@@ -1412,6 +1483,11 @@
             <div class="gallery-grid stagger-children">
                 <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-deployment.png') }}" alt="Deployment Lapangan" loading="lazy">
+                    <div class="gallery-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                        </svg>
+                    </div>
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Instalasi Kabel Optik</div>
                         <div class="gallery-card-desc">STO Kebon Jeruk</div>
@@ -1419,6 +1495,11 @@
                 </div>
                 <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-completed.png') }}" alt="Penyeleseaian Proyek" loading="lazy">
+                    <div class="gallery-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Selesai Fisik ODP</div>
                         <div class="gallery-card-desc">Area Cengkareng</div>
@@ -1426,6 +1507,11 @@
                 </div>
                 <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-server.png') }}" alt="Ruang Server" loading="lazy">
+                    <div class="gallery-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                        </svg>
+                    </div>
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Integrasi ODC Server</div>
                         <div class="gallery-card-desc">STO Palmerah</div>
@@ -1433,6 +1519,11 @@
                 </div>
                 <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-survey.png') }}" alt="Survey Lapangan" loading="lazy">
+                    <div class="gallery-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
+                    </div>
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Survey Pra-Deployment</div>
                         <div class="gallery-card-desc">Titik Kalideres</div>

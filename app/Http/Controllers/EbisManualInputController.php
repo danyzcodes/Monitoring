@@ -41,7 +41,7 @@ class EbisManualInputController extends Controller
         $validated = $request->validate(
             [
                 'nde_jt' => 'nullable|string|max:255',
-                'star_click_id' => 'required|string|max:50',
+                'star_click_id' => 'required|string|max:50|unique:ebis_manual_inputs,star_click_id',
                 'nomor_batch' => 'nullable|numeric',
                 'nama_customer' => 'required|string|max:255',
                 'nama_mitra' => 'required|string|max:255',
@@ -55,6 +55,7 @@ class EbisManualInputController extends Controller
             ],
             [
                 'required' => 'attribute tidak boleh kosong',
+                'unique' => ':attribute sudah digunakan. Silakan gunakan Starclick ID yang berbeda.',
             ],
             [
                 'nde_jt' => 'Nomor NDE JT',
@@ -458,10 +459,17 @@ class EbisManualInputController extends Controller
             return response()->json([]);
         }
 
+        // Get already used Starclick IDs from ebis_manual_inputs
+        $usedStarclicks = EbisManualInput::whereNotNull('star_click_id')
+            ->where('star_click_id', '!=', '')
+            ->pluck('star_click_id')
+            ->toArray();
+
         $results = DB::table('ebis_planning_orders')
             ->where('star_click_id', '!=', '-')
             ->where('star_click_id', '!=', '')
             ->whereNotNull('star_click_id')
+            ->whereNotIn('star_click_id', $usedStarclicks) // Exclude already used IDs
             ->where(function ($q) use ($query) {
                 $q->where('star_click_id', 'LIKE', "%{$query}%")
                   ->orWhere('nama_customer', 'LIKE', "%{$query}%");
@@ -482,5 +490,30 @@ class EbisManualInputController extends Controller
             ->values();
 
         return response()->json($results);
+    }
+
+    /**
+     * =============================
+     * CHECK IF STARCLICK ID EXISTS
+     * =============================
+     */
+    public function checkStarclickExists(Request $request)
+    {
+        $starclickId = $request->get('starclick_id', '');
+
+        if (empty($starclickId)) {
+            return response()->json(['exists' => false, 'message' => 'Starclick ID tidak boleh kosong']);
+        }
+
+        $exists = EbisManualInput::where('star_click_id', $starclickId)->exists();
+
+        if ($exists) {
+            return response()->json([
+                'exists' => true,
+                'message' => 'Starclick ID sudah digunakan. Silakan gunakan ID yang berbeda.'
+            ]);
+        }
+
+        return response()->json(['exists' => false, 'message' => 'Starclick ID tersedia']);
     }
 }

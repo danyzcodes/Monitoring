@@ -5,7 +5,48 @@
 @section('content')
     <div class="flex flex-col gap-6">
         {{-- BREADCRUMB & ACTIONS --}}
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4" x-data="{ showTeleModal: false }">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4" x-data="{
+            showTeleModal: false,
+            isSendingReport: false,
+            toast: {
+                show: false,
+                message: '',
+                type: 'success'
+            },
+            showToast(message, type = 'success') {
+                this.toast.message = message;
+                this.toast.type = type;
+                this.toast.show = true;
+                setTimeout(() => {
+                    this.toast.show = false;
+                }, 3000);
+            },
+            sendDailyReport() {
+                const form = document.getElementById('dailyReportForm');
+                const formData = new FormData(form);
+
+                this.isSendingReport = true;
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    this.isSendingReport = false;
+                    this.showTeleModal = false;
+                    this.showToast(data.message, data.success ? 'success' : 'error');
+                })
+                .catch(error => {
+                    this.isSendingReport = false;
+                    this.showToast('Gagal mengirim laporan. Silakan coba lagi.', 'error');
+                    console.error('Error:', error);
+                });
+            }
+        }">
             <div class="flex items-center gap-3 text-sm text-slate-500">
                 <a href="{{ route('dashboard') }}"
                     class="font-bold text-slate-800 text-xs uppercase tracking-wider">Dashboard</a>
@@ -60,16 +101,18 @@
                             </p>
 
                             <div class="flex flex-col gap-3">
-                                <form action="{{ route('admin.telegram.daily-report') }}" method="POST">
+                                <form id="dailyReportForm" action="{{ route('admin.telegram.daily-report') }}" method="POST" @submit.prevent="sendDailyReport">
                                     @csrf
                                     <button type="submit"
-                                        class="w-full py-3.5 rounded-2xl text-sm font-bold text-white shadow-xl shadow-red-200 transition active:scale-95"
+                                        :disabled="isSendingReport"
+                                        class="w-full py-3.5 rounded-2xl text-sm font-bold text-white shadow-xl shadow-red-200 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                                         style="background: linear-gradient(135deg, #e32b2b 0%, #991b1b 100%);">
-                                        Ya, Kirim Sekarang
+                                        <span x-text="isSendingReport ? 'Mengirim...' : 'Ya, Kirim Sekarang'"></span>
                                     </button>
                                 </form>
                                 <button @click="showTeleModal = false"
-                                    class="w-full py-4 rounded-2xl text-sm font-bold text-slate-400 hover:text-slate-600 transition active:scale-95">
+                                    :disabled="isSendingReport"
+                                    class="w-full py-4 rounded-2xl text-sm font-bold text-slate-400 hover:text-slate-600 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Batalkan
                                 </button>
                             </div>
@@ -77,6 +120,38 @@
                     </div>
                 </div>
             </template>
+        </div>
+
+        {{-- TOAST NOTIFICATION --}}
+        <div x-show="toast.show"
+             x-transition:enter="toast-enter"
+             x-transition:enter-active="toast-enter-active"
+             x-transition:leave="toast-exit"
+             x-transition:leave-active="toast-exit-active"
+             class="fixed top-4 right-4 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl"
+             :class="toast.type === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'"
+             style="display: none;">
+            <div class="flex-shrink-0"
+                 :class="toast.type === 'success' ? 'text-green-600' : 'text-red-600'">
+                <svg x-show="toast.type === 'success'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <svg x-show="toast.type === 'error'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm font-semibold"
+                   :class="toast.type === 'success' ? 'text-green-800' : 'text-red-800'"
+                   x-text="toast.message"></p>
+            </div>
+            <button @click="toast.show = false"
+                    class="flex-shrink-0 p-1 rounded-lg hover:bg-opacity-80"
+                    :class="toast.type === 'success' ? 'text-green-600 hover:bg-green-200' : 'text-red-600 hover:bg-red-200'">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         </div>
 
         {{-- ===== LIVE MONITORING HEADER ===== --}}
@@ -336,11 +411,14 @@
         </div>
 
         <!-- ================= DEPLOYMENT TREND (FULL WIDTH) ================= -->
-        <div class="w-full bg-white rounded-[2.5rem] p-8 shadow-xl border flex flex-col h-fit mb-10"
-            style="border-color:#fde8e8; box-shadow: 0 20px 40px rgba(227,43,43,0.06);">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <div class="w-full bg-white rounded-[2.5rem] p-8 shadow-xl border flex flex-col h-fit mb-10 relative overflow-hidden"
+            style="border-color:#fde8e8; box-shadow: 0 20px 50px rgba(227,43,43,0.08);">
+                {{-- Decorative gradient accent --}}
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-red-50 to-transparent rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4 relative z-10">
                     <div class="flex items-center gap-4">
-                        <div class="p-3 rounded-2xl" style="background:#fef2f2; color:#e32b2b;">
+                        <div class="p-3.5 rounded-2xl shadow-lg" style="background: linear-gradient(135deg, #fef2f2, #fee2e2); color:#e32b2b;">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z">
@@ -348,32 +426,32 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-xl font-extrabold tracking-tight" style="color:#1a1a2e;">Deployment Trend Inputs</h3>
+                            <h3 class="text-xl font-extrabold tracking-tight" style="color:#1a1a2e;">Deployment Trend</h3>
                             <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:#9ca3af;">Live
                                 Market Data</p>
                         </div>
                     </div>
-                    <div class="flex p-1.5 rounded-2xl gap-1" style="background:#f5f5f5;">
+                    <div class="flex p-1.5 rounded-2xl gap-1 shadow-sm" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
                         <button onclick="updateTrend('daily')" id="btn-daily"
-                            class="filter-btn px-4 py-1.5 bg-white text-[10px] font-black uppercase tracking-wider rounded-xl shadow-sm transition-all duration-300"
+                            class="filter-btn px-4 py-1.5 bg-white text-[10px] font-black uppercase tracking-wider rounded-xl shadow-sm transition-all duration-300 hover:shadow-md"
                             style="color:#e32b2b;">Daily</button>
                         <button onclick="updateTrend('weekly')" id="btn-weekly"
-                            class="filter-btn px-4 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-xl transition-all duration-300"
+                            class="filter-btn px-4 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-xl transition-all duration-300 hover:bg-white hover:shadow-sm"
                             style="color:#9ca3af;">Weekly</button>
                         <button onclick="updateTrend('monthly')" id="btn-monthly"
-                            class="filter-btn px-4 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-xl transition-all duration-300"
+                            class="filter-btn px-4 py-1.5 text-[10px] font-black uppercase tracking-wider rounded-xl transition-all duration-300 hover:bg-white hover:shadow-sm"
                             style="color:#9ca3af;">Monthly</button>
                     </div>
                 </div>
 
                 {{-- SEARCH FILTERS --}}
-                <div class="flex flex-wrap items-end gap-3 mb-8 p-4 rounded-2xl border"
-                    style="background:#fafafa; border-color:#f3f4f6;">
+                <div class="flex flex-wrap items-end gap-3 mb-8 p-5 rounded-2xl border relative z-10"
+                    style="background: linear-gradient(135deg, #fafafa, #f8fafc); border-color:#f1f5f9;">
                     <div class="flex-1 min-w-[120px]">
-                        <label class="block text-[9px] font-bold uppercase tracking-widest mb-1"
-                            style="color:#9ca3af;">Datel</label>
+                        <label class="block text-[9px] font-bold uppercase tracking-widest mb-1.5"
+                            style="color:#64748b;">Datel</label>
                         <select id="trend-filter-datel" onchange="updateTrend()"
-                            class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2 px-3 focus:ring-red-500 focus:border-red-500 transition">
+                            class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2.5 px-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm">
                             <option value="">Semua Datel</option>
                             @foreach ($trendFilterOptions['datels'] as $item)
                                 <option value="{{ $item }}">{{ $item }}</option>
@@ -381,10 +459,10 @@
                         </select>
                     </div>
                     <div class="flex-1 min-w-[120px]">
-                        <label class="block text-[9px] font-bold uppercase tracking-widest mb-1"
-                            style="color:#9ca3af;">STO</label>
+                        <label class="block text-[9px] font-bold uppercase tracking-widest mb-1.5"
+                            style="color:#64748b;">STO</label>
                         <select id="trend-filter-sto" onchange="updateTrend()"
-                            class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2 px-3 focus:ring-red-500 focus:border-red-500 transition">
+                            class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2.5 px-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm">
                             <option value="">Semua STO</option>
                             @foreach ($trendFilterOptions['stos'] as $item)
                                 <option value="{{ $item }}">{{ $item }}</option>
@@ -392,10 +470,10 @@
                         </select>
                     </div>
                     <div class="flex-1 min-w-[120px]">
-                        <label class="block text-[9px] font-bold uppercase tracking-widest mb-1"
-                            style="color:#9ca3af;">Mitra</label>
+                        <label class="block text-[9px] font-bold uppercase tracking-widest mb-1.5"
+                            style="color:#64748b;">Mitra</label>
                         <select id="trend-filter-mitra" onchange="updateTrend()"
-                            class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2 px-3 focus:ring-red-500 focus:border-red-500 transition">
+                            class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2.5 px-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition shadow-sm">
                             <option value="">Semua Mitra</option>
                             @foreach ($trendFilterOptions['mitras'] as $item)
                                 <option value="{{ $item }}">{{ $item }}</option>
@@ -403,13 +481,13 @@
                         </select>
                     </div>
                     <button onclick="resetTrendFilters()"
-                        class="px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition hover:bg-red-50"
-                        style="color:#e32b2b; border: 1px solid #fde8e8;">
+                        class="px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 hover:shadow-md"
+                        style="color:#e32b2b; border: 1px solid #fde8e8; background: white;">
                         Reset
                     </button>
                 </div>
 
-                <div class="relative flex-1 w-full min-h-[250px] max-h-[300px]">
+                <div class="relative flex-1 w-full min-h-[280px] max-h-[320px] rounded-2xl overflow-hidden relative z-10" style="background: linear-gradient(180deg, #ffffff, #fafbfc);">
                     <canvas id="deploymentTrendChart"></canvas>
                 </div>
             </div>
@@ -840,7 +918,11 @@
             `).join('');
         }
 
+        let _liveTrackingPending = false;
+
         async function pollLiveTracking() {
+            if (_liveTrackingPending) return;
+            _liveTrackingPending = true;
             try {
                 const res = await fetch('{{ route('admin.api.live-tracking') }}', {
                     headers: {
@@ -861,7 +943,9 @@
                 } else {
                     renderLiveTracking(data);
                 }
-            } catch (e) {}
+            } catch (e) {} finally {
+                _liveTrackingPending = false;
+            }
         }
 
         // =============================================
@@ -887,28 +971,32 @@
                     window._trendChart = null;
                 }
 
+                // Enhanced gradient with multiple stops
                 const gradient = ctxTrend.getContext('2d').createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, 'rgba(227, 43, 43, 0.35)');
-                gradient.addColorStop(1, 'rgba(227, 43, 43, 0.01)');
+                gradient.addColorStop(0, 'rgba(227, 43, 43, 0.4)');
+                gradient.addColorStop(0.5, 'rgba(227, 43, 43, 0.15)');
+                gradient.addColorStop(1, 'rgba(227, 43, 43, 0.02)');
 
                 window._trendChart = new Chart(ctxTrend.getContext('2d'), {
                     type: 'line',
                     data: {
                         labels: @json($trendLabels),
                         datasets: [{
-                            label: 'Volume',
+                            label: 'Volume Deployment',
                             data: @json($trendValues),
                             borderColor: '#e32b2b',
                             borderWidth: 3,
                             backgroundColor: gradient,
                             fill: true,
-                            tension: 0.45,
+                            tension: 0.4,
                             pointBackgroundColor: '#fff',
                             pointBorderColor: '#e32b2b',
-                            pointBorderWidth: 2,
-                            pointRadius: 0,
-                            pointHoverRadius: 6,
-                            pointHoverBorderWidth: 3,
+                            pointBorderWidth: 3,
+                            pointRadius: 4,
+                            pointHoverRadius: 8,
+                            pointHoverBorderWidth: 4,
+                            pointHoverBackgroundColor: '#e32b2b',
+                            pointHoverBorderColor: '#fff',
                         }]
                     },
                     options: {
@@ -918,19 +1006,29 @@
                             intersect: false,
                             mode: 'index'
                         },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        },
                         plugins: {
                             legend: {
                                 display: false
                             },
                             tooltip: {
-                                backgroundColor: '#1a1a2e',
+                                backgroundColor: 'rgba(26, 26, 46, 0.95)',
                                 titleFont: {
-                                    weight: 'bold'
+                                    weight: 'bold',
+                                    size: 13
                                 },
+                                bodyFont: {
+                                    size: 12
+                                },
+                                padding: 12,
                                 cornerRadius: 12,
                                 displayColors: false,
+                                boxPadding: 4,
                                 callbacks: {
-                                    label: (c) => ` Volume: ${c.parsed.y}`
+                                    label: (c) => ` Volume: ${c.parsed.y} order`
                                 }
                             }
                         },
@@ -938,15 +1036,17 @@
                             y: {
                                 beginAtZero: true,
                                 grid: {
-                                    color: 'rgba(243, 244, 246, 1)',
+                                    color: 'rgba(226, 232, 240, 0.6)',
                                     drawBorder: false
                                 },
                                 ticks: {
                                     font: {
-                                        weight: 'bold'
+                                        weight: '600',
+                                        size: 11
                                     },
-                                    color: '#9ca3af',
-                                    stepSize: 1
+                                    color: '#64748b',
+                                    stepSize: 1,
+                                    padding: 10
                                 }
                             },
                             x: {
@@ -955,9 +1055,11 @@
                                 },
                                 ticks: {
                                     font: {
-                                        weight: 'bold'
+                                        weight: '600',
+                                        size: 11
                                     },
-                                    color: '#9ca3af'
+                                    color: '#64748b',
+                                    padding: 10
                                 }
                             }
                         }
@@ -979,9 +1081,9 @@
                 activeBtn.classList.add('shadow-sm');
             }
 
-            // --- LIVE TRACKING POLLING (setiap 15 detik) ---
+            // --- LIVE TRACKING POLLING (setiap 30 detik) ---
             pollLiveTracking(); // langsung fetch saat halaman dimuat
-            window._liveTrackingInterval = setInterval(pollLiveTracking, 15000);
+            window._liveTrackingInterval = setInterval(pollLiveTracking, 30000);
         }
 
         async function updateTrend(filter) {
@@ -1108,3 +1210,26 @@
         });
     </script>
 @endsection
+
+@push('styles')
+<style>
+    .toast-enter {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    .toast-enter-active {
+        transform: translateX(0);
+        opacity: 1;
+        transition: all 0.3s ease-out;
+    }
+    .toast-exit {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    .toast-exit-active {
+        transform: translateX(100%);
+        opacity: 0;
+        transition: all 0.3s ease-in;
+    }
+</style>
+@endpush
