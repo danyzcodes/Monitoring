@@ -66,7 +66,10 @@
                 </div>
             </div>
 
-          
+            {{-- UPDATE PASSWORD (Left Column) --}}
+            <div x-ref="passwordSection" id="password" @scroll.into-view="activeTab = 'password'" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                @include('profile.partials.update-password-form')
+            </div>
 
         </div>
 
@@ -76,11 +79,6 @@
             {{-- UPDATE PROFILE INFO --}}
             <div x-ref="infoSection" @scroll.into-view="activeTab = 'info'" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8">
                 @include('profile.partials.update-profile-information-form')
-            </div>
-
-            {{-- UPDATE PASSWORD --}}
-            <div x-ref="passwordSection" id="password" @scroll.into-view="activeTab = 'password'" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8">
-                @include('profile.partials.update-password-form')
             </div>
 
             {{-- DELETE ACCOUNT --}}
