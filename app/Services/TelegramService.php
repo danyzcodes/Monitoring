@@ -43,9 +43,8 @@ class TelegramService
      */
     public function notifyNewOrder(EbisManualInput $order): void
     {
-        $text  = "📢 <b>[NOTIFIKASI ORDER BARU]</b>\n";
-        $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
-        $text .= "🆕 <b>ORDER BARU DIBUAT</b>\n";
+       
+        $text .= "📢 <b>ORDER BARU DIBUAT</b>\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
         $text .= "📌 <b>Star Click ID:</b> {$order->star_click_id}\n";
         $text .= "👤 <b>Customer:</b> {$order->nama_customer}\n";
@@ -69,9 +68,8 @@ class TelegramService
      */
     public function notifyProgressUpdate(EbisManualInput $order, string $progres, ?string $keterangan = null): void
     {
-        $text  = "� <b>[NOTIFIKASI UPDATE PROGRESS]</b>\n";
-        $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
-        $text .= "� <b>UPDATE PROGRESS DEPLOYMENT</b>\n";
+       
+        $text .= "📢<b>UPDATE PROGRESS DEPLOYMENT</b>\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
         $text .= "📌 <b>Star Click ID:</b> {$order->star_click_id}\n";
         $text .= "👤 <b>Customer:</b> {$order->nama_customer}\n";
@@ -113,7 +111,7 @@ class TelegramService
         $text  = "📢 <b>[LAPORAN HARIAN OTOMATIS]</b>\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
         $text .= "🌅 <b>SEMANGAT PAGI!</b> ☀️\n\n";
-        $text .= "Berikut kami sampaikan Progress Order UNSC JT EBIS PT3 by IHLD – Hari Ini\n";
+        $text .= "Berikut kami sampaikan Progress Order Hari ini\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
         $text .= "📊 <b>FORMAT DATA</b>\n\n";
         $text .= "Kategori Umur | Wilayah Telkom | Nomor NDE JT | Starclick ID/NCX | Nama Pelanggan | Nama Mitra | Status Order | Status Tomps | Status Alokasi Alpro\n\n";
