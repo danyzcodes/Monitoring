@@ -49,7 +49,7 @@
                                                 @endif
                                             </div>
                                             <div class="text-xs text-slate-400">Bergabung
-                                                {{ $user->created_at->diffForHumans() }}</div>
+                                                {{ $user->created_at ? $user->created_at->diffForHumans() : '-' }}</div>
                                         </div>
                                     </div>
                                 </td>
