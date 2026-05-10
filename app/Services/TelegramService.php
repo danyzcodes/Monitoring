@@ -43,8 +43,7 @@ class TelegramService
      */
     public function notifyNewOrder(EbisManualInput $order): void
     {
-       
-        $text .= "📢 <b>ORDER BARU DIBUAT</b>\n";
+        $text  = "📢 <b>ORDER BARU DIBUAT</b>\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
         $text .= "📌 <b>Star Click ID:</b> {$order->star_click_id}\n";
         $text .= "👤 <b>Customer:</b> {$order->nama_customer}\n";
@@ -68,8 +67,7 @@ class TelegramService
      */
     public function notifyProgressUpdate(EbisManualInput $order, string $progres, ?string $keterangan = null): void
     {
-       
-        $text .= "📢<b>UPDATE PROGRESS DEPLOYMENT</b>\n";
+        $text  = "📢 <b>UPDATE PROGRESS DEPLOYMENT</b>\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
         $text .= "📌 <b>Star Click ID:</b> {$order->star_click_id}\n";
         $text .= "👤 <b>Customer:</b> {$order->nama_customer}\n";
