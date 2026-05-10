@@ -82,10 +82,10 @@
     </div>
 
     {{-- FIXED BOTTOM NAV BAR --}}
-    <div class="fixed bottom-0 left-0 z-40 w-full h-16 bg-white border-t border-slate-200"
-         style="padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -4px 20px rgba(0,0,0,0.03);">
+    <div class="fixed bottom-0 left-0 z-40 w-full bg-white/95 backdrop-blur-md"
+         style="padding-bottom: env(safe-area-inset-bottom); border-top: 1px solid rgba(148,163,184,0.15); border-radius: 20px 20px 0 0; box-shadow: 0 -8px 32px rgba(0,0,0,0.08);">
          
-        <div class="h-full max-w-md mx-auto flex items-center justify-around px-2">
+        <div class="h-16 max-w-md mx-auto flex items-center justify-around px-2">
             
             {{-- 1. Update --}}
             @php $isUpdate = request()->routeIs('deployment.update') || request()->routeIs('deployment.edit'); @endphp

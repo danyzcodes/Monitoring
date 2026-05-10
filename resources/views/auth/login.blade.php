@@ -127,13 +127,7 @@
         <div class="w-full lg:w-1/2 flex items-center justify-center p-5 lg:p-10">
             <div class="glass w-full max-w-[400px] rounded-3xl p-8 lg:p-9">
 
-                {{-- Mobile Logo --}}
-                <div class="lg:hidden flex items-center gap-2.5 mb-7">
-                    <div class="w-9 h-9 rounded-xl bg-white shadow border border-slate-100 flex items-center justify-center p-1">
-                        <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom" class="w-full" fetchpriority="high" decoding="async">
-                    </div>
-                    <span class="text-slate-800 font-bold text-sm">Monitoring Proyek</span>
-                </div>
+                {{-- Mobile Logo: hidden on mobile --}}
 
                 {{-- Header --}}
                 <div class="mb-7">
