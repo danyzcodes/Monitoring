@@ -185,7 +185,7 @@
             body { padding:0; align-items:stretch; background:#fff; }
             .auth-card {
                 flex-direction:column;
-                border-radius:0; max-width:100%; min-height:100vh;
+                border-radius:0; max-width:100%; min-height:auto;
                 box-shadow:none; animation:none; opacity:1;
             }
             .info-panel { width:100%; padding:1.75rem 1.25rem 3.5rem; min-height:auto; animation:none; opacity:1; border-radius:0; }

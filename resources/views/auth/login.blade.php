@@ -322,7 +322,7 @@
                 flex-direction: column-reverse;
                 border-radius: 0;
                 max-width: 100%;
-                min-height: 100vh;
+                min-height: auto;
                 box-shadow: none;
                 animation: none;
                 opacity: 1;
