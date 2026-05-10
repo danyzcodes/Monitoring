@@ -182,14 +182,14 @@
         .grid-2 { display:grid;grid-template-columns:1fr 1fr;gap:.75rem; }
 
         @media (max-width:768px) {
-            body { padding:0; align-items:flex-start; background:#fff; }
+            body { padding:0; align-items:stretch; background:#fff; }
             .auth-card {
                 flex-direction:column;
                 border-radius:0; max-width:100%; min-height:100vh;
                 box-shadow:none; animation:none; opacity:1;
             }
-            .info-panel { width:100%; padding:1.75rem 1.25rem; min-height:auto; animation:none; opacity:1; }
-            .form-panel { padding:2rem 1.25rem 2.5rem; max-height:none; overflow-y:visible; animation:none; opacity:1; }
+            .info-panel { width:100%; padding:1.75rem 1.25rem 3.5rem; min-height:auto; animation:none; opacity:1; border-radius:0; }
+            .form-panel { padding:2rem 1.25rem 2.5rem; max-height:none; overflow-y:visible; animation:none; opacity:1; flex:1; justify-content:flex-start; border-radius:28px 28px 0 0; margin-top:-28px; position:relative; z-index:1; }
             .grid-2 { grid-template-columns:1fr; }
             .info-title { font-size:1.25rem; }
             .form-title { font-size:1.5rem; }
@@ -206,22 +206,18 @@
 
         <!-- ══ LEFT: Info Panel ══ -->
         <div class="info-panel">
-            <div class="info-logo">
-                <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png"
-                     alt="Telkom" fetchpriority="high" decoding="async">
-            </div>
-            <h2 class="info-title">Sudah Punya<br>Akun?</h2>
+           
+            <h2 class="info-title">Buat Akun Sekarang</h2>
             <p class="info-desc">
-                Masuk dan terus pantau progres deployment secara real-time bersama tim Anda.
+                Daftarkan diri Anda untuk bergabung
             </p>
-            <a href="{{ route('login') }}" class="info-btn">Masuk Sekarang</a>
+            
         </div>
 
         <!-- ══ RIGHT: Form Panel ══ -->
         <div class="form-panel">
 
-            <div class="form-title">Buat Akun Baru </div>
-            <p class="form-subtitle">Isi data di bawah untuk mendaftar ke sistem</p>
+        
 
             @if ($errors->any())
                 <div class="error-box">
@@ -343,7 +339,7 @@
             <hr class="divider">
             <p class="form-footer">
                 Sudah punya akun?
-                <a href="{{ route('login') }}">Masuk →</a>
+                <a href="{{ route('login') }}">Masuk </a>
             </p>
         </div>
     </div>

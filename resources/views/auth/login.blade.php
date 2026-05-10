@@ -315,7 +315,7 @@
         @media (max-width: 768px) {
             body {
                 padding: 0;
-                align-items: flex-start;
+                align-items: stretch;
                 background: #fff;
             }
             .auth-card {
@@ -327,18 +327,24 @@
                 animation: none;
                 opacity: 1;
             }
+            .info-panel {
+                width: 100%;
+                padding: 2rem 1.25rem 3.5rem;
+                min-height: auto;
+                animation: none;
+                opacity: 1;
+                border-radius: 0;
+            }
             .form-panel {
                 padding: 2rem 1.25rem 2.5rem;
                 flex: 1;
                 animation: none;
                 opacity: 1;
-            }
-            .info-panel {
-                width: 100%;
-                padding: 2rem 1.25rem;
-                min-height: auto;
-                animation: none;
-                opacity: 1;
+                justify-content: flex-start;
+                border-radius: 28px 28px 0 0;
+                margin-top: -28px;
+                position: relative;
+                z-index: 1;
             }
             .info-title { font-size: 1.25rem; }
             .info-logo { width: 56px; height: 56px; margin-bottom: 1.25rem; }
@@ -361,8 +367,7 @@
         <!-- ══ LEFT: Form Panel ══ -->
         <div class="form-panel">
 
-            <div class="form-title">Selamat Datang </div>
-            <p class="form-subtitle">Masuk untuk mengakses dashboard monitoring</p>
+            
 
             {{-- Error Alert --}}
             @if ($errors->any())
@@ -432,21 +437,18 @@
             <hr class="divider">
             <p class="form-footer">
                 Belum punya akun?
-                <a href="{{ route('register') }}">Daftar Sekarang →</a>
+                <a href="{{ route('register') }}">Daftar Sekarang </a>
             </p>
         </div>
 
         <!-- ══ RIGHT: Info Panel ══ -->
         <div class="info-panel">
-            <div class="info-logo">
-                <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png"
-                     alt="Telkom" fetchpriority="high" decoding="async">
-            </div>
+            
             <h2 class="info-title">Halo,<br>Selamat Datang!</h2>
             <p class="info-desc">
-                Daftarkan diri Anda dengan detail personal untuk mengakses semua fitur sistem monitoring proyek.
+               Masuk untuk mengakses dashboard monitoring
             </p>
-            <a href="{{ route('register') }}" class="info-btn">Daftar Sekarang</a>
+           
         </div>
 
     </div>
