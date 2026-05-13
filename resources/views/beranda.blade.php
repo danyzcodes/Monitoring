@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beranda — Unit Optima · PT Telkom Indonesia</title>
+    <title>Beranda</title>
     <meta name="description" content="Halaman resmi Unit Optima PT Telkom Indonesia. Monitoring proyek deployment, perencanaan jaringan, dan pengelolaan data terpusat.">
     <meta name="turbo-visit-control" content="reload">
 
