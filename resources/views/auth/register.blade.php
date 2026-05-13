@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register — Monitoring Proyek</title>
+    <meta name="turbo-cache-control" content="no-cache">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,13 +13,14 @@
     <style>
         * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
 
-        body {
+        .auth-body {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
-            background: #ffffff;
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('{{ asset("images/hero-banner.png") }}') no-repeat center center fixed;
+            background-size: cover;
         }
 
         @keyframes fadeInScale {
@@ -39,6 +41,7 @@
             position: relative;
             display: flex; width: 100%; max-width: 960px;
             border-radius: 28px; overflow: hidden;
+            background: #ffffff;
             box-shadow: 0 20px 60px rgba(0,0,0,.10), 0 4px 20px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.06);
             animation: fadeInScale 0.6s cubic-bezier(.22,1,.36,1) forwards;
         }
@@ -51,7 +54,6 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: center; text-align: center;
             position: relative; overflow: hidden;
-            animation: slideInLeft 0.7s ease-out 0.1s forwards; opacity: 0;
         }
         .info-panel::before {
             content:''; position:absolute;
@@ -100,7 +102,6 @@
             padding:2.5rem 2.5rem;
             display:flex; flex-direction:column; justify-content:center;
             overflow-y:auto; max-height:100vh;
-            animation: slideInRight 0.7s ease-out 0.2s forwards; opacity:0;
         }
         /* hide scrollbar */
         .form-panel::-webkit-scrollbar { display:none; }
@@ -182,7 +183,7 @@
         .grid-2 { display:grid;grid-template-columns:1fr 1fr;gap:.75rem; }
 
         @media (max-width:768px) {
-            body { padding:0; align-items:stretch; background:#fff; }
+            .auth-body { padding:0; align-items:stretch; background:#fff; }
             .auth-card {
                 flex-direction:column;
                 border-radius:0; max-width:100%; min-height:auto;
@@ -200,14 +201,14 @@
         }
     </style>
 </head>
-<body data-turbo="false">
+<body class="auth-body">
 
     <div class="auth-card">
 
         <!-- ══ LEFT: Info Panel ══ -->
         <div class="info-panel">
            
-            <h2 class="info-title">Buat Akun Sekarang</h2>
+            <h2 class="info-title">Daftar<br>Sekarang!</h2>
             <p class="info-desc">
                 Daftarkan diri Anda untuk bergabung
             </p>
@@ -330,7 +331,6 @@
                         <path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                     <span id="regText">Daftar Sekarang</span>
-                    <svg id="regArrow" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                     </svg>
                 </button>

@@ -926,140 +926,97 @@
         .contact .section-title { color: white; }
         .contact .section-subtitle { color: var(--clr-text-muted); }
 
-        .contact-cards {
+        .contact-form-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 3rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .contact-form .form-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
         }
 
-        .contact-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 2.25rem;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .contact-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #DC2626, #EF4444);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .contact-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(220, 38, 38, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .contact-card:hover {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .contact-card:hover::before {
-            opacity: 1;
-        }
-
-        .contact-card:hover::after {
-            opacity: 1;
-        }
-
-        .contact-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #DC2626, #B91C1C);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.25rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: white;
-            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
-            position: relative;
-            z-index: 1;
-        }
-
-        .contact-name {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 0.35rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .contact-role {
-            font-size: 0.82rem;
-            color: var(--clr-text-muted);
-            margin-bottom: 1.75rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .contact-links {
+        .contact-form .form-group {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
         }
 
-        .contact-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.7rem 1rem;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+        .contact-form .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #E2E8F0;
+            letter-spacing: 0.05em;
+        }
+
+        .contact-input, .contact-textarea {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            text-decoration: none;
+            color: white;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
+            outline: none;
+            font-family: inherit;
         }
 
-        .contact-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.15);
+        .contact-input::placeholder, .contact-textarea::placeholder {
+            color: rgba(255,255,255,0.3);
         }
 
-        .contact-link-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+        .contact-input:focus, .contact-textarea:focus {
+            border-color: #EF4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .contact-textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
         }
 
-        .contact-link-icon.whatsapp { background: rgba(37, 211, 102, 0.12); color: #25D366; }
-        .contact-link-icon.email { background: rgba(59, 130, 246, 0.12); color: #3B82F6; }
-        .contact-link-icon.phone { background: rgba(168, 85, 247, 0.12); color: #A855F7; }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+        }
 
-        .contact-link-text {
-            font-size: 0.82rem;
-            color: rgba(255, 255, 255, 0.7);
-            text-align: left;
+        @media (max-width: 768px) {
+            .contact-form .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .contact-form-wrapper {
+                padding: 2rem 1.5rem;
+            }
         }
 
         /* ========================================
@@ -1149,6 +1106,81 @@
             transform: translateY(-3px);
             box-shadow: 0 12px 30px rgba(220, 38, 38, 0.5);
         }
+
+        /* ========================================
+           TOAST NOTIFICATION
+        ======================================== */
+        .toast-notification {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .toast-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .toast-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(34, 197, 94, 0.15);
+            color: #22C55E;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toast-content h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.15rem;
+            margin-top: 0;
+        }
+
+        .toast-content p {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.7);
+            margin: 0;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: 0.5rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .toast-close:hover {
+            color: white;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* ========================================
            MOBILE NAV OVERLAY
@@ -1353,11 +1385,6 @@
         <div class="hero-content">
             <div class="hero-text" data-aos="fade-up">
 
-                <div class="hero-badge" data-aos="fade-up">
-                    <div class="hero-badge-dot"></div>
-                    <span>UNIT OPTIMA TELKOM</span>
-                </div>
-
                 <h1 data-aos="fade-up" data-aos-delay="100">Sistem <span>Monitoring</span> Proyek Deployment</h1>
 
                 <p class="hero-desc" data-aos="fade-up" data-aos-delay="200">
@@ -1376,29 +1403,29 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Pelajari
+                        Detail
                     </a>
                 </div>
 
                 {{-- Feature Highlights --}}
                 <div style="margin-top: 3rem; display: flex; flex-wrap: wrap; gap: 1.5rem 2rem; justify-content: center; color: var(--clr-text-muted); font-size: 0.95rem; font-weight: 500;" data-aos="fade-up" data-aos-delay="400">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(34, 197, 94, 0.15); color: #22C55E;">
+                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(220, 38, 38, 0.15); color: #ef4444;">
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                         </span>
-                        Pemantauan Real-time
+                        Manajemen Deployment
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(34, 197, 94, 0.15); color: #22C55E;">
+                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(220, 38, 38, 0.15); color: #ef4444;">
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                         </span>
-                        Rekap Data Otomatis
+                        Laporan Real-time
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(34, 197, 94, 0.15); color: #22C55E;">
+                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(220, 38, 38, 0.15); color: #ef4444;">
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                         </span>
-                        Transparansi Mitra
+                        Akses Multi-Perangkat
                     </div>
                 </div>
             </div>
@@ -1483,11 +1510,7 @@
             <div class="gallery-grid stagger-children">
                 <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-deployment.png') }}" alt="Deployment Lapangan" loading="lazy">
-                    <div class="gallery-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                        </svg>
-                    </div>
+
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Instalasi Kabel Optik</div>
                         <div class="gallery-card-desc">STO Kebon Jeruk</div>
@@ -1495,11 +1518,7 @@
                 </div>
                 <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-completed.png') }}" alt="Penyeleseaian Proyek" loading="lazy">
-                    <div class="gallery-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
+
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Selesai Fisik ODP</div>
                         <div class="gallery-card-desc">Area Cengkareng</div>
@@ -1507,11 +1526,7 @@
                 </div>
                 <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-server.png') }}" alt="Ruang Server" loading="lazy">
-                    <div class="gallery-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                        </svg>
-                    </div>
+
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Integrasi ODC Server</div>
                         <div class="gallery-card-desc">STO Palmerah</div>
@@ -1519,11 +1534,7 @@
                 </div>
                 <div class="gallery-card" data-aos="zoom-in">
                     <img src="{{ asset('images/gallery-survey.png') }}" alt="Survey Lapangan" loading="lazy">
-                    <div class="gallery-card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                        </svg>
-                    </div>
+
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Survey Pra-Deployment</div>
                         <div class="gallery-card-desc">Titik Kalideres</div>
@@ -1593,57 +1604,30 @@
                 </p>
             </div>
 
-            <div class="contact-cards stagger-children">
-                <div class="contact-card" data-aos="fade-up">
-                    <div class="contact-avatar">AS</div>
-                    <div class="contact-name">Agus Setiawan</div>
-                    <div class="contact-role">Manager Unit Optima</div>
-                    <div class="contact-links">
-                        
-                        <a href="mailto:agus.setiawan@telkom.co.id" class="contact-link">
-                            <div class="contact-link-icon email">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                </svg>
-                            </div>
-                            <span class="contact-link-text">agus.setiawan@telkom.co.id</span>
-                        </a>
+            <div class="contact-form-wrapper" data-aos="fade-up">
+                <form action="#" method="POST" class="contact-form" onsubmit="handleContactSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" class="contact-input" placeholder="Masukkan nama Anda" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="contact-input" placeholder="nama@gmail.com" required>
+                        </div>
                     </div>
-                </div>
 
-                <div class="contact-card" data-aos="fade-up">
-                    <div class="contact-avatar">RH</div>
-                    <div class="contact-name">Rizki Hidayat</div>
-                    <div class="contact-role">Koordinator Lapangan</div>
-                    <div class="contact-links">
-                        
-                        <a href="mailto:rizki.hidayat@telkom.co.id" class="contact-link">
-                            <div class="contact-link-icon email">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                </svg>
-                            </div>
-                            <span class="contact-link-text">rizki.hidayat@telkom.co.id</span>
-                        </a>
+                    <div class="form-group">
+                        <label class="form-label">Pesan</label>
+                        <textarea class="contact-textarea" placeholder="Tuliskan pesan atau pertanyaan Anda di sini..." required></textarea>
                     </div>
-                </div>
-
-                <div class="contact-card" data-aos="fade-up">
-                    <div class="contact-avatar">DW</div>
-                    <div class="contact-name">Dewi Wulandari</div>
-                    <div class="contact-role">Admin & Support</div>
-                    <div class="contact-links">
-                        
-                        <a href="mailto:dewi.wulandari@telkom.co.id" class="contact-link">
-                            <div class="contact-link-icon email">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                </svg>
-                            </div>
-                            <span class="contact-link-text">dewi.wulandari@telkom.co.id</span>
-                        </a>
-                    </div>
-                </div>
+                    <button type="submit" class="btn-submit">
+                        Kirim Pesan
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                </form>
             </div>
         </div>
     </section>
@@ -1664,6 +1648,24 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
         </svg>
     </button>
+
+    <!-- ============ TOAST NOTIFICATION ============ -->
+    <div id="toastNotification" class="toast-notification">
+        <div class="toast-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        <div class="toast-content">
+            <h4>Pesan Terkirim</h4>
+            <p>Terima kasih! Pesan Anda telah kami terima.</p>
+        </div>
+        <button class="toast-close" onclick="closeToast()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
 
     <!-- AOS JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -1776,6 +1778,38 @@
         // Initialize on normal load and Turbo load
         document.addEventListener('DOMContentLoaded', initBeranda);
         document.addEventListener('turbo:load', initBeranda);
+
+        // ——— CONTACT FORM HANDLER ———
+        window.handleContactSubmit = function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const btn = form.querySelector('.btn-submit');
+            const originalText = btn.innerHTML;
+            
+            // Loading state
+            btn.innerHTML = `<svg style="animation: spin 1s linear infinite" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg> Mengirim...`;
+            btn.disabled = true;
+
+            // Simulate network request
+            setTimeout(() => {
+                form.reset();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                
+                // Show toast
+                const toast = document.getElementById('toastNotification');
+                toast.classList.add('show');
+                
+                // Auto hide
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 4000);
+            }, 1000);
+        };
+
+        window.closeToast = function() {
+            document.getElementById('toastNotification').classList.remove('show');
+        };
     </script>
 </body>
 </html>

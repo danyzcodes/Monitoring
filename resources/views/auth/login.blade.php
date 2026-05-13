@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login — Monitoring Proyek</title>
+    <meta name="turbo-cache-control" content="no-cache">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,13 +15,14 @@
     <style>
         * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
 
-        body {
+        .auth-body {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #ffffff;
             padding: 1.5rem;
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('{{ asset("images/hero-banner.png") }}') no-repeat center center fixed;
+            background-size: cover;
         }
 
         @keyframes fadeInScale {
@@ -45,6 +47,8 @@
             min-height: 520px;
             border-radius: 28px;
             overflow: hidden;
+            background: #ffffff;
+            flex-direction: row-reverse;
             box-shadow:
                 0 20px 60px rgba(0, 0, 0, 0.10),
                 0 4px 20px rgba(0, 0, 0, 0.06),
@@ -60,8 +64,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            animation: slideInLeft 0.6s ease-out 0.1s forwards;
-            opacity: 0;
         }
 
         /* ── Right: Info panel ── */
@@ -76,8 +78,6 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            animation: slideInRight 0.6s ease-out 0.15s forwards;
-            opacity: 0;
         }
         .info-panel::before {
             content: '';
@@ -313,13 +313,13 @@
 
         /* ── Mobile: stack vertically ── */
         @media (max-width: 768px) {
-            body {
+            .auth-body {
                 padding: 0;
                 align-items: stretch;
                 background: #fff;
             }
             .auth-card {
-                flex-direction: column-reverse;
+                flex-direction: column;
                 border-radius: 0;
                 max-width: 100%;
                 min-height: auto;
@@ -359,16 +359,22 @@
     </style>
 </head>
 
-<body data-turbo="false">
+<body class="auth-body">
 
     <!-- Main Card -->
     <div class="auth-card">
 
-        <!-- ══ LEFT: Form Panel ══ -->
+        <!-- ══ LEFT: Info Panel ══ -->
+        <div class="info-panel">
+            <h2 class="info-title">Halo,<br>Selamat Datang!</h2>
+            <p class="info-desc">
+               Masuk untuk mengakses dashboard monitoring
+            </p>
+        </div>
+
+        <!-- ══ RIGHT: Form Panel ══ -->
         <div class="form-panel">
-
             
-
             {{-- Error Alert --}}
             @if ($errors->any())
                 <div class="error-box">
@@ -428,7 +434,6 @@
                         <path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                     <span id="btnText">Masuk</span>
-                    <svg id="btnArrow" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                     </svg>
                 </button>
@@ -439,16 +444,6 @@
                 Belum punya akun?
                 <a href="{{ route('register') }}">Daftar Sekarang </a>
             </p>
-        </div>
-
-        <!-- ══ RIGHT: Info Panel ══ -->
-        <div class="info-panel">
-            
-            <h2 class="info-title">Halo,<br>Selamat Datang!</h2>
-            <p class="info-desc">
-               Masuk untuk mengakses dashboard monitoring
-            </p>
-           
         </div>
 
     </div>
