@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard') — Monitoring Proyek</title>
+    <title>@yield('title', 'Dashboard') </title>
 
     <!-- Nonaktifkan prefetch otomatis Turbo (penyebab bounce-back bug) -->
     <meta name="turbo-prefetch" content="false">
