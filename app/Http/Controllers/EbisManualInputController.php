@@ -406,12 +406,11 @@ class EbisManualInputController extends Controller
         foreach ($request->allFiles() as $key => $file) {
             if ($file->isValid()) {
                 $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-
                 $path = $file->storeAs('deployment/' . $request->progres, $filename, 'public');
-
                 $data[$key] = $path;
             }
         }
+
 
         $data = array_filter($data, function ($value) {
             return $value !== null && $value !== '';

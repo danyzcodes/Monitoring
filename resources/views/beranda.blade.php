@@ -1673,7 +1673,14 @@
     <!-- ============ SCRIPTS ============ -->
     <script>
                 // ——— SCROLL ANIMATIONS (AOS) & JS INIT ———
+        // Track scroll handler so we can remove it on Turbo navigation away
+        let _berandaScrollHandler = null;
+
         function initBeranda() {
+            // ——— GUARD: hanya jalankan di halaman beranda ———
+            const nav = document.getElementById('berandaNav');
+            if (!nav) return;
+
             AOS.init({
                 duration: 800,
                 once: true,
@@ -1682,25 +1689,32 @@
             setTimeout(() => AOS.refresh(), 100);
 
             // ——— NAVBAR SCROLL EFFECT ———
-            const nav = document.getElementById('berandaNav');
             const scrollTopBtn = document.getElementById('scrollTopBtn');
 
-            window.addEventListener('scroll', function() {
+            // Remove previous scroll listener if any (Turbo re-init)
+            if (_berandaScrollHandler) {
+                window.removeEventListener('scroll', _berandaScrollHandler);
+            }
+
+            _berandaScrollHandler = function() {
                 if (window.scrollY > 80) {
                     nav.classList.add('scrolled');
                 } else {
                     nav.classList.remove('scrolled');
                 }
 
-                if (window.scrollY > 500) {
-                    scrollTopBtn.classList.add('visible');
-                } else {
-                    scrollTopBtn.classList.remove('visible');
+                if (scrollTopBtn) {
+                    if (window.scrollY > 500) {
+                        scrollTopBtn.classList.add('visible');
+                    } else {
+                        scrollTopBtn.classList.remove('visible');
+                    }
                 }
 
                 // Update active nav link
                 updateActiveNav();
-            });
+            };
+            window.addEventListener('scroll', _berandaScrollHandler);
 
             // ——— SMOOTH SCROLL ———
             document.querySelectorAll('a[href^="#"]').forEach(link => {
@@ -1714,9 +1728,11 @@
             });
 
             // ——— SCROLL TO TOP ———
-            scrollTopBtn.addEventListener('click', function() {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+            if (scrollTopBtn) {
+                scrollTopBtn.addEventListener('click', function() {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
 
             // ——— MOBILE NAV ———
             const hamburger = document.getElementById('navHamburger');
@@ -1724,33 +1740,37 @@
             const mobileNav = document.getElementById('mobileNav');
             const mobileClose = document.getElementById('mobileClose');
 
-            hamburger.addEventListener('click', function() {
-                mobileOverlay.classList.add('open');
-                mobileNav.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            });
+            if (hamburger && mobileOverlay && mobileNav && mobileClose) {
+                hamburger.addEventListener('click', function() {
+                    mobileOverlay.classList.add('open');
+                    mobileNav.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
 
-            function closeMobileNavFn() {
-                mobileOverlay.classList.remove('open');
-                mobileNav.classList.remove('open');
-                document.body.style.overflow = '';
+                function closeMobileNavFn() {
+                    mobileOverlay.classList.remove('open');
+                    mobileNav.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+
+                mobileClose.addEventListener('click', closeMobileNavFn);
+                mobileOverlay.addEventListener('click', closeMobileNavFn);
+                window.closeMobileNav = closeMobileNavFn;
             }
-
-            mobileClose.addEventListener('click', closeMobileNavFn);
-            mobileOverlay.addEventListener('click', closeMobileNavFn);
-            window.closeMobileNav = closeMobileNavFn;
 
             // ——— HERO PARTICLES ———
             const particlesContainer = document.getElementById('heroParticles');
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (10 + Math.random() * 20) + 's';
-                particle.style.width = (2 + Math.random() * 3) + 'px';
-                particle.style.height = particle.style.width;
-                particlesContainer.appendChild(particle);
+            if (particlesContainer && particlesContainer.children.length === 0) {
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 15 + 's';
+                    particle.style.animationDuration = (10 + Math.random() * 20) + 's';
+                    particle.style.width = (2 + Math.random() * 3) + 'px';
+                    particle.style.height = particle.style.width;
+                    particlesContainer.appendChild(particle);
+                }
             }
 
             // ——— ACTIVE NAV LINK ———
