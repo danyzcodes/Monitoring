@@ -1,0 +1,23 @@
+{
+    "name": "KPRO",
+    "short_name": "KPRO",
+    "start_url": "/",
+    "background_color": "#ffffff",
+    "theme_color": "#dc2626",
+    "display": "standalone",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

@@ -7,6 +7,9 @@
     <meta name="turbo-cache-control" content="no-cache">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
+    <!-- PWA Settings -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#ffffff">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -460,6 +463,21 @@
             spinner.classList.remove('hidden');
             text.textContent = 'Masuk...';
         });
+    </script>
+
+    {{-- Service Worker Registration for PWA --}}
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
     </script>
 </body>
 </html>

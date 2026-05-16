@@ -11,6 +11,9 @@
     <!-- Turbo: jangan cache halaman agar redirect tidak menyebabkan bounce-back -->
     <meta name="turbo-cache-control" content="no-cache">
 
+    <!-- PWA Settings -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#dc2626">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
     <!-- Scripts & Styles -->
@@ -601,6 +604,20 @@
         });
     </script>
 
+    {{-- Service Worker Registration for PWA --}}
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
 </body>
 
 </html>

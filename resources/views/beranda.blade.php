@@ -7,6 +7,9 @@
     <meta name="description" content="Halaman resmi Unit Optima PT Telkom Indonesia. Monitoring proyek deployment, perencanaan jaringan, dan pengelolaan data terpusat.">
     <meta name="turbo-visit-control" content="reload">
 
+    <!-- PWA Settings -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#0F172A">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
     <!-- AOS CSS -->
@@ -1830,6 +1833,21 @@
         window.closeToast = function() {
             document.getElementById('toastNotification').classList.remove('show');
         };
+    </script>
+
+    {{-- Service Worker Registration for PWA --}}
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
