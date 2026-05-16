@@ -1375,7 +1375,7 @@
     <!-- ============ HERO SECTION ============ -->
     <section class="hero" id="hero">
         <div class="hero-bg">
-            <img src="{{ asset('images/hero-banner.png') }}" alt="Hero Banner Unit Optima" loading="eager">
+            <img src="{{ asset('images/hero-banner.jpg') }}" alt="Hero Banner Unit Optima" loading="eager">
         </div>
         <div class="hero-overlay"></div>
 
@@ -1438,7 +1438,7 @@
             <div class="about-grid">
                 <div class="about-image-wrapper" data-aos="fade-right">
                     <div class="about-image">
-                        <img src="{{ asset('images/about-team.png') }}" alt="Tim Unit Optima" loading="lazy">
+                        <img src="{{ asset('images/about-team.jpg') }}" alt="Tim Unit Optima" loading="lazy">
                     </div>
                     <div class="about-image-accent"></div>
                 </div>
@@ -1509,7 +1509,7 @@
 
             <div class="gallery-grid stagger-children">
                 <div class="gallery-card" data-aos="zoom-in">
-                    <img src="{{ asset('images/gallery-deployment.png') }}" alt="Deployment Lapangan" loading="lazy">
+                    <img src="{{ asset('images/gallery-deployment.jpg') }}" alt="Deployment Lapangan" loading="lazy">
 
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Instalasi Kabel Optik</div>
@@ -1517,7 +1517,7 @@
                     </div>
                 </div>
                 <div class="gallery-card" data-aos="zoom-in">
-                    <img src="{{ asset('images/gallery-completed.png') }}" alt="Penyeleseaian Proyek" loading="lazy">
+                    <img src="{{ asset('images/gallery-completed.jpg') }}" alt="Penyeleseaian Proyek" loading="lazy">
 
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Selesai Fisik ODP</div>
@@ -1525,7 +1525,7 @@
                     </div>
                 </div>
                 <div class="gallery-card" data-aos="zoom-in">
-                    <img src="{{ asset('images/gallery-server.png') }}" alt="Ruang Server" loading="lazy">
+                    <img src="{{ asset('images/gallery-server.jpg') }}" alt="Ruang Server" loading="lazy">
 
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Integrasi ODC Server</div>
@@ -1533,7 +1533,7 @@
                     </div>
                 </div>
                 <div class="gallery-card" data-aos="zoom-in">
-                    <img src="{{ asset('images/gallery-survey.png') }}" alt="Survey Lapangan" loading="lazy">
+                    <img src="{{ asset('images/gallery-survey.jpg') }}" alt="Survey Lapangan" loading="lazy">
 
                     <div class="gallery-card-overlay">
                         <div class="gallery-card-title">Survey Pra-Deployment</div>

@@ -19,7 +19,7 @@
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
-            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('{{ asset("images/hero-banner.png") }}') no-repeat center center fixed;
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('{{ asset("images/hero-banner.jpg") }}') no-repeat center center fixed;
             background-size: cover;
         }
 

@@ -29,13 +29,6 @@
         {{-- Grid Layout Inside Shelf (3 Columns) --}}
         <div class="grid grid-cols-3 gap-y-6 gap-x-2 pb-2 pt-4 px-1">
             
-            {{-- OLO (All) --}}
-            <a href="{{ route('deployment.olo') }}" class="flex flex-col items-center gap-2 group transition active:scale-95">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-orange-600 shadow-sm border border-orange-200/50 group-hover:bg-gradient-to-br group-hover:from-orange-100 group-hover:to-orange-200">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 008.716-6.747M12 21a9 9 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>
-                </div>
-                <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">Dashboard<br>OLO</span>
-            </a>
 
             {{-- Upload Data (All) --}}
             <a href="{{ route('deployment.upload') }}" class="flex flex-col items-center gap-2 group transition active:scale-95">
