@@ -584,13 +584,20 @@
             }
         });
 
-        // Fix: setelah form submit dengan Turbo, force full reload jika ada redirect
-        document.addEventListener('turbo:visit', function(event) {
-            const url = event.detail.url;
-            // Jika navigasi ke halaman yang sama (tanda bounce-back), force reload
-            if (url === window.location.href) {
-                event.preventDefault();
-                window.location.reload();
+        // Simpan posisi scroll sebelum submit atau navigasi
+        let lastScrollY = 0;
+        let isSamePageFormSubmit = false;
+
+        document.addEventListener('submit', function() {
+            lastScrollY = window.scrollY;
+            isSamePageFormSubmit = true;
+        });
+
+        // Pertahankan posisi scroll jika setelah form submit kembali ke halaman yang sama
+        document.addEventListener('turbo:render', function() {
+            if (isSamePageFormSubmit) {
+                window.scrollTo(0, lastScrollY);
+                isSamePageFormSubmit = false;
             }
         });
     </script>

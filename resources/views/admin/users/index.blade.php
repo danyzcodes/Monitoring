@@ -124,7 +124,7 @@
                 @if (!$isSelfAdmin)
                     <form action="/admin/users/{{ $user->id }}/role" method="POST">
                         @csrf
-                        <select name="role" onchange="this.form.submit()"
+                        <select name="role" onchange="this.form.requestSubmit()"
                             class="text-xs rounded-lg border-slate-200 py-1.5 pl-2 pr-6 focus:ring-2 focus:ring-red-100 focus:border-red-400 transition cursor-pointer hover:bg-slate-50">
                             <option value="waiting" @selected($user->role == 'waiting')>Waiting</option>
                             <option value="optima" @selected($user->role == 'optima')>User Optima</option>

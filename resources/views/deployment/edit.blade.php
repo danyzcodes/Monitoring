@@ -30,7 +30,7 @@
     </div>
 </div>
 
-    <form action="{{ route('deployment.update.process', $data->id) }}" method="POST" enctype="multipart/form-data" data-turbo="false"
+    <form action="{{ route('deployment.update.process', $data->id) }}" method="POST" enctype="multipart/form-data"
           x-data="editForm()" x-init="initForm()">
         @csrf
         @method('PUT')
