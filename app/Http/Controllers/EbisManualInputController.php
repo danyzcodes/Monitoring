@@ -265,9 +265,9 @@ class EbisManualInputController extends Controller
 
             'nama_customers' => EbisManualInput::select('nama_customer')->whereNotNull('nama_customer')->distinct()->pluck('nama_customer'),
 
-            'stos' => EbisManualInput::select('sto')->whereNotNull('sto')->distinct()->pluck('sto'),
+            'stos' => \App\Models\MasterSto::orderBy('nama_sto')->pluck('nama_sto'),
 
-            'datels' => EbisManualInput::select('datel')->whereNotNull('datel')->where('datel', '!=', '')->distinct()->orderBy('datel')->pluck('datel'),
+            'datels' => \App\Models\MasterDatel::orderBy('nama_datel')->pluck('nama_datel'),
 
             'progresses' => EbisManualInput::select('progres')->whereNotNull('progres')->where('progres', '!=', '')->distinct()->orderBy('progres')->pluck('progres'),
 

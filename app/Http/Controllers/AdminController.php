@@ -224,9 +224,9 @@ class AdminController extends Controller
 
         // --- FILTER OPTIONS FOR TREND CHART ---
         $trendFilterOptions = [
-            'datels' => EbisManualInput::whereNotNull('datel')->where('datel','!=','')->distinct()->orderBy('datel')->pluck('datel'),
-            'stos'   => EbisManualInput::whereNotNull('sto')->where('sto','!=','')->distinct()->orderBy('sto')->pluck('sto'),
-            'mitras' => EbisManualInput::whereNotNull('nama_mitra')->where('nama_mitra','!=','')->distinct()->orderBy('nama_mitra')->pluck('nama_mitra'),
+            'datels' => \App\Models\MasterDatel::orderBy('nama_datel')->pluck('nama_datel'),
+            'stos'   => \App\Models\MasterSto::orderBy('nama_sto')->pluck('nama_sto'),
+            'mitras' => \App\Models\MasterMitra::orderBy('nama_mitra')->pluck('nama_mitra'),
         ];
 
         return view('admin.dashboard', compact(
@@ -617,9 +617,9 @@ class AdminController extends Controller
         };
 
         // --- Filter option lists (unfiltered, for dropdowns) ---
-        $stoList   = EbisManualInput::whereNotNull('sto')->where('sto', '!=', '')->distinct()->orderBy('sto')->pluck('sto');
-        $datelList = EbisManualInput::whereNotNull('datel')->where('datel', '!=', '')->distinct()->orderBy('datel')->pluck('datel');
-        $mitraList = EbisManualInput::whereNotNull('nama_mitra')->where('nama_mitra', '!=', '')->distinct()->orderBy('nama_mitra')->pluck('nama_mitra');
+        $stoList   = \App\Models\MasterSto::orderBy('nama_sto')->pluck('nama_sto');
+        $datelList = \App\Models\MasterDatel::orderBy('nama_datel')->pluck('nama_datel');
+        $mitraList = \App\Models\MasterMitra::orderBy('nama_mitra')->pluck('nama_mitra');
 
         // Define the ordered progress stages
         $stages = [
@@ -629,11 +629,9 @@ class AdminController extends Controller
         ];
 
         // Count deployments per Datel for stacked calculation (filtered)
-        $datels = $baseQuery()
-            ->whereNotNull('datel')
-            ->where('datel', '!=', '')
-            ->distinct()
-            ->pluck('datel')
+        // Use all Master Datels for the graph X-axis
+        $datels = \App\Models\MasterDatel::orderBy('nama_datel')
+            ->pluck('nama_datel')
             ->map(fn($d) => strtoupper($d))
             ->toArray();
 
