@@ -1379,31 +1379,10 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Detail
+                        Tentang Kami
                     </a>
                 </div>
 
-                
-                <div style="margin-top: 3rem; display: flex; flex-wrap: wrap; gap: 1.5rem 2rem; justify-content: center; color: var(--clr-text-muted); font-size: 0.95rem; font-weight: 500;" data-aos="fade-up" data-aos-delay="400">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(220, 38, 38, 0.15); color: #ef4444;">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                        </span>
-                        Manajemen Deployment
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(220, 38, 38, 0.15); color: #ef4444;">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                        </span>
-                        Laporan Real-time
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(220, 38, 38, 0.15); color: #ef4444;">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                        </span>
-                        Akses Multi-Perangkat
-                    </div>
-                </div>
             </div>
         </div>
     </section>
