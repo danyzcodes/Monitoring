@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col gap-6">
 
-        {{-- BREADCRUMB --}}
+        
         <div class="flex items-center gap-3 text-sm text-slate-500">
             <a href="{{ route('deployment.progress-overview') }}"
                 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Dashboard</a>
@@ -13,8 +13,7 @@
             <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">input data</span>
         </div>
 
-
-        <!-- ================= FORM CARD ================= -->
+        
         <div class="bg-white rounded-3xl shadow-xl border border-slate-100 relative">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600 rounded-t-3xl"></div>
 
@@ -23,7 +22,7 @@
                     action="{{ route('ebis.manual.store') }}" class="space-y-8" data-turbo="false">
                     @csrf
 
-                    <!-- ================= SECTION 1: IDENTITAS ORDER ================= -->
+                    
                     <div>
                         <h3 class="flex items-center gap-2 text-lg font-bold text-slate-800 mb-6">
                             <span
@@ -32,7 +31,7 @@
                         </h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <!-- NDE JT -->
+                            
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Nomor NDE JT
@@ -43,7 +42,7 @@
                                     placeholder="Contoh: NDE-123/456" readonly>
                             </div>
 
-                            <!-- STARCLICK -->
+                            
                             <div data-field-wrapper>
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Starclick ID / NCX <span class="text-red-500">*</span>
@@ -59,7 +58,7 @@
                                 @enderror
                             </div>
 
-                            <!-- NOMOR BATCH -->
+                            
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Nomor Batch
@@ -77,7 +76,7 @@
 
                     <div class="w-full h-px bg-slate-100"></div>
 
-                    <!-- ================= SECTION 2: DATA PELANGGAN ================= -->
+                    
                     <div>
                         <h3 class="flex items-center gap-2 text-lg font-bold text-slate-800 mb-6">
                             <span
@@ -86,7 +85,7 @@
                         </h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <!-- NAMA -->
+                            
                             <div data-field-wrapper>
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Nama Pelanggan <span class="text-red-500">*</span>
@@ -102,7 +101,7 @@
                                 @enderror
                             </div>
 
-                            <!-- TELEPON -->
+                            
                             <div data-field-wrapper>
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Telepon <span class="text-red-500">*</span>
@@ -120,7 +119,7 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- ALAMAT -->
+                            
                             <div data-field-wrapper class="md:col-span-2" x-data="{
                                 gettingAddress: false,
                                 getAddress() {
@@ -200,7 +199,7 @@
                                 @enderror
                             </div>
 
-                            <!-- TIKOR -->
+                            
                             <div data-field-wrapper x-data="{
                                 gettingLocation: false,
                                 getLocation() {
@@ -264,7 +263,7 @@
 
                     <div class="w-full h-px bg-slate-100"></div>
 
-                    <!-- ================= SECTION 3: LOKASI & TEKNIS ================= -->
+                    
                     <div>
                         <h3 class="flex items-center gap-2 text-lg font-bold text-slate-800 mb-6">
                             <span
@@ -273,7 +272,7 @@
                         </h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- DATEL -->
+                            
                             <div id="datel_wrapper" data-field-wrapper x-data="searchableSelect(@js($datels))" class="relative">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Datel <span class="text-red-500">*</span>
@@ -295,7 +294,7 @@
 
                                 <input type="hidden" name="datel" x-model="selected" data-required="true">
 
-                                <!-- DROPDOWN -->
+                                
                                 <div x-show="open" @click.outside="open = false" x-transition.opacity
                                     class="absolute z-50 mt-1 w-full bg-white border border-slate-100 rounded-xl shadow-xl max-h-48 overflow-y-auto">
                                     <template x-for="item in filtered()" :key="item">
@@ -312,7 +311,7 @@
                                     class="text-xs text-red-500 mt-1 font-medium">Wajib dipilih</p>
                             </div>
 
-                            <!-- STO -->
+                            
                             <div id="sto_wrapper" data-field-wrapper x-data="searchableSelect(@js($stos))" class="relative">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     STO <span class="text-red-500">*</span>
@@ -351,7 +350,7 @@
                             </div>
                         </div>
 
-                        <!-- MITRA -->
+                        
                         <div class="mt-6">
                             <div data-field-wrapper x-data="searchableSelect(@js($mitras))" class="relative">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
@@ -396,9 +395,9 @@
                         </div>
                     </div>
 
-                    <!-- TomSelect styles have been consolidated at the bottom -->
+                    
 
-                    <!-- ================= BUTTONS ================= -->
+                    
                     <div class="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
                         <button type="button" onclick="history.back()"
                             class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition">
@@ -410,17 +409,17 @@
                         </button>
                     </div>
 
-                    {{-- ====================== CONFIRM MODAL ====================== --}}
+                    
                     <template x-teleport="body">
                         <div x-show="confirmOpen" x-cloak
                             class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50">
 
-                            {{-- Modal Card --}}
+                            
                             <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6">
                                 <h3 class="text-lg font-bold text-slate-800 mb-2">Konfirmasi Simpan</h3>
                                 <p class="text-sm text-slate-600 mb-6">Apakah data sudah benar dan ingin disimpan?</p>
 
-                                {{-- Action Buttons --}}
+                                
                                 <div class="flex flex-col gap-3">
                                     <button type="button" @click="finalSubmit()"
                                         :disabled="submitting"
@@ -437,7 +436,7 @@
                         </div>
                     </template>
 
-                    {{-- Script: populate preview sebelum modal muncul --}}
+                    
                     @push('scripts')
                     <script>
                         document.addEventListener('alpine:init', () => {
@@ -477,18 +476,18 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.default.min.css">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <style>
-        /* StarClick TomSelect overrides (Tailwind matching) */
+        
         .ts-wrapper.starclick-select .ts-control {
             border-radius: 0.75rem !important;
             border: 1px solid #94a3b8 !important;
-            background-color: #f1f5f9 !important; /* Tailwind bg-slate-100 */
+            background-color: #f1f5f9 !important; 
             padding: 0.85rem 1rem !important;
             font-size: 0.875rem !important;
             font-weight: 500 !important;
             min-height: auto !important;
             box-shadow: none !important;
             transition: all 0.2s ease-in-out;
-            color: #475569 !important; /* Tailwind text-slate-600 */
+            color: #475569 !important; 
         }
 
         .ts-wrapper.starclick-select.focus .ts-control {
@@ -502,7 +501,7 @@
             font-size: 0.875rem !important;
         }
 
-        /* Dropdown yang di-attach ke body */
+        
         .ts-dropdown {
             background: #ffffff !important;
             border: 1px solid #e2e8f0 !important;

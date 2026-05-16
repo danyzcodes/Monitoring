@@ -4,7 +4,7 @@
             bg-slate-50 border border-slate-200
             text-sm text-slate-600">
 
-    {{-- INFO --}}
+    
     <div class="hidden sm:block">
         Menampilkan
         <span class="font-medium text-slate-900">
@@ -17,10 +17,10 @@
         data
     </div>
 
-    {{-- CONTROLS --}}
+    
     <nav class="flex items-center gap-1">
 
-        {{-- PREV --}}
+        
         @if ($paginator->onFirstPage())
             <span
                 class="w-8 h-8 flex items-center justify-center
@@ -36,7 +36,7 @@
             </a>
         @endif
 
-        {{-- PAGES --}}
+        
         @foreach ($elements as $element)
 
             @if (is_string($element))
@@ -67,7 +67,7 @@
 
         @endforeach
 
-        {{-- NEXT --}}
+        
         @if ($paginator->hasMorePages())
             <a href="{{ $paginator->nextPageUrl() }}"
                class="w-8 h-8 flex items-center justify-center

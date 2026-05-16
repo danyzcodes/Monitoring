@@ -14,7 +14,7 @@
         @csrf
         @method('patch')
 
-        {{-- Nama --}}
+        
         <div>
             <label for="name" class="block text-sm font-medium text-slate-600 mb-1">Nama</label>
             <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}"
@@ -26,7 +26,7 @@
             @enderror
         </div>
 
-        {{-- Email --}}
+        
         <div>
             <label for="email" class="block text-sm font-medium text-slate-600 mb-1">Email</label>
             <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}"
@@ -56,7 +56,7 @@
             @endif
         </div>
 
-        {{-- Telegram Phone --}}
+        
         <div>
             <label for="telegram_phone" class="block text-sm font-medium text-slate-600 mb-1">Nomor Telegram (Opsional)</label>
             <input id="telegram_phone" name="telegram_phone" type="text" value="{{ old('telegram_phone', $user->telegram_phone) }}"
@@ -69,7 +69,7 @@
             @enderror
         </div>
 
-        {{-- Submit --}}
+        
         <div class="flex items-center gap-4">
             <button type="submit"
                 class="px-5 py-2 rounded-lg bg-red-600 text-white text-sm font-medium

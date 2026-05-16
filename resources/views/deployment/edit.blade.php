@@ -5,7 +5,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto space-y-6">
 
-    <!-- ================= HEADER ================= -->
+    
     <div class="flex items-center justify-between">
     <div class="flex items-center gap-3 text-slate-500 mb-2">
 
@@ -60,10 +60,10 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- ================= LEFT COLUMN: CUSTOMER INFO ================= -->
+            
             <div class="space-y-6">
                 
-                <!-- CARD INFO -->
+                
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
                     
@@ -102,7 +102,7 @@
                     </div>
                 </div>
 
-                <!-- CARD TEKNIS -->
+                
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                     <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,16 +128,16 @@
 
             </div>
 
-            <!-- ================= RIGHT COLUMN: UPDATE FORM ================= -->
+            
             <div class="lg:col-span-2 space-y-6">
                  
-                <!-- FORM CARD -->
+                
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
                     <h2 class="text-xl font-bold text-slate-800 mb-6">Update Progres Deployment</h2>
                     
                     <div class="space-y-8">
                         
-                        <!-- PROGRES DROPDOWN -->
+                        
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">
                                 Status Progres Terbaru <span class="text-red-500">*</span>
@@ -160,7 +160,7 @@
                             </div>
                         </div>
 
-                         <!-- TANGGAL PROGRESS SELANJUTNYA -->
+                         
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">
                                 Komitmen Progress Selanjutnya
@@ -170,14 +170,12 @@
                                 class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition shadow-sm">
                         </div>
 
-
-                        <!-- DYNAMIC FIELDS CONTAINER -->
+                        
                         <div id="dynamic-fields" class="p-6 bg-slate-50 rounded-xl border border-slate-100 space-y-4 animate-fade-in">
                             <p class="text-sm text-slate-400 italic text-center">Pilih status progres untuk melihat form detail.</p>
                         </div>
 
-
-                        <!-- KETERANGAN -->
+                        
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">
                                 Keterangan Tambahan
@@ -187,7 +185,7 @@
                                 placeholder="Tambahkan catatan jika diperlukan...">{{ old('keterangan', $data->keterangan) }}</textarea>
                         </div>
 
-                        <!-- ACTIONS -->
+                        
                         <div class="flex justify-end gap-4 pt-6 border-t border-slate-100">
                             <a href="{{ route('deployment.update') }}" 
                                class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition">

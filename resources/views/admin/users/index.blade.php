@@ -10,7 +10,7 @@
             <span class="text-slate-300 font-bold">❯</span>
             <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">kelola akun</span>
         </div>
-        <!-- ================= CARD TABLE ================= -->
+        
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
 
             <div class="relative overflow-x-auto">
@@ -33,7 +33,7 @@
                             @endphp
 
                             <tr class="hover:bg-slate-50 transition group">
-                                <!-- NAMA -->
+                                
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div
@@ -54,12 +54,12 @@
                                     </div>
                                 </td>
 
-                                <!-- EMAIL -->
+                                
                                 <td class="px-6 py-4 text-slate-600 font-medium">
                                     {{ $user->email }}
                                 </td>
 
-                                <!-- ROLE -->
+                                
                                 <td class="px-6 py-4">
                                     @if ($user->role == 'admin')
                                         <span
@@ -98,7 +98,7 @@
             @endif
             </td>
 
-            <!-- REQUESTED ROLE -->
+            
             <td class="px-6 py-4">
                 @if ($user->requested_role)
                     @php
@@ -119,7 +119,7 @@
                 @endif
             </td>
 
-            <!-- UPDATE ROLE -->
+            
             <td class="px-6 py-4 text-center">
                 @if (!$isSelfAdmin)
                     <form action="/admin/users/{{ $user->id }}/role" method="POST">
@@ -138,7 +138,7 @@
                 @endif
             </td>
 
-            <!-- AKSI -->
+            
             <td class="px-6 py-4 text-right">
                 <div class="flex items-center justify-end gap-2">
                     @if ($user->role === 'waiting')

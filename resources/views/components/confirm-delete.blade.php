@@ -12,7 +12,7 @@
     x-cloak
     class="fixed inset-0 z-50 flex items-center justify-center"
 >
-    {{-- Backdrop --}}
+    
     <div
         x-show="open"
         x-transition:enter="ease-out duration-200"
@@ -25,7 +25,7 @@
         class="fixed inset-0 bg-black/40"
     ></div>
 
-    {{-- Modal --}}
+    
     <div
         x-show="open"
         x-transition:enter="ease-out duration-200"
@@ -36,7 +36,7 @@
         x-transition:leave-end="opacity-0 scale-95"
         class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6"
     >
-        {{-- Icon --}}
+        
         <div class="flex justify-center mb-4">
             <div class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -45,13 +45,13 @@
             </div>
         </div>
 
-        {{-- Title --}}
+        
         <h3 class="text-lg font-semibold text-slate-800 text-center mb-1">{{ $title }}</h3>
 
-        {{-- Message --}}
+        
         <p class="text-sm text-slate-500 text-center mb-6">{!! $message !!}</p>
 
-        {{-- Actions --}}
+        
         <div class="flex gap-3">
             <button
                 @click="open = false"

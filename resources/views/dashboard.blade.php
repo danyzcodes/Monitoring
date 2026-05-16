@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     
-    <!-- Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Scripts -->
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
@@ -32,13 +32,13 @@
 
 <body class="relative min-h-screen overflow-hidden bg-slate-900">
 
-    <!-- BACKGROUND IMAGE -->
+    
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('images/background.jpg') }}" alt="Background" class="w-full h-full object-cover opacity-60">
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
     </div>
 
-    <!-- NAVBAR (LOGOUT) -->
+    
     <div class="absolute top-0 right-0 p-6 z-50 flex items-center gap-4">
         <div class="text-right hidden md:block">
             <p class="text-white font-semibold text-sm">{{ Auth::user()->name }}</p>
@@ -56,10 +56,10 @@
         </form>
     </div>
 
-    <!-- MAIN CONTENT CENTERED -->
+    
     <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-6">
         
-        <!-- HEADER TEXT -->
+        
         <div class="text-center mb-12">
             <span class="inline-block py-1 px-3 rounded-full bg-red-600/20 border border-red-500/30 text-red-100 text-xs font-semibold tracking-wider uppercase mb-4 backdrop-blur-sm">
                 Project Dashboard
@@ -72,18 +72,18 @@
             </p>
         </div>
 
-        <!-- CARDS GRID -->
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
             
-            <!-- CARD: QE SYSTEM (QUALITY ENHANCEMENT) -->
+            
             <a href="#" class="group relative h-72 rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20">
-                <!-- Border Gradient -->
+                
                 <div class="absolute inset-0 bg-gradient-to-br from-white/40 via-white/10 to-white/5 rounded-3xl z-0"></div>
                 
-                <!-- Card Content -->
+                
                 <div class="relative h-full bg-slate-900/40 backdrop-blur-xl rounded-[22px] p-8 flex flex-col justify-between border border-white/10 overflow-hidden group-hover:bg-slate-900/60 transition-colors">
                     
-                    <!-- Decor Background -->
+                    
                     <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all"></div>
                     <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-all"></div>
 
@@ -110,15 +110,15 @@
                 </div>
             </a>
 
-            <!-- CARD: DEPLOYMENT SYSTEM -->
+            
             <a href="{{ route('deployment.b2b') }}" class="group relative h-72 rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/20">
-                <!-- Border Gradient -->
+                
                  <div class="absolute inset-0 bg-gradient-to-br from-white/40 via-white/10 to-white/5 rounded-3xl z-0"></div>
 
-                <!-- Card Content -->
+                
                 <div class="relative h-full bg-slate-900/40 backdrop-blur-xl rounded-[22px] p-8 flex flex-col justify-between border border-white/10 overflow-hidden group-hover:bg-slate-900/60 transition-colors">
                     
-                     <!-- Decor Background -->
+                     
                      <div class="absolute -right-10 -top-10 w-40 h-40 bg-red-500/20 rounded-full blur-3xl group-hover:bg-red-500/30 transition-all"></div>
                      <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl group-hover:bg-orange-500/30 transition-all"></div>
 
@@ -149,7 +149,7 @@
 
     </div>
 
-    <!-- FOOTER COPYRIGHT -->
+    
     <div class="absolute bottom-6 left-0 w-full text-center z-10">
         <p class="text-slate-400 text-xs tracking-wide opacity-80">
             &copy; {{ date('Y') }} PT. Telkom Indonesia (Persero) Tbk. All rights reserved.

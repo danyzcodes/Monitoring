@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="flex flex-col gap-6">
-        {{-- BREADCRUMB & ACTIONS --}}
+        
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4" x-data="{
             showTeleModal: false,
             isSendingReport: false,
@@ -58,7 +58,7 @@
                 <button @click="showTeleModal = true"
                     class="group relative overflow-hidden flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest text-white transition-all duration-300 shadow-xl shadow-red-200 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-red-300 active:scale-95"
                     style="background: linear-gradient(135deg, #e32b2b 0%, #ba1c1c 100%);">
-                    <!-- Efek kilau saat disentuh -->
+                    
                     <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300">
                     </div>
                     <svg class="w-4 h-4 relative z-10 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
@@ -70,7 +70,7 @@
                 </button>
             </div>
 
-            {{-- CUSTOM TELEGRAM MODAL --}}
+            
             <template x-teleport="body">
                 <div x-show="showTeleModal"
                     class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
@@ -121,7 +121,7 @@
                 </div>
             </template>
 
-            {{-- TOAST NOTIFICATION --}}
+            
         <div x-show="toast.show"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 translate-x-full"
@@ -156,10 +156,10 @@
         </div>
         </div>
 
-        {{-- ===== LIVE MONITORING HEADER ===== --}}
+        
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 relative overflow-hidden"
             style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); border-radius: 2rem;">
-            {{-- Decorative blob --}}
+            
             <div class="absolute -top-10 -right-10 w-48 h-48 rounded-full blur-3xl opacity-30" style="background:#e32b2b;">
             </div>
 
@@ -179,7 +179,7 @@
                 
             </div>
 
-            {{-- Live Clock & Actions --}}
+            
             <div class="relative z-10 flex flex-col sm:flex-row items-end sm:items-center gap-6 mt-4 sm:mt-0">
                 <div class="text-right hidden sm:flex flex-col items-end">
                     <div id="live-date" class="text-xs font-semibold mb-1" style="color:#94a3b8;"></div>
@@ -191,13 +191,13 @@
             </div>
         </div>
 
-        <!-- ================= HERO STATS ================= -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- CARD 1: WAITING APPROVAL -->
+            
             <div class="rounded-[2.5rem] p-8 text-white relative overflow-hidden group shadow-2xl flex flex-col min-h-[300px] transition-all duration-300 hover:-translate-y-1"
                 style="background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%); box-shadow: 0 20px 40px rgba(30,58,138,0.25);">
-                <!-- Decorative -->
+                
                 <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full group-hover:scale-110 transition-transform duration-700"
                     style="background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);"></div>
                 <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full group-hover:scale-110 transition-transform duration-500"
@@ -259,10 +259,10 @@
                 </div>
             </div>
 
-            <!-- CARD 1: OVERDUE COMMITMENTS -->
+            
             <div class="rounded-[2.5rem] p-8 text-white relative overflow-hidden group shadow-2xl flex flex-col min-h-[300px]"
                 style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);">
-                <!-- Decorative Blobs -->
+                
                 <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-[80px] opacity-40 group-hover:scale-110 transition-transform duration-700"
                     style="background:#e32b2b;"></div>
                 <div class="absolute -bottom-24 -left-24 w-64 h-64 rounded-full blur-[80px] opacity-20 group-hover:scale-110 transition-transform duration-700"
@@ -300,7 +300,7 @@
                                     <p class="text-[10px] truncate mt-0.5" style="color:#9ca3af;">
                                         {{ $item['nama_customer'] }}</p>
                                 </div>
-                                <!-- Days overdue badge -->
+                                
                                 <span class="flex-shrink-0 text-[9px] font-black px-2 py-1 rounded-lg whitespace-nowrap"
                                     style="background:rgba(227,43,43,0.4); color:#fca5a5;">
                                     terlewat {{ $item['days_overdue'] }} hari
@@ -330,7 +330,7 @@
                 </div>
             </div>
 
-            <!-- CARD 2: LIVE TRACKING -->
+            
             <div class="bg-white rounded-[2.5rem] p-8 shadow-xl border flex flex-col relative overflow-hidden group min-h-[300px] transition-all duration-300 hover:-translate-y-1"
                 style="border-color:#fde8e8; box-shadow: 0 20px 40px rgba(227,43,43,0.08);">
                 <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl transition-colors duration-700"
@@ -412,10 +412,10 @@
 
         </div>
 
-        <!-- ================= DEPLOYMENT TREND (FULL WIDTH) ================= -->
+        
         <div class="w-full bg-white rounded-[2.5rem] p-8 shadow-xl border flex flex-col h-fit mb-10 relative overflow-hidden"
             style="border-color:#fde8e8; box-shadow: 0 20px 50px rgba(227,43,43,0.08);">
-                {{-- Decorative gradient accent --}}
+                
                 <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-red-50 to-transparent rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4 relative z-10">
@@ -446,7 +446,7 @@
                     </div>
                 </div>
 
-                {{-- SEARCH FILTERS --}}
+                
                 <div class="flex flex-wrap items-end gap-3 mb-8 p-5 rounded-2xl border relative z-10"
                     style="background: linear-gradient(135deg, #fafafa, #f8fafc); border-color:#f1f5f9;">
                     <div class="flex-1 min-w-[120px]">
@@ -494,10 +494,10 @@
                 </div>
             </div>
 
-        <!-- ================= PARTNER PERFORMANCE SECTION ================= -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-            <!-- WORKLOAD DAY WIDGET (8/12) -->
+            
             <div class="lg:col-span-8 bg-white rounded-[2.5rem] p-8 shadow-xl border overflow-x-auto"
                 style="border-color:#e0e7ff; box-shadow: 0 20px 40px rgba(59,130,246,0.06);" 
                     x-data="{ 
@@ -559,14 +559,14 @@
                             <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:#9ca3af;">Kapasitas Global Bulanan</p>
                         </div>
                         <div class="flex items-center gap-1.5 flex-wrap justify-end">
-                            <!-- Reset Button -->
+                            
                             <button @click="resetToCurrent()" 
                                 x-show="currentMonth !== {{ now()->month }} || currentYear !== {{ now()->year }}" x-cloak
                                 class="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-extrabold text-[10px] uppercase tracking-wider rounded-lg transition-colors border border-blue-200 shadow-sm mr-1">
                                 Bulan Ini
                             </button>
                             
-                            <!-- Controls -->
+                            
                             <div class="flex items-center bg-slate-50 p-1 rounded-xl border border-slate-200 shadow-sm">
                                 <button @click="prevMonth()" class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-white hover:shadow-sm rounded-lg transition-all focus:outline-none">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path></svg>
@@ -599,7 +599,7 @@
                         </div>
                     </div>
 
-                    <!-- Calendar Header (Mon - Sun) -->
+                    
                     <div class="grid grid-cols-7 gap-1 md:gap-2 mb-2">
                         <template x-for="d in ['SEN','SEL','RAB','KAM','JUM','SAB','MIN']">
                             <div class="text-center text-[9px] font-black uppercase tracking-widest text-slate-400" x-text="d"></div>
@@ -617,20 +617,20 @@
                                      'bg-slate-50 border border-slate-200': day.in_month,
                                      'bg-slate-100/40 border border-slate-100 opacity-50 grayscale': !day.in_month
                                  }">
-                                <!-- Water fill -->
+                                
                                 <div class="absolute bottom-0 w-full transition-all duration-1000 ease-in-out flex-shrink-0"
                                      :style="'height: ' + Math.min((day.count / global_cap) * 100, 100) + '%;' +
                                      'background: ' + ((day.details && day.details.some(d => d.count > 3)) ? 'linear-gradient(0deg, #f87171, #ef4444)' : 'linear-gradient(0deg, #60a5fa, #3b82f6)')">
                                     <div class="absolute inset-0 opacity-30" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 10 Q 5 15, 10 10 T 20 10\' stroke=\'white\' fill=\'none\' stroke-width=\'2\'/%3E%3C/svg%3E'); background-size: 20px 20px; animation: moveWaves 2s linear infinite;"></div>
                                 </div>
                                 
-                                <!-- Content: Top-left mini date -->
+                                
                                 <div class="absolute top-2 left-2.5 z-10 text-left pointer-events-none">
                                     <span class="block text-[8px] font-black uppercase tracking-widest leading-tight opacity-80" :class="(day.count / global_cap) > 0.7 ? 'text-white' : 'text-slate-500'" x-text="day.day_label"></span>
                                     <span class="block text-[11px] font-extrabold leading-none mt-0.5" :class="(day.count / global_cap) > 0.7 ? 'text-white' : 'text-slate-700'" x-text="day.num_label.split(' ')[0]"></span>
                                 </div>
                                 
-                                <!-- Content: Bottom-right Workload -->
+                                
                                 <div class="relative z-10 flex flex-col items-end justify-end h-full w-full p-2 text-right pointer-events-none">
                                     <span class="text-[16px] font-black leading-none drop-shadow-sm" :class="(day.count / global_cap) > 0.3 ? 'text-white' : 'text-slate-700'" x-text="day.count"></span>
                                     <span class="text-[7px] font-bold uppercase tracking-widest opacity-90 mt-0.5" :class="(day.count / global_cap) > 0.3 ? 'text-white' : 'text-slate-400'">Orders</span>
@@ -641,7 +641,7 @@
                             <svg class="animate-spin h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         </div>
 
-                        <!-- Empty State -->
+                        
                         <div x-show="!loading && dates.length === 0" class="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm z-10">
                             <svg class="w-12 h-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"></path>
@@ -650,7 +650,7 @@
                         </div>
                     </div>
 
-                    <!-- Modal Details Overlay -->
+                    
                     <div x-show="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm" x-transition style="display: none;">
                         <div @click.away="showModal = false" class="bg-white rounded-[2rem] shadow-2xl p-6 md:p-8 w-full max-w-sm max-h-[85vh] flex flex-col relative"
                              x-transition:enter="transition ease-out duration-300"
@@ -660,7 +660,7 @@
                              x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                              x-transition:leave-end="opacity-0 translate-y-8 scale-95">
                             
-                            <!-- Close button -->
+                            
                             <button @click="showModal = false" class="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-slate-100">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </button>
@@ -707,7 +707,7 @@
                     </div>
             </div>
 
-            <!-- TOP PARTNERS WIDGET (4/12) -->
+            
             <div class="lg:col-span-4 bg-white rounded-[2.5rem] p-8 shadow-xl border"
                 style="border-color:#e0e7ff; box-shadow: 0 20px 40px rgba(59,130,246,0.06);" 
                     x-data="{ 
@@ -733,13 +733,13 @@
                             <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:#9ca3af;">Workload Analysis</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-3 items-end sm:items-center">
-                            <!-- Period Filter -->
+                            
                             <div class="relative">
                                 <div x-show="loading" class="absolute -left-6 top-1/2 -translate-y-1/2">
                                     <svg class="animate-spin h-3.5 w-3.5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                 </div>
                             </div>
-                            <!-- Period Filter -->
+                            
                             <div class="flex p-1 rounded-xl" style="background:#f1f5f9;">
                                 <button @click="period = 'daily'" :class="{'bg-white text-blue-600 shadow-sm': period === 'daily', 'text-slate-400 hover:text-slate-600': period !== 'daily'}" class="px-3 py-1.5 text-[9px] font-black uppercase tracking-wider rounded-lg transition-all">Daily</button>
                                 <button @click="period = 'weekly'" :class="{'bg-white text-blue-600 shadow-sm': period === 'weekly', 'text-slate-400 hover:text-slate-600': period !== 'weekly'}" class="px-3 py-1.5 text-[9px] font-black uppercase tracking-wider rounded-lg transition-all">Weekly</button>
@@ -771,26 +771,26 @@
                                     </div>
                                 </div>
 
-                                {{-- BUCKET VISUALIZATION --}}
+                                
                                 <div class="relative w-full h-8 bg-slate-200/60 rounded-xl overflow-hidden shadow-inner flex items-center" style="transform: translateZ(0);">
-                                    {{-- Capacity indicator text --}}
+                                    
                                     <div class="absolute inset-x-0 w-full flex justify-between px-3 z-20 text-[9px] font-black text-white mix-blend-difference uppercase tracking-widest pointer-events-none drop-shadow-md">
                                         <span x-text="(period === 'daily' ? mitra.daily : (period === 'weekly' ? mitra.weekly : mitra.monthly)) + ' ORDs'"></span>
                                         <span x-text="'Cap: ' + (period === 'daily' ? mitra.daily_cap : (period === 'weekly' ? mitra.weekly_cap : mitra.monthly_cap))"></span>
                                     </div>
                                     
-                                    {{-- Water Fill Bar --}}
+                                    
                                     <div class="h-full relative transition-all duration-1000 ease-in-out flex-shrink-0"
                                          :style="'width: ' + Math.min(((period === 'daily' ? mitra.daily : (period === 'weekly' ? mitra.weekly : mitra.monthly)) / (period === 'daily' ? mitra.daily_cap : (period === 'weekly' ? mitra.weekly_cap : mitra.monthly_cap))) * 100, 100) + '%;' +
                                          'background: ' + (((period === 'daily' ? mitra.daily : (period === 'weekly' ? mitra.weekly : mitra.monthly)) / (period === 'daily' ? mitra.daily_cap : (period === 'weekly' ? mitra.weekly_cap : mitra.monthly_cap))) >= 1 ? 'linear-gradient(90deg, #f87171, #ef4444)' : 'linear-gradient(90deg, #60a5fa, #3b82f6)')">
                                         
-                                        {{-- Water Waves Animation --}}
+                                        
                                         <div class="absolute inset-0 opacity-30" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 10 Q 5 15, 10 10 T 20 10\' stroke=\'white\' fill=\'none\' stroke-width=\'2\'/%3E%3C/svg%3E'); background-size: 20px 20px; animation: moveWaves 2s linear infinite;"></div>
                                         <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 10 Q 5 5, 10 10 T 20 10\' stroke=\'white\' fill=\'none\' stroke-width=\'1.5\'/%3E%3C/svg%3E'); background-size: 15px 15px; animation: moveWaves 1.5s linear infinite reverse;"></div>
                                     </div>
                                 </div>
                                 
-                                {{-- Overcapacity Warning --}}
+                                
                                 <div x-show="((period === 'daily' ? mitra.daily : (period === 'weekly' ? mitra.weekly : mitra.monthly)) / (period === 'daily' ? mitra.daily_cap : (period === 'weekly' ? mitra.weekly_cap : mitra.monthly_cap))) > 1" class="absolute -top-2 right-4 z-30 flex items-center justify-center" x-transition>
                                     <span class="animate-bounce bg-red-100 text-red-600 border border-red-200 text-[8px] font-black px-2 py-0.5 rounded-md uppercase shadow-lg tracking-widest">⚠️ Overload</span>
                                 </div>
@@ -814,8 +814,6 @@
             </div>
         </div>
 
-
-
     </div>
 
     <style>
@@ -829,7 +827,7 @@
         }
     </style>
 
-    {{-- Chart.js dimuat secara dinamis di dalam script agar tidak ada race condition --}}
+    
 
     <script>
         // =============================================

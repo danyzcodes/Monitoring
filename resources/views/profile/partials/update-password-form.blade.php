@@ -10,7 +10,7 @@
         @csrf
         @method('put')
 
-        {{-- Password Saat Ini --}}
+        
         <div>
             <label for="update_password_current_password" class="block text-sm font-medium text-slate-600 mb-1">
                 Password Saat Ini
@@ -24,7 +24,7 @@
             @enderror
         </div>
 
-        {{-- Password Baru --}}
+        
         <div>
             <label for="update_password_password" class="block text-sm font-medium text-slate-600 mb-1">
                 Password Baru
@@ -38,7 +38,7 @@
             @enderror
         </div>
 
-        {{-- Konfirmasi Password --}}
+        
         <div>
             <label for="update_password_password_confirmation" class="block text-sm font-medium text-slate-600 mb-1">
                 Konfirmasi Password
@@ -52,7 +52,7 @@
             @enderror
         </div>
 
-        {{-- Submit --}}
+        
         <div class="flex items-center gap-4">
             <button type="submit"
                 class="px-5 py-2 rounded-lg bg-red-600 text-white text-sm font-medium

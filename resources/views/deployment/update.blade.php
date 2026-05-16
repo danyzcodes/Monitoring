@@ -5,30 +5,30 @@
 @section('content')
 <div class="flex flex-col gap-6">
 
-    {{-- BREADCRUMB --}}
+    
      <div class="flex items-center gap-3 text-sm text-slate-500">
         <a href="{{ route('deployment.progress-overview') }}" class="font-bold text-slate-800 text-xs uppercase tracking-wider">Dashboard</a>
         <span class="text-slate-300 font-bold">❯</span>
         <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">update</span>
     </div>
 
-    <!-- ================= FILTER CARD ================= -->
+    
     <div class="bg-white rounded-2xl shadow-sm border p-5" style="border-color:#fde8e8; box-shadow: 0 4px 20px rgba(227,43,43,0.06);" x-data="tagSearch()">
         
-        <!-- TOP: SEARCH & BASIC ACTIONS -->
+        
         <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-4">
-             <!-- TAG INPUT SEARCH -->
+             
              <div class="flex-1 w-full">
                 <div class="relative group">
                     <div class="flex items-center gap-2 flex-wrap w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 focus-within:ring-2 focus-within:ring-red-100 focus-within:border-red-400 transition"
                          @click="$refs.searchInput.focus()">
                         
-                        <!-- Icon -->
+                        
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
 
-                        <!-- Tags -->
+                        
                         <template x-for="(tag, index) in tags" :key="index">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700 animate-fade-in">
                                 <span x-text="tag"></span>
@@ -38,7 +38,7 @@
                             </span>
                         </template>
 
-                        <!-- Input -->
+                        
                         <input x-ref="searchInput" type="text" 
                                x-model="input" @keydown.enter.prevent="addTag()" @keydown.backspace="handleBackspace()"
                                 placeholder="Cari NDE, Starclick, Nama..."
@@ -49,12 +49,12 @@
                     </div>
                 </div>
                 
-                <!-- Hidden Input for Form Submission -->
                 
-                <!-- Removed duplicate hidden input -->
+                
+                
              </div>
 
-            <!-- SEARCH BUTTON -->
+            
             <button type="button" @click="submitSearch()" 
                     class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 shadow-md hover:shadow-lg transition flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -171,13 +171,12 @@
             </script>
         </div>
 
-
     </div>
 
-    <!-- ================= TABLE CARD ================= -->
+    
     <div class="bg-white rounded-2xl shadow-sm border overflow-hidden" style="border-color:#fde8e8; box-shadow: 0 4px 20px rgba(227,43,43,0.06);">
         <div id="table-container" class="relative">
-            <!-- LOADING OVERLAY -->
+            
             <div id="tableLoading" class="hidden absolute inset-0 bg-white/90 z-20 flex items-center justify-center">
                 <div class="flex flex-col items-center gap-3">
                     <div class="w-8 h-8 border-4 rounded-full animate-spin" style="border-color:#fde8e8; border-top-color:#e32b2b;"></div>
@@ -270,7 +269,7 @@
         }
     }
 
-    /* ===== AJAX PAGINATION INTERCEPT ===== */
+    
     function ajaxFetch(url) {
         const tableContainer = document.getElementById('table-container');
         const loading = document.getElementById('tableLoading');

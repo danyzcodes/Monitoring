@@ -11,10 +11,10 @@
         <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">master input</span>
     </div>
 
-    <!-- ================= MASTER DATA SECTIONS ================= -->
+    
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <!-- ================= DATEL ================= -->
+        
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col h-full">
             <div class="p-6 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -25,7 +25,7 @@
             </div>
             
             <div class="p-6 flex-1 flex flex-col gap-6">
-                <!-- FORM -->
+                
                 <form method="POST" action="{{ route('admin.master-input.datel') }}" class="relative">
                     @csrf
                     <div class="flex gap-2">
@@ -36,23 +36,23 @@
                     </div>
                 </form>
 
-                <!-- LIST -->
+                
                 <div class="overflow-y-auto max-h-[400px] pr-2 space-y-2">
                     @forelse($datels as $datel)
                     <div x-data="{ editing: false, nama: '{{ addslashes($datel->nama_datel) }}' }" 
                          class="group flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition">
                         
-                        <!-- DISPLAY -->
+                        
                         <span x-show="!editing" class="text-sm font-medium text-slate-700">{{ $datel->nama_datel }}</span>
                         
-                        <!-- EDIT FORM -->
+                        
                         <form x-show="editing" x-cloak method="POST" action="{{ route('admin.master-input.datel.update', $datel->id) }}" class="flex-1 flex gap-2 mr-2">
                             @csrf @method('PUT')
                             <input name="nama_datel" x-model="nama" class="w-full text-sm p-1 rounded border border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-500">
                             <button type="submit" class="text-green-600 hover:bg-green-100 p-1 rounded"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></button>
                         </form>
 
-                        <!-- ACTIONS -->
+                        
                         <div x-show="!editing" class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button @click="editing = true" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <!-- ================= STO ================= -->
+        
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col h-full">
             <div class="p-6 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -81,7 +81,7 @@
             </div>
             
             <div class="p-6 flex-1 flex flex-col gap-6">
-                <!-- FORM -->
+                
                 <form method="POST" action="{{ route('admin.master-input.sto') }}" class="relative">
                     @csrf
                     <div class="flex gap-2">
@@ -92,7 +92,7 @@
                     </div>
                 </form>
 
-                <!-- LIST -->
+                
                 <div class="overflow-y-auto max-h-[400px] pr-2 space-y-2">
                     @forelse($stos as $sto)
                     <div x-data="{ editing: false, nama: '{{ addslashes($sto->nama_sto) }}' }" 
@@ -123,7 +123,7 @@
             </div>
         </div>
 
-        <!-- ================= MITRA ================= -->
+        
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col h-full">
             <div class="p-6 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
@@ -134,7 +134,7 @@
             </div>
             
             <div class="p-6 flex-1 flex flex-col gap-6">
-                <!-- FORM -->
+                
                 <form method="POST" action="{{ route('admin.master-input.mitra') }}" class="relative">
                     @csrf
                     <div class="flex gap-2">
@@ -145,7 +145,7 @@
                     </div>
                 </form>
 
-                <!-- LIST -->
+                
                 <div class="overflow-y-auto max-h-[400px] pr-2 space-y-2">
                     @forelse($mitras as $mitra)
                     <div x-data="{ editing: false, nama: '{{ addslashes($mitra->nama_mitra) }}' }" 

@@ -5,7 +5,7 @@
 @section('content')
 <div class="max-w-6xl mx-auto" x-data="{ activeTab: 'info' }">
 
-    {{-- PAGE HEADER --}}
+    
     <div class="mb-6">
         <h1 class="text-2xl font-bold text-slate-800">Pengaturan Akun</h1>
         <p class="text-sm text-slate-500 mt-1">Kelola informasi profil, keamanan, dan preferensi akun Anda</p>
@@ -13,10 +13,10 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {{-- LEFT COLUMN: Profile Card & Navigation --}}
+        
         <div class="lg:col-span-1 space-y-6">
 
-            {{-- PROFILE CARD --}}
+            
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="bg-gradient-to-br from-red-600 via-red-500 to-rose-500 h-28 relative">
                     <div class="absolute inset-0 opacity-10">
@@ -54,7 +54,7 @@
                         
                     </div>
 
-                    {{-- Telegram Group Link --}}
+                    
                     <a href="https://t.me/+Wgw8a8geqfAyNTU1" target="_blank" rel="noopener noreferrer"
                         class="mt-4 flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-[#0088cc]/10 text-[#0088cc] text-sm font-semibold
                                hover:bg-[#0088cc]/20 transition-all duration-200 border border-[#0088cc]/20">
@@ -66,22 +66,22 @@
                 </div>
             </div>
 
-            {{-- UPDATE PASSWORD (Left Column) --}}
+            
             <div x-ref="passwordSection" id="password" @scroll.into-view="activeTab = 'password'" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 @include('profile.partials.update-password-form')
             </div>
 
         </div>
 
-        {{-- RIGHT COLUMN: Forms --}}
+        
         <div class="lg:col-span-2 space-y-6">
 
-            {{-- UPDATE PROFILE INFO --}}
+            
             <div x-ref="infoSection" @scroll.into-view="activeTab = 'info'" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8">
                 @include('profile.partials.update-profile-information-form')
             </div>
 
-            {{-- DELETE ACCOUNT --}}
+            
             <div x-ref="deleteSection" @scroll.into-view="activeTab = 'delete'" class="bg-white rounded-2xl shadow-sm border border-red-200 p-6 lg:p-8">
                 @include('profile.partials.delete-user-form')
             </div>

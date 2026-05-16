@@ -4,16 +4,16 @@
 @section('content')
 <div class="flex flex-col gap-6">
 
-    {{-- BREADCRUMB --}}
+    
     <div class="flex items-center gap-3 text-sm text-slate-500">
         <a href="{{ route('deployment.progress-overview') }}" class="font-bold text-slate-800 text-xs uppercase tracking-wider">Dashboard</a>
         <span class="text-slate-300 font-bold">❯</span>
         <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">upload</span>
     </div>
-    <!-- ================= HEADER ================= -->
+    
     
 
-    <!-- ================= UPLOAD CARD ================= -->
+    
     <div class="bg-white rounded-3xl shadow-xl overflow-hidden border relative" style="border-color:#fde8e8; box-shadow: 0 20px 40px rgba(227,43,43,0.08);">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
         
@@ -32,14 +32,14 @@
                      ondrop="handleDrop(event)"
                      onclick="document.getElementById('fileInput').click()">
 
-                    <!-- ICON -->
+                    
                     <div class="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
                         </svg>
                     </div>
 
-                    <!-- TEXT -->
+                    
                     <div class="space-y-1">
                         <p class="text-lg font-semibold text-slate-700">
                             Klik atau Drag File Excel ke Sini
@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                <!-- LOADING OVERLAY -->
+                
                 <div id="uploadLoading" class="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center hidden z-10 transition-opacity">
                     <div class="w-12 h-12 border-4 border-red-200 border-t-red-600 rounded-full animate-spin mb-3"></div>
                     <p class="font-semibold text-slate-700">Mengupload data...</p>
@@ -60,24 +60,24 @@
         </div>
     </div>
 
-    <!-- ================= DATA PREVIEW / LIST ================= -->
+    
     <div class="bg-white rounded-3xl shadow-sm border overflow-hidden" style="border-color:#fde8e8; box-shadow: 0 4px 20px rgba(227,43,43,0.06);">
-        <!-- HEADER: TITLE + TAG SEARCH -->
+        
         <div class="p-5" style="border-bottom: 1px solid #fef2f2;">
             <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
                 <h3 class="font-bold text-slate-800 text-lg flex-shrink-0">Riwayat Data Upload</h3>
 
-                <!-- TAG INPUT SEARCH -->
+                
                 <div class="flex-1 w-full max-w-xl" x-data="uploadTagSearch()" x-init="init()">
                     <div class="flex items-center gap-3">
                         <div class="flex items-center gap-2 flex-wrap flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 focus-within:ring-2 focus-within:ring-red-100 focus-within:border-red-400 transition"
                              @click="$refs.searchInput.focus()">
-                            <!-- Icon -->
+                            
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
 
-                            <!-- Tags -->
+                            
                             <template x-for="(tag, index) in tags" :key="index">
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700 animate-fade-in">
                                     <span x-text="tag"></span>
@@ -87,7 +87,7 @@
                                 </span>
                             </template>
 
-                            <!-- Input -->
+                            
                             <input x-ref="searchInput" type="text"
                                    x-model="input"
                                    @keydown.enter.prevent="addTagAndSearch()"
@@ -96,7 +96,7 @@
                                    class="flex-1 bg-transparent border-none text-sm focus:ring-0 focus:outline-none outline-none placeholder-slate-400 min-w-[150px]">
                         </div>
 
-                        <!-- SEARCH BUTTON -->
+                        
                         <button type="button" @click="addTagAndSearch()"
                                 class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 shadow-md hover:shadow-lg transition flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -109,9 +109,9 @@
             </div>
         </div>
 
-        <!-- TABLE WITH LOADING OVERLAY -->
+        
         <div id="table-container" class="relative">
-            <!-- LOADING OVERLAY -->
+            
             <div id="tableLoading" class="hidden absolute inset-0 bg-white/70 backdrop-blur-sm z-20 flex items-center justify-center">
                 <div class="flex flex-col items-center gap-3">
                     <div class="w-8 h-8 border-4 rounded-full animate-spin" style="border-color:#fde8e8; border-top-color:#e32b2b;"></div>
@@ -124,7 +124,6 @@
 
 </div>
 
-<!-- ERROR TOAST -->
 <div id="errorToast" class="fixed top-24 right-5 z-50 hidden animate-fade-in-down">
     <div class="flex items-start gap-3 bg-white border-l-4 border-red-500 shadow-xl rounded-xl p-4 w-80">
         <div class="flex-shrink-0 text-red-500">
@@ -203,7 +202,7 @@
         setTimeout(() => toast.classList.add('hidden'), 4000);
     }
 
-    /* UPLOAD TAG SEARCH */
+    
     function uploadTagSearch() {
         return {
             input: '',

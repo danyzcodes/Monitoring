@@ -7,9 +7,6 @@
     <meta name="turbo-cache-control" content="no-cache">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
-    <!-- PWA Settings -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <meta name="theme-color" content="#ffffff">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -41,7 +38,7 @@
             to   { opacity: 1; transform: translateX(0); }
         }
 
-        /* ── Main card ── */
+        
         .auth-card {
             position: relative;
             display: flex;
@@ -59,7 +56,7 @@
             animation: fadeInScale 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        /* ── Left: Form panel ── */
+        
         .form-panel {
             flex: 1;
             background: #ffffff;
@@ -69,7 +66,7 @@
             justify-content: center;
         }
 
-        /* ── Right: Info panel ── */
+        
         .info-panel {
             width: 340px;
             background: linear-gradient(145deg, #dc2626 0%, #b91c1c 40%, #7f1d1d 100%);
@@ -99,7 +96,7 @@
             bottom: -80px; left: -80px;
         }
 
-        /* ── Form elements ── */
+        
         .form-title {
             font-size: 1.75rem;
             font-weight: 800;
@@ -255,7 +252,7 @@
         }
         .form-footer a:hover { color: #b91c1c; }
 
-        /* ── Info panel content ── */
+        
         .info-logo {
             width: 70px;
             height: 70px;
@@ -310,11 +307,11 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
-        /* ── Spinner ── */
+        
         @keyframes spin { to { transform: rotate(360deg); } }
         .spinner { animation: spin 0.8s linear infinite; }
 
-        /* ── Mobile: stack vertically ── */
+        
         @media (max-width: 768px) {
             .auth-body {
                 padding: 0;
@@ -364,10 +361,10 @@
 
 <body class="auth-body">
 
-    <!-- Main Card -->
+    
     <div class="auth-card">
 
-        <!-- ══ LEFT: Info Panel ══ -->
+        
         <div class="info-panel">
             <h2 class="info-title">Halo,<br>Selamat Datang!</h2>
             <p class="info-desc">
@@ -375,10 +372,10 @@
             </p>
         </div>
 
-        <!-- ══ RIGHT: Form Panel ══ -->
+        
         <div class="form-panel">
             
-            {{-- Error Alert --}}
+            
             @if ($errors->any())
                 <div class="error-box">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;color:#ef4444;flex-shrink:0;margin-top:1px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -391,7 +388,7 @@
             <form method="POST" action="{{ route('login') }}" id="loginForm">
                 @csrf
 
-                {{-- Email --}}
+                
                 <div class="form-group">
                     <label class="form-label">Email</label>
                     <div class="input-wrap">
@@ -405,7 +402,7 @@
                     </div>
                 </div>
 
-                {{-- Password --}}
+                
                 <div class="form-group">
                     <label class="form-label">Password</label>
                     <div class="input-wrap">
@@ -424,13 +421,13 @@
                     </div>
                 </div>
 
-                {{-- Remember --}}
+                
                 <div class="form-check">
                     <input type="checkbox" name="remember" id="remember">
                     <label for="remember">Ingat saya</label>
                 </div>
 
-                {{-- Submit --}}
+                
                 <button type="submit" id="loginBtn" class="btn-primary">
                     <svg id="btnSpinner" class="spinner hidden" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -465,19 +462,5 @@
         });
     </script>
 
-    {{-- Service Worker Registration for PWA --}}
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
 </body>
 </html>

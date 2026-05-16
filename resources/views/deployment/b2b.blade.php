@@ -5,11 +5,10 @@
 @section('content')
 <div class="max-w-7xl mx-auto space-y-8">
 
-
-    <!-- ================= DASHBOARD CARDS ================= -->
+    
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        <!-- ================= INPUT (PRIMARY) ================= -->
+        
         <a href="{{ route('deployment.input') }}"
            class="group relative overflow-hidden rounded-3xl p-8 h-64
                   bg-gradient-to-br from-red-600 via-red-500 to-red-700
@@ -39,7 +38,7 @@
             </div>
         </a>
 
-        <!-- ================= UPDATE ================= -->
+        
         <a href="{{ route('deployment.update') }}"
            class="group relative overflow-hidden rounded-3xl p-8 h-64
                   bg-white border border-slate-200
@@ -63,7 +62,7 @@
             </div>
         </a>
 
-        <!-- ================= REKAP ================= -->
+        
         <a href="{{ route('deployment.lihat-data') }}" 
            class="group relative overflow-hidden rounded-3xl p-8 h-64
                   bg-white border border-slate-200
@@ -87,7 +86,7 @@
             </div>
         </a>
 
-        <!-- ================= UPLOAD ================= -->
+        
         <a href="{{ route('deployment.upload') }}"
            class="group relative overflow-hidden rounded-3xl p-8 h-64
                   bg-white border border-slate-200
@@ -111,7 +110,7 @@
             </div>
         </a>
 
-        <!-- ================= PROGRESS OVERVIEW ================= -->
+        
         @if(in_array(auth()->user()->role, ['admin', 'optima']))
         <a href="{{ route('deployment.progress-overview') }}"
            class="group relative overflow-hidden rounded-3xl p-8 h-64
@@ -141,5 +140,4 @@
 
 </div>
 @endsection
-
 

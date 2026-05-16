@@ -15,13 +15,13 @@
         Hapus Akun
     </button>
 
-    {{-- DELETE CONFIRMATION MODAL --}}
+    
     <div
         x-show="confirmDelete"
         x-cloak
         class="fixed inset-0 z-50 flex items-center justify-center">
 
-        {{-- Backdrop --}}
+        
         <div
             x-show="confirmDelete"
             x-transition:enter="ease-out duration-200"
@@ -33,7 +33,7 @@
             @click="confirmDelete = false"
             class="fixed inset-0 bg-black/40"></div>
 
-        {{-- Modal --}}
+        
         <div
             x-show="confirmDelete"
             x-transition:enter="ease-out duration-200"
@@ -48,7 +48,7 @@
                 @csrf
                 @method('delete')
 
-                {{-- Warning Icon --}}
+                
                 <div class="flex justify-center mb-4">
                     <div class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

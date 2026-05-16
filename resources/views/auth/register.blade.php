@@ -7,7 +7,7 @@
     <meta name="turbo-cache-control" content="no-cache">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
     
-    <!-- PWA Settings -->
+    
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <meta name="theme-color" content="#ffffff">    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,7 +49,7 @@
             animation: fadeInScale 0.6s cubic-bezier(.22,1,.36,1) forwards;
         }
 
-        /* ── Left: Info panel ── */
+        
         .info-panel {
             width: 320px; flex-shrink: 0;
             background: linear-gradient(145deg, #dc2626 0%, #b91c1c 40%, #7f1d1d 100%);
@@ -99,14 +99,14 @@
             transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.2);
         }
 
-        /* ── Right: Form panel ── */
+        
         .form-panel {
             flex:1; background:#fff;
             padding:2.5rem 2.5rem;
             display:flex; flex-direction:column; justify-content:center;
             overflow-y:auto; max-height:100vh;
         }
-        /* hide scrollbar */
+        
         .form-panel::-webkit-scrollbar { display:none; }
         .form-panel { scrollbar-width:none; }
 
@@ -182,7 +182,7 @@
 
         .spinner { animation:spin .8s linear infinite; }
 
-        /* two-column grid for password fields */
+        
         .grid-2 { display:grid;grid-template-columns:1fr 1fr;gap:.75rem; }
 
         @media (max-width:768px) {
@@ -208,7 +208,7 @@
 
     <div class="auth-card">
 
-        <!-- ══ LEFT: Info Panel ══ -->
+        
         <div class="info-panel">
            
             <h2 class="info-title">Daftar<br>Sekarang!</h2>
@@ -218,7 +218,7 @@
             
         </div>
 
-        <!-- ══ RIGHT: Form Panel ══ -->
+        
         <div class="form-panel">
 
         
@@ -239,7 +239,7 @@
             <form method="POST" action="{{ route('register') }}" id="registerForm">
                 @csrf
 
-                {{-- Nama --}}
+                
                 <div class="form-group">
                     <label class="form-label">Nama Lengkap</label>
                     <div class="input-wrap">
@@ -252,7 +252,7 @@
                     </div>
                 </div>
 
-                {{-- Email --}}
+                
                 <div class="form-group">
                     <label class="form-label">Email</label>
                     <div class="input-wrap">
@@ -265,7 +265,7 @@
                     </div>
                 </div>
 
-                {{-- Role --}}
+                
                 <div class="form-group">
                     <label class="form-label">Role</label>
                     <div class="input-wrap">
@@ -281,7 +281,7 @@
                     </div>
                 </div>
 
-                {{-- Password & Confirm side by side --}}
+                
                 <div class="grid-2">
                     <div class="form-group">
                         <label class="form-label">Password</label>
@@ -319,7 +319,7 @@
                     </div>
                 </div>
 
-                {{-- Info note --}}
+                
                 <div class="info-note">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;color:#d97706;flex-shrink:0;margin-top:1px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
@@ -327,7 +327,7 @@
                     <p>Akun baru memerlukan persetujuan admin sebelum dapat digunakan.</p>
                 </div>
 
-                {{-- Submit --}}
+                
                 <button type="submit" id="registerBtn" class="btn-primary">
                     <svg id="regSpinner" class="spinner hidden" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -368,19 +368,5 @@
         });
     </script>
 
-    {{-- Service Worker Registration for PWA --}}
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
 </body>
 </html>

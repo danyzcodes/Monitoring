@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col gap-6">
 
-        {{-- BREADCRUMB --}}
+        
         <div class="flex items-center gap-3 text-sm text-slate-500">
             <a href="{{ route('dashboard') }}" class="font-bold text-slate-800 text-xs uppercase tracking-wider">Dashboard</a>
             <span class="text-slate-300 font-bold">❯</span>
@@ -14,7 +14,7 @@
 
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 relative overflow-hidden"
             style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); border-radius: 2rem;">
-            {{-- Decorative blob --}}
+            
             <div class="absolute -top-10 -right-10 w-48 h-48 rounded-full blur-3xl opacity-30" style="background:#e32b2b;">
             </div>
 
@@ -35,7 +35,7 @@
                 <p class="text-xs mt-1" style="color:#94a3b8;">Grafik distribusi tahapan progress seluruh deployment</p>
             </div>
 
-            {{-- Live Clock & Actions --}}
+            
             <div class="relative z-10 flex flex-col sm:flex-row items-end sm:items-center gap-6 mt-4 sm:mt-0">
                 <div class="text-right hidden sm:flex flex-col items-end">
                     <div id="live-date" class="text-xs font-semibold mb-1" style="color:#94a3b8;"></div>
@@ -47,12 +47,10 @@
             </div>
         </div>
 
-
-
-        {{-- ===== STAT CARDS ===== --}}
+        
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 
-            {{-- Total Deployment --}}
+            
             <a href="{{ route('deployment.update') }}"
                 class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 block"
                 style="border-color:#fde8e8; box-shadow: 0 4px 20px rgba(227,43,43,0.06);">
@@ -75,7 +73,7 @@
                 </div>
             </a>
 
-            {{-- On Track --}}
+            
             <a href="{{ route('deployment.update', ['filter_key' => 'progres', 'filter_values' => 'ON DESK,SURVEY,PERIJINAN,DRM,APPROVED BY EBIS,MATDEV,INSTALASI,SELESAI FISIK']) }}"
                 class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 block"
                 style="border-color:#d1fae5; box-shadow: 0 4px 20px rgba(16,185,129,0.06);">
@@ -98,7 +96,7 @@
                 </div>
             </a>
 
-            {{-- Selesai / Final Stages --}}
+            
             <a href="{{ route('deployment.update', ['filter_key' => 'progres', 'filter_values' => 'GOLIVE,PS,UJI TERIMA,REKON']) }}"
                 class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 block"
                 style="border-color:#dbeafe; box-shadow: 0 4px 20px rgba(59,130,246,0.06);">
@@ -121,7 +119,7 @@
                 </div>
             </a>
 
-            {{-- Overdue --}}
+            
             <a href="{{ route('deployment.update', ['usia' => 'overdue']) }}"
                 class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 block"
                 style="border-color:#fee2e2; box-shadow: 0 4px 20px rgba(239,68,68,0.06);">
@@ -169,7 +167,7 @@
                 <div class="flex flex-wrap items-end gap-3 p-4 rounded-2xl border"
                     style="background:#fafafa; border-color:#f3f4f6;">
 
-                    {{-- STO Multi-Select --}}
+                    
                     <div class="flex-1 min-w-[150px] relative" id="sto-multiselect">
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1"
                             style="color:#9ca3af;">STO</label>
@@ -212,7 +210,7 @@
                         </div>
                     </div>
 
-                    {{-- Datel Multi-Select --}}
+                    
                     <div class="flex-1 min-w-[150px] relative" id="datel-multiselect">
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1"
                             style="color:#9ca3af;">Datel</label>
@@ -255,7 +253,7 @@
                         </div>
                     </div>
 
-                    {{-- Mitra Multi-Select --}}
+                    
                     <div class="flex-1 min-w-[150px] relative" id="mitra-multiselect">
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1"
                             style="color:#9ca3af;">Mitra</label>
@@ -298,7 +296,7 @@
                         </div>
                     </div>
 
-                    {{-- Progress A (Dari) --}}
+                    
                     <div class="min-w-[150px]">
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1"
                             style="color:#9ca3af;">Progress (Dari)</label>
@@ -312,7 +310,7 @@
                         </select>
                     </div>
 
-                    {{-- Progress B (Ke) --}}
+                    
                     <div class="min-w-[150px]">
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1"
                             style="color:#9ca3af;">Progress (Ke)</label>
@@ -326,7 +324,7 @@
                         </select>
                     </div>
 
-                    {{-- Actions --}}
+                    
                     <div class="flex items-center gap-2">
                         <button type="submit"
                             class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider text-white transition hover:shadow-lg hover:-translate-y-0.5"
@@ -344,7 +342,7 @@
                 </div>
             </form>
 
-            {{-- Average Duration Info --}}
+            
             @if (isset($avgDurationAB))
                 <div class="mt-4 p-4 rounded-xl flex items-center gap-3"
                     style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe;">
@@ -364,7 +362,7 @@
                 </div>
             @endif
 
-            {{-- Filter Result Info --}}
+            
             @if ($hasFilter)
                 <div class="mt-6 pt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                     style="border-top: 1px solid #fef2f2;">
@@ -415,7 +413,7 @@
             @endif
         </div>
 
-        {{-- ===== STACKED BAR CHART ===== --}}
+        
         <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-xl border"
             style="border-color:#fde8e8; box-shadow: 0 20px 40px rgba(227,43,43,0.06);">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
@@ -444,7 +442,7 @@
             </div>
         </div>
 
-        {{-- ===== iHLD STATUS ORDER CHART ===== --}}
+        
         <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-xl border mt-6"
             style="border-color:#e0e7ff; box-shadow: 0 20px 40px rgba(79,70,229,0.06);">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
@@ -469,10 +467,10 @@
             </div>
         </div>
 
-        {{-- ===== RATA-RATA DURASI SELESAI PER MITRA CHART ===== --}}
+        
         <div class="bg-white rounded-[2.5rem] p-6 sm:p-8 shadow-xl border mt-6 relative overflow-hidden"
             style="border-color:#fde8e8; box-shadow: 0 20px 50px rgba(227,43,43,0.08);">
-            {{-- Decorative gradient accent --}}
+            
             <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-red-50 to-transparent rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 relative z-10">
@@ -492,7 +490,7 @@
                 </div>
             </div>
 
-            {{-- Full Width Chart --}}
+            
             <div class="relative w-full h-[400px] rounded-2xl overflow-hidden z-10" style="background: linear-gradient(180deg, #ffffff, #fafbfc);">
                 <canvas id="mitraAvgChart"></canvas>
             </div>

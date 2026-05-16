@@ -6,27 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dashboard') </title>
 
-    <!-- Nonaktifkan prefetch otomatis Turbo (penyebab bounce-back bug) -->
+    
     <meta name="turbo-prefetch" content="false">
-    <!-- Turbo: jangan cache halaman agar redirect tidak menyebabkan bounce-back -->
+    
     <meta name="turbo-cache-control" content="no-cache">
 
-    <!-- PWA Settings -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <meta name="theme-color" content="#dc2626">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
-    <!-- Scripts & Styles -->
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         [x-cloak] {
             display: none !important
         }
 
-        /* YouTube-style Turbo Progress Bar */
+        
         .turbo-progress-bar {
             height: 3px;
-            background-color: #ef4444; /* red-500 */
+            background-color: #ef4444; 
             box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
             z-index: 9999;
         }
@@ -40,7 +37,7 @@
         userMenu: false,
     }" class="min-h-screen relative">
 
-        <!-- ================= SIDEBAR (DESKTOP ONLY) ================= -->
+        
         <aside id="sidebar"
             class="hidden lg:flex fixed inset-y-0 left-0 z-50
                bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800
@@ -49,9 +46,9 @@
                flex-col overflow-hidden shadow-none"
             :style="sidebarOpen ? 'width:260px' : 'width:72px'">
 
-            <!-- LOGO AREA -->
+            
             <div class="h-16 flex items-center gap-3 px-5 border-b border-slate-700/50 shrink-0 relative">
-                {{-- Telkom Logo --}}
+                
                 <div class="w-9 h-9 rounded-lg bg-white flex items-center justify-center shrink-0 p-1 opacity-95 hover:opacity-100 transition-opacity">
                     <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom Logo" class="w-full">
                 </div>
@@ -67,18 +64,18 @@
                 </div>
             </div>
 
-            <!-- MENU LABEL (Admin Only) -->
+            
             @if (auth()->user()->role === 'admin')
                 <div class="px-5 pt-5 pb-2" x-show="sidebarOpen" x-transition.opacity>
                     <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500"></span>
                 </div>
             @endif
 
-            <!-- MENU ITEMS -->
+            
             <nav class="flex-1 px-3 space-y-1 text-sm overflow-y-auto overflow-x-hidden pt-4 lg:pt-0">
 
                 @if (auth()->user()->role === 'admin')
-                    {{-- ADMIN DASHBOARD --}}
+                    
                     <a href="{{ route('admin.dashboard') }}"
                         class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     {{ request()->routeIs('admin.dashboard')
@@ -95,7 +92,7 @@
                 @endif
 
                 @if (auth()->user()->role === 'admin')
-                    {{-- AKUN --}}
+                    
                     <a href="{{ route('admin.users') }}"
                         class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     {{ request()->routeIs('admin.users')
@@ -110,7 +107,7 @@
                         <span x-show="sidebarOpen" x-transition.opacity class="whitespace-nowrap">Kelola Akun</span>
                     </a>
 
-                    {{-- MASTER INPUT --}}
+                    
                     <a href="{{ route('admin.master-input') }}"
                         class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     {{ request()->routeIs('admin.master-input')
@@ -126,7 +123,7 @@
                     </a>
                 @endif
 
-                {{-- B2B DEPLOYMENT (Submenu) --}}
+                
                 <div x-data="{
                     open: {{ request()->routeIs('deployment.*') && !request()->routeIs('deployment.olo') ? 'true' : 'false' }},
                     init() {
@@ -147,7 +144,7 @@
                             'justify-between px-3' :
                             'justify-center px-0 border-l-0'">
 
-                        <!-- ICON -->
+                        
                         <div class="flex items-center" :class="sidebarOpen ? 'gap-3' : 'gap-0'">
 
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2"
@@ -161,7 +158,7 @@
                             </span>
                         </div>
 
-                        <!-- ARROW -->
+                        
                         <svg x-show="sidebarOpen" class="w-4 h-4 transition-transform duration-200"
                             :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24">
@@ -170,7 +167,7 @@
 
                     </button>
 
-                    <!-- SUBMENU -->
+                    
                     <div x-cloak x-show="open && sidebarOpen" x-transition:enter="transition ease-out duration-200"
                         x-transition:enter-start="opacity-0 -translate-y-1"
                         x-transition:enter-end="opacity-100 translate-y-0"
@@ -217,18 +214,16 @@
 
             </nav>
 
-
-
         </aside>
 
-        <!-- ================= NAVBAR ================= -->
+        
         <header id="top-navbar"
             class="fixed top-0 right-0 z-30 h-16
                bg-white border-b border-slate-200
                flex items-center justify-between px-6 transition-all duration-300"
             :style="sidebarOpen ? 'left:260px' : 'left:72px'">
 
-            {{-- Mobile: Left 0 override handled by specific class if needed, but since sidebar is hidden on mobile, left:0 is fine --}}
+            
             <style>
                 @media (max-width: 1024px) {
                     #top-navbar {
@@ -241,9 +236,9 @@
                 }
             </style>
 
-            <!-- LEFT: Toggle + Page Title -->
+            
             <div class="flex items-center gap-4">
-                {{-- Toggle Button: Hidden on Mobile --}}
+                
                 <button @click="sidebarOpen = !sidebarOpen"
                     class="hidden lg:block p-2 rounded-lg hover:bg-slate-100 transition text-slate-500 hover:text-slate-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -251,9 +246,9 @@
                     </svg>
                 </button>
 
-                {{-- Project Title: Visible Everywhere --}}
+                
                 <div class="flex items-center gap-2">
-                    {{-- Mobile Logo --}}
+                    
                     <div class="lg:hidden w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0 p-1 opacity-95">
                         <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom Logo" class="w-full">
                     </div>
@@ -261,28 +256,28 @@
                 </div>
             </div>
 
-            <!-- RIGHT: User Dropdown -->
+            
             <div class="flex items-center gap-3">
 
-                {{-- Notification Widget --}}
+                
                 @if (auth()->user()->role !== 'admin')
                     <div x-data="{ notifOpen: false }" class="relative">
 
-                        {{-- Bell Button --}}
+                        
                         <button @click="notifOpen = !notifOpen"
                             id="notif-bell-btn"
                             class="relative group p-2.5 rounded-xl transition-all duration-200
                                    hover:bg-red-50 hover:shadow-sm
                                    focus:outline-none focus:ring-2 focus:ring-red-200">
                             @if (isset($overdueCount) && $overdueCount > 0)
-                                {{-- Bell shakes when there are alerts --}}
+                                
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     class="w-[18px] h-[18px] text-red-500 notif-bell-shake"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                                 </svg>
-                                {{-- Badge --}}
+                                
                                 <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white
                                              animate-ping opacity-75"></span>
                                 <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
@@ -296,7 +291,7 @@
                             @endif
                         </button>
 
-                        {{-- ======= NOTIFICATION WIDGET PANEL ======= --}}
+                        
                         <div x-show="notifOpen"
                             @click.outside="notifOpen = false"
                             x-transition:enter="transition ease-out duration-200"
@@ -312,13 +307,13 @@
                                    shadow-[0_8px_30px_rgba(0,0,0,0.12)]
                                    bg-white">
 
-                            {{-- Arrow pointer --}}
+                            
                             <div class="absolute -top-2 right-3.5 w-4 h-4 bg-white border-l border-t border-slate-200/80
                                         rotate-45 rounded-tl-sm z-10"></div>
 
-                            {{-- ── WIDGET HEADER ── --}}
+                            
                             <div class="relative px-4 pt-4 pb-3 bg-gradient-to-br from-red-500 to-rose-600 overflow-hidden">
-                                {{-- decorative circles --}}
+                                
                                 <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10"></div>
                                 <div class="absolute -bottom-6 -left-4 w-24 h-24 rounded-full bg-white/5"></div>
 
@@ -352,7 +347,7 @@
                                 </div>
                             </div>
 
-                            {{-- ── NOTIFICATION CARDS ── --}}
+                            
                             <div class="max-h-[320px] overflow-y-auto">
                                 @if (isset($overdueOrders) && $overdueOrders->count() > 0)
                                     <div class="p-3 space-y-2">
@@ -377,7 +372,7 @@
                                             @endphp
                                             <div class="rounded-xl border {{ $urgencyClass }} p-3 transition-all duration-150 hover:shadow-sm group/card">
                                                 <div class="flex items-start gap-2.5">
-                                                    {{-- Urgency dot --}}
+                                                    
                                                     <div class="mt-1.5 w-2 h-2 rounded-full {{ $dotClass }} shrink-0 ring-2 ring-white shadow-sm"></div>
 
                                                     <div class="flex-1 min-w-0">
@@ -419,9 +414,8 @@
                                         @endforeach
                                     </div>
 
-
                                 @else
-                                    {{-- Empty State --}}
+                                    
                                     <div class="flex flex-col items-center justify-center py-10 px-4 text-center">
                                         <div class="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center mb-3 shadow-inner">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -444,7 +438,7 @@
                         </div>
                     </div>
 
-                    {{-- Bell shake animation --}}
+                    
                     <style>
                         @keyframes bell-shake {
                             0%, 100% { transform: rotate(0deg); }
@@ -461,14 +455,14 @@
                     </style>
                 @endif
 
-                {{-- Role Badge --}}
+                
                 <span
                     class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide
                     {{ auth()->user()->role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700' }}">
                     {{ auth()->user()->role }}
                 </span>
 
-                {{-- User Dropdown --}}
+                
                 <div x-data="{ userMenu: false }" class="relative">
                     <button @click="userMenu = !userMenu"
                         class="flex items-center gap-2 pl-3 pr-1 py-1 rounded-full
@@ -481,7 +475,7 @@
                         </div>
                     </button>
 
-                    <!-- Dropdown Panel -->
+                    
                     <div x-show="userMenu" @click.outside="userMenu = false"
                         x-transition:enter="transition ease-out duration-150"
                         x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
@@ -493,7 +487,7 @@
                                bg-white border border-slate-200
                                rounded-2xl shadow-xl overflow-hidden z-50">
 
-                        {{-- User Info Header --}}
+                        
                         <div class="px-4 py-4 bg-slate-50 border-b border-slate-100">
                             <div class="flex items-center gap-3">
                                 <div
@@ -507,7 +501,7 @@
                             </div>
                         </div>
 
-                        {{-- Menu Items --}}
+                        
                         <div class="py-2">
                             <a href="{{ route('profile.edit') }}"
                                 class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition">
@@ -519,12 +513,9 @@
                                 Profile Saya
                             </a>
 
-
-
-
                         </div>
 
-                        {{-- Logout --}}
+                        
                         <div class="border-t border-slate-100">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -545,7 +536,7 @@
 
         </header>
 
-        <!-- ================= MAIN ================= -->
+        
         <main id="main-content" class="pt-20 transition-all duration-300 min-h-screen"
             :style="sidebarOpen ? 'margin-left:260px' : 'margin-left:72px'">
             <div style="padding: 1rem; padding-bottom: 6rem;">
@@ -555,14 +546,14 @@
             </div>
         </main>
 
-        {{-- MOBILE NAVIGATION --}}
+        
         @include('layouts.mobile-nav')
 
     </div>
 
     @stack('scripts')
 
-    {{-- Turbo Drive: re-init Alpine.js on each Turbo navigation --}}
+    
     <script>
         // Fix bounce-back: matikan Turbo cache sepenuhnya
         document.addEventListener('turbo:before-cache', function() {
@@ -604,20 +595,6 @@
         });
     </script>
 
-    {{-- Service Worker Registration for PWA --}}
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
 </body>
 
 </html>

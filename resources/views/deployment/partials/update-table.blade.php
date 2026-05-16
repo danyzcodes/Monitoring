@@ -15,7 +15,7 @@
         <tbody class="divide-y divide-slate-100">
             @forelse ($rows as $row)
             <tr class="hover:bg-red-50/30 transition group">
-                <!-- NDE JT (Sticky) -->
+                
                 <td class="px-6 py-4 font-medium text-slate-900 sticky left-0 bg-white group-hover:bg-red-50 z-10 border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                     {{ $row->nde_jt ?? '-' }}
                 </td>
@@ -29,7 +29,7 @@
                 <td class="px-6 py-4 whitespace-nowrap">{{ $row->sto ?? '-' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $row->nomor_batch ?? '-' }}</td>
 
-                <!-- STATUS BADGES -->
+                
                 <td class="px-6 py-4 whitespace-nowrap">
                     <x-status-badge :value="optional($row->planning)->status_alokasi_alpro" />
                 </td>
@@ -49,17 +49,17 @@
                     <x-status-badge :value="optional($row->planning)->nama_cfu" />
                 </td>
 
-                <!-- STATUS PROYEK -->
+                
                 <td class="px-6 py-4 whitespace-nowrap">
                     <x-status-badge :value="optional($row->planning)->status_proyek" />
                 </td>
 
-                <!-- PROGRES -->
+                
                 <td class="px-6 py-4 whitespace-nowrap">
                     <x-status-badge :value="$row->progres" />
                 </td>
 
-                <!-- USIA ORDER (Telat dari Komitmen) -->
+                
                  <td class="px-6 py-4 whitespace-nowrap">
                     @php
                         $commitmentDate = $row->data['commitment_date'] ?? null;
@@ -108,7 +108,7 @@
                     @endif
                 </td>
 
-                <!-- ACTION (Sticky Right) -->
+                
                 <td class="px-4 py-3 text-center whitespace-nowrap sticky right-0 bg-white group-hover:bg-red-50 z-10 border-l border-slate-100">
                    <a href="{{ route('deployment.edit', $row->id) }}" 
                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
@@ -140,7 +140,6 @@
     </table>
 </div>
 
-<!-- PAGINATION -->
 <div class="px-6 py-4" style="border-top: 1px solid #fef2f2; background:#fafafa;">
     {{ $rows->links('components.pagination') }}
 </div>

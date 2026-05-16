@@ -7,17 +7,14 @@
     <meta name="description" content="Halaman resmi Unit Optima PT Telkom Indonesia. Monitoring proyek deployment, perencanaan jaringan, dan pengelolaan data terpusat.">
     <meta name="turbo-visit-control" content="reload">
 
-    <!-- PWA Settings -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <meta name="theme-color" content="#0F172A">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
-    <!-- AOS CSS -->
+    
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- Google Fonts: Inter + Poppins --}}
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
@@ -49,9 +46,7 @@
             scroll-behavior: smooth;
         }
 
-        /* ========================================
-           NAVBAR
-        ======================================== */
+        
         .beranda-nav {
             position: fixed;
             top: 0;
@@ -173,9 +168,7 @@
             padding: 0.5rem;
         }
 
-        /* ========================================
-           HERO SECTION
-        ======================================== */
+        
         .hero {
             position: relative;
             min-height: 100vh;
@@ -489,9 +482,7 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* ========================================
-           SECTION COMMON
-        ======================================== */
+        
         .section {
             padding: 6rem 2rem;
         }
@@ -558,9 +549,7 @@
             margin: 0 auto;
         }
 
-        /* ========================================
-           ABOUT SECTION
-        ======================================== */
+        
         .about {
             background: var(--clr-bg-light);
             position: relative;
@@ -691,9 +680,7 @@
             color: #1E293B;
         }
 
-        /* ========================================
-           GALLERY / DOKUMENTASI
-        ======================================== */
+        
         .gallery {
             background: var(--clr-bg);
             position: relative;
@@ -805,9 +792,7 @@
             transform: translateY(0) scale(1);
         }
 
-        /* ========================================
-           LOCATION
-        ======================================== */
+        
         .location {
             background: var(--clr-bg-light);
             position: relative;
@@ -913,9 +898,7 @@
             line-height: 1.6;
         }
 
-        /* ========================================
-           CONTACT SECTION
-        ======================================== */
+        
         .contact {
             background: var(--clr-bg);
             position: relative;
@@ -1022,9 +1005,7 @@
             }
         }
 
-        /* ========================================
-           FOOTER
-        ======================================== */
+        
         .footer {
             background: #0B1120;
             padding: 3rem 2rem 2rem;
@@ -1076,9 +1057,7 @@
             color: #475569;
         }
 
-        /* ========================================
-           SCROLL TO TOP
-        ======================================== */
+        
         .scroll-top-btn {
             position: fixed;
             bottom: 2rem;
@@ -1110,9 +1089,7 @@
             box-shadow: 0 12px 30px rgba(220, 38, 38, 0.5);
         }
 
-        /* ========================================
-           TOAST NOTIFICATION
-        ======================================== */
+        
         .toast-notification {
             position: fixed;
             bottom: 2rem;
@@ -1185,9 +1162,7 @@
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* ========================================
-           MOBILE NAV OVERLAY
-        ======================================== */
+        
         .mobile-nav-overlay {
             position: fixed;
             inset: 0;
@@ -1280,9 +1255,7 @@
             transition: all 0.3s ease;
         }
 
-        /* ========================================
-           RESPONSIVE
-        ======================================== */
+        
         @media (max-width: 1024px) {
             .hero-content {
                 grid-template-columns: 1fr;
@@ -1317,7 +1290,7 @@
 </head>
 
 <body>
-    <!-- ============ NAVBAR ============ -->
+    
     <nav class="beranda-nav" id="berandaNav">
         <a href="#hero" class="nav-logo">
             <div class="nav-logo-icon">
@@ -1352,7 +1325,7 @@
         </button>
     </nav>
 
-    <!-- ============ MOBILE NAV ============ -->
+    
     <div class="mobile-nav-overlay" id="mobileOverlay"></div>
     <div class="mobile-nav-panel" id="mobileNav">
         <div class="mobile-nav-header">
@@ -1375,14 +1348,14 @@
         </a>
     </div>
 
-    <!-- ============ HERO SECTION ============ -->
+    
     <section class="hero" id="hero">
         <div class="hero-bg">
             <img src="{{ asset('images/hero-banner.jpg') }}" alt="Hero Banner Unit Optima" loading="eager">
         </div>
         <div class="hero-overlay"></div>
 
-        {{-- Animated Particles --}}
+        
         <div class="hero-particles" id="heroParticles"></div>
 
         <div class="hero-content">
@@ -1394,7 +1367,7 @@
                     Platform terpusat untuk memantau progres deployment jaringan, perencanaan proyek, dan pengelolaan data order secara real-time bagi Unit Optima Telkom.
                 </p>
 
-                {{-- CTA Buttons --}}
+                
                 <div class="hero-actions" data-aos="fade-up" data-aos-delay="300">
                     <a href="{{ route('login') }}" class="btn-hero-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -1410,7 +1383,7 @@
                     </a>
                 </div>
 
-                {{-- Feature Highlights --}}
+                
                 <div style="margin-top: 3rem; display: flex; flex-wrap: wrap; gap: 1.5rem 2rem; justify-content: center; color: var(--clr-text-muted); font-size: 0.95rem; font-weight: 500;" data-aos="fade-up" data-aos-delay="400">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <span style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(220, 38, 38, 0.15); color: #ef4444;">
@@ -1435,7 +1408,7 @@
         </div>
     </section>
 
-    <!-- ============ ABOUT SECTION ============ -->
+    
     <section class="section about" id="about">
         <div class="section-container">
             <div class="about-grid">
@@ -1499,7 +1472,7 @@
         </div>
     </section>
 
-    <!-- ============ GALLERY SECTION ============ -->
+    
     <section class="section gallery" id="gallery">
         <div class="section-container">
             <div class="section-header" data-aos="fade-up">
@@ -1547,7 +1520,7 @@
         </div>
     </section>
 
-    <!-- ============ LOCATION SECTION ============ -->
+    
     <section class="section location" id="location">
         <div class="section-container">
             <div class="location-grid">
@@ -1596,7 +1569,7 @@
         </div>
     </section>
 
-    <!-- ============ CONTACT SECTION ============ -->
+    
     <section class="section contact" id="contact">
         <div class="section-container">
             <div class="section-header" data-aos="fade-up">
@@ -1635,7 +1608,7 @@
         </div>
     </section>
 
-    <!-- ============ FOOTER ============ -->
+    
     <footer class="footer">
 
         <p class="footer-desc">
@@ -1645,14 +1618,14 @@
         <p class="footer-copy">&copy; {{ date('Y') }} PT Telkom Indonesia Tbk. All rights reserved.</p>
     </footer>
 
-    <!-- ============ SCROLL TO TOP ============ -->
+    
     <button class="scroll-top-btn" id="scrollTopBtn" aria-label="Scroll to top">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
         </svg>
     </button>
 
-    <!-- ============ TOAST NOTIFICATION ============ -->
+    
     <div id="toastNotification" class="toast-notification">
         <div class="toast-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -1670,10 +1643,10 @@
         </button>
     </div>
 
-    <!-- AOS JS -->
+    
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <!-- ============ SCRIPTS ============ -->
+    
     <script>
                 // ——— SCROLL ANIMATIONS (AOS) & JS INIT ———
         // Track scroll handler so we can remove it on Turbo navigation away
@@ -1835,19 +1808,5 @@
         };
     </script>
 
-    {{-- Service Worker Registration for PWA --}}
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-    </script>
 </body>
 </html>

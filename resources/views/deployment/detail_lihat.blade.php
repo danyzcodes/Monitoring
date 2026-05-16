@@ -5,15 +5,15 @@
 @section('content')
 <div class="flex flex-col gap-6" x-data="{ showImageModal: false, imageUrl: '' }">
 
-    <!-- ========== IMAGE LIGHTBOX MODAL ========== -->
+    
     <template x-teleport="body">
         <div x-show="showImageModal" x-cloak class="fixed inset-0 z-[9999] flex items-center justify-center">
-            <!-- BACKDROP -->
+            
             <div x-show="showImageModal" x-transition.opacity duration.300ms class="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer" @click="showImageModal = false"></div>
 
-            <!-- IMAGE CONTENT -->
+            
             <div x-show="showImageModal" x-transition.scale.90 duration.300ms class="relative z-10 max-w-5xl max-h-[90vh] w-full p-4 flex items-center justify-center pointer-events-none">
-                <!-- Close Button -->
+                
                 <button @click="showImageModal = false" class="absolute top-0 right-0 m-4 p-2 bg-black/60 hover:bg-black text-white rounded-full transition-colors z-20 pointer-events-auto">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
@@ -22,7 +22,7 @@
         </div>
     </template>
 
-    {{-- BREADCRUMB --}}
+    
    <div class="flex items-center gap-3 text-slate-500">
 
     <a href="{{ route('deployment.progress-overview') }}"
@@ -45,10 +45,10 @@
 
 </div>
 
-    <!-- DETAIL CARD -->
+    
     <div class="bg-white rounded-2xl shadow-sm border overflow-hidden" style="border-color:#fde8e8; box-shadow: 0 4px 20px rgba(227,43,43,0.06);">
 
-        <!-- HEADER -->
+        
         <div class="px-8 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-center justify-between" x-data="{ showRiwayat: false }">
             <div>
                 <h2 class="text-lg font-bold text-slate-800">Detail Deployment</h2>
@@ -67,18 +67,18 @@
                 </button>
             </div>
 
-            <!-- ========== RIWAYAT ORDER MODAL ========== -->
+            
             <template x-teleport="body">
                 <div x-show="showRiwayat" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center">
-                    <!-- BACKDROP -->
+                    
                     <div x-show="showRiwayat" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                          class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="showRiwayat = false"></div>
 
-                    <!-- CONTENT -->
+                    
                     <div x-show="showRiwayat" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95 translate-y-4"
                          class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col relative z-10 mx-4">
 
-                        <!-- MODAL HEADER -->
+                        
                         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blue-50 to-white rounded-t-2xl">
                             <div>
                                 <h3 class="text-lg font-bold text-slate-800">Daftar Riwayat Proses Order</h3>
@@ -108,7 +108,7 @@
                             </button>
                         </div>
 
-                        <!-- MODAL BODY -->
+                        
                         <div class="overflow-y-auto flex-1">
                             @php
                                 $logs = optional($data->planning)->logs ?? collect();
@@ -142,7 +142,7 @@
                                         $previousProgres = $nextLog ? $nextLog->progres : null;
                                     @endphp
                                     <tr class="hover:bg-blue-50/30 transition">
-                                        <!-- PADA -->
+                                        
                                         <td class="px-5 py-4 whitespace-nowrap align-middle">
                                             <div class="font-medium text-slate-700 text-xs">{{ $log->created_at->format('Y-m-d H:i:s') }}</div>
                                             <div class="mt-1">
@@ -152,7 +152,7 @@
                                             </div>
                                         </td>
 
-                                        <!-- OLEH -->
+                                        
                                         <td class="px-5 py-4 align-middle" style="white-space:nowrap;">
                                             <div style="display:inline-flex;align-items:center;gap:8px;">
                                                 <div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:linear-gradient(135deg,#94a3b8,#475569);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;">
@@ -162,7 +162,7 @@
                                             </div>
                                         </td>
 
-                                        <!-- SEBELUM -->
+                                        
                                         <td class="px-5 py-4 whitespace-nowrap align-middle">
                                             @if($previousProgres)
                                                 <x-status-badge :value="$previousProgres" />
@@ -171,12 +171,12 @@
                                             @endif
                                         </td>
 
-                                        <!-- SETELAH -->
+                                        
                                         <td class="px-5 py-4 whitespace-nowrap align-middle">
                                             <x-status-badge :value="$log->progres" />
                                         </td>
 
-                                        <!-- DURASI -->
+                                        
                                         <td class="px-5 py-4 whitespace-nowrap align-middle">
                                             @if($duration)
                                                 <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-medium bg-slate-50 text-slate-600 border border-slate-200">
@@ -189,7 +189,7 @@
                                             @endif
                                         </td>
 
-                                        <!-- USIA ORDER -->
+                                        
                                         <td class="px-5 py-4 whitespace-nowrap align-middle">
                                             @if($data->created_at)
                                                 @php
@@ -207,7 +207,7 @@
                                             @endif
                                         </td>
 
-                                        <!-- KETERANGAN -->
+                                        
                                         <td class="px-5 py-4 align-middle">
                                             <div class="text-xs text-slate-600 max-w-[200px] truncate" title="{{ $log->keterangan ?? '-' }}">
                                                 {{ $log->keterangan ?? '-' }}
@@ -230,7 +230,7 @@
                             @endif
                         </div>
 
-                        <!-- MODAL FOOTER -->
+                        
                         <div class="px-6 py-4 bg-slate-50 rounded-b-2xl border-t border-slate-100 flex items-center justify-between">
                             <span class="text-xs text-slate-400">Total: {{ $logs->count() }} riwayat</span>
                             <button @click="showRiwayat = false" class="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition shadow-sm text-sm">
@@ -242,10 +242,10 @@
             </template>
         </div>
 
-        <!-- BODY -->
+        
         <div class="p-8 space-y-8">
 
-            <!-- SECTION 1: INFORMASI PELANGGAN -->
+            
             <div>
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 pb-2 border-b border-slate-100">Informasi Pelanggan</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm">
@@ -280,7 +280,7 @@
                 </div>
             </div>
 
-            <!-- SECTION 2: DETAIL LOKASI & TEKNIS -->
+            
             <div>
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 pb-2 border-b border-slate-100">Detail Lokasi & Teknis</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm">
@@ -337,7 +337,7 @@
                 </div>
             </div>
 
-            <!-- SECTION 3: TIMELINE PROGRES -->
+            
             @php
                 $timelineLogs = optional($data->planning)->logs ? optional($data->planning)->logs->sortBy('created_at')->values() : collect();
             @endphp
@@ -349,7 +349,7 @@
                 </h4>
 
                 <div class="relative">
-                    <!-- Vertical Line -->
+                    
                     <div class="absolute left-[18px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-red-200 via-red-300 to-red-200 rounded-full"></div>
 
                     <div class="space-y-0">
@@ -372,7 +372,7 @@
                             $isLast = $stepIndex === $timelineLogs->count() - 1;
                         @endphp
                         <div class="relative flex gap-5 pb-8 {{ $isLast ? 'pb-0' : '' }}">
-                            <!-- Step Circle -->
+                            
                             <div class="relative z-0 shrink-0">
                                 <div class="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shadow-sm
                                     {{ $isLast ? 'bg-gradient-to-br from-red-500 to-red-600 text-white ring-4 ring-red-100' : 'bg-white border-2 border-red-300 text-red-600' }}">
@@ -380,9 +380,9 @@
                                 </div>
                             </div>
 
-                            <!-- Step Content -->
+                            
                             <div class="flex-1 bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden {{ $isLast ? 'ring-1 ring-red-100' : '' }}">
-                                <!-- Step Header -->
+                                
                                 <div class="px-5 py-3 bg-gradient-to-r {{ $isLast ? 'from-red-50 to-white' : 'from-slate-50 to-white' }} border-b border-slate-100 flex items-center justify-between flex-wrap gap-2">
                                     <div class="flex items-center gap-3">
                                         <x-status-badge :value="$log->progres" />
@@ -391,14 +391,14 @@
                                         @endif
                                     </div>
                                     <div class="flex items-center gap-3 text-xs text-slate-500">
-                                        <!-- Date -->
+                                        
                                         <div class="flex items-center gap-1">
                                             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
                                             {{ $log->created_at->format('d M Y, H:i') }}
                                         </div>
-                                        <!-- User -->
+                                        
                                         <div class="flex items-center gap-1.5">
                                             <div class="w-5 h-5 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-white text-[9px] font-bold">
                                                 {{ strtoupper(substr(optional($log->user)->name ?? '?', 0, 1)) }}
@@ -408,9 +408,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Step Body -->
+                                
                                 <div class="px-5 py-4">
-                                    <!-- Keterangan -->
+                                    
                                     @if($log->keterangan)
                                     <div class="mb-4">
                                         <div class="text-xs text-slate-500 mb-1">Keterangan</div>
@@ -418,7 +418,7 @@
                                     </div>
                                     @endif
 
-                                    <!-- Evidence Images -->
+                                    
                                     @if($evidences->count() > 0)
                                     <div class="mb-4">
                                         <div class="text-xs text-slate-500 mb-2">Evidence</div>
@@ -438,7 +438,7 @@
                                     </div>
                                     @endif
 
-                                    <!-- Links -->
+                                    
                                     @if($links->count() > 0)
                                     <div class="mb-3">
                                         <div class="text-xs text-slate-500 mb-2">Link</div>
@@ -456,7 +456,7 @@
                                     </div>
                                     @endif
 
-                                    <!-- Other Data -->
+                                    
                                     @if($otherData->count() > 0)
                                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                                         @foreach($otherData as $oKey => $oValue)
@@ -479,7 +479,7 @@
                 </div>
             </div>
             @elseif(!empty($data->data) && is_array($data->data))
-            <!-- Fallback: show current data if no logs -->
+            
             <div>
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 pb-2 border-b border-slate-100">
                     Evidence & Progres ({{ $data->progres }})
@@ -519,7 +519,7 @@
             </div>
             @endif
 
-            <!-- SECTION 4: LINK DOKUMEN -->
+            
             @if($data->link_dokumen)
             <div>
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 pb-2 border-b border-slate-100">Link Dokumen</h4>
@@ -535,7 +535,7 @@
 
         </div>
 
-        <!-- FOOTER -->
+        
         <div class="px-8 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
             <span>Dibuat: {{ $data->created_at?->format('d M Y, H:i') ?? '-' }}</span>
             @if($data->tanggal_update_progres)

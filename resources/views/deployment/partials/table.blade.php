@@ -1,7 +1,7 @@
 <div class="relative overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
     <table class="w-full text-sm text-left text-slate-600">
 
-        <!-- HEADER -->
+        
         <thead class="text-xs text-slate-500 uppercase border-b border-slate-200 sticky top-0 z-20" style="background:#fafafa;">
             <tr>
                 <th class="sticky left-0 z-40 bg-slate-50 px-6 py-4 border-r border-slate-200 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] whitespace-nowrap">
@@ -32,12 +32,12 @@
             </tr>
         </thead>
 
-        <!-- BODY -->
+        
         <tbody class="divide-y divide-slate-100">
             @forelse ($rows as $row)
                 <tr class="hover:bg-red-50/30 transition group">
 
-                    <!-- STICKY FIRST COLUMN -->
+                    
                     <td class="sticky left-0 z-10 bg-white group-hover:bg-slate-50 px-6 py-4 font-medium text-slate-900 border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] whitespace-nowrap">
                         {{ $row->star_click_id ?? '-' }}
                     </td>
@@ -45,7 +45,7 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->track_id }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->ticket_id }}</td>
 
-                    <!-- STATUS BADGE -->
+                    
                     <td class="px-6 py-4 whitespace-nowrap">
                         <x-status-badge :value="$row->star_click_status" />
                     </td>
@@ -147,7 +147,6 @@
     </table>
 </div>
 
-<!-- PAGINATION -->
 <div class="mt-6">
     {{ $rows->links('components.pagination') }}
 </div>
