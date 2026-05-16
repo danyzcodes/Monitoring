@@ -67,7 +67,15 @@ class MasterInputController extends Controller
         ]);
 
         $datel = MasterDatel::findOrFail($id);
-        $datel->update(['nama_datel' => strtoupper($request->nama_datel)]);
+        $oldNama = $datel->nama_datel;
+        $newNama = strtoupper($request->nama_datel);
+        
+        $datel->update(['nama_datel' => $newNama]);
+
+        if ($oldNama !== $newNama) {
+            \App\Models\EbisManualInput::where('datel', $oldNama)->update(['datel' => $newNama]);
+            \App\Models\EbisPlanningOrder::where('datel', $oldNama)->update(['datel' => $newNama]);
+        }
 
         return back()->with('success', 'Datel berhasil diperbarui');
     }
@@ -79,7 +87,15 @@ class MasterInputController extends Controller
         ]);
 
         $sto = MasterSto::findOrFail($id);
-        $sto->update(['nama_sto' => strtoupper($request->nama_sto)]);
+        $oldNama = $sto->nama_sto;
+        $newNama = strtoupper($request->nama_sto);
+        
+        $sto->update(['nama_sto' => $newNama]);
+
+        if ($oldNama !== $newNama) {
+            \App\Models\EbisManualInput::where('sto', $oldNama)->update(['sto' => $newNama]);
+            \App\Models\EbisPlanningOrder::where('sto', $oldNama)->update(['sto' => $newNama]);
+        }
 
         return back()->with('success', 'STO berhasil diperbarui');
     }
@@ -91,7 +107,15 @@ class MasterInputController extends Controller
         ]);
 
         $mitra = MasterMitra::findOrFail($id);
-        $mitra->update(['nama_mitra' => strtoupper($request->nama_mitra)]);
+        $oldNama = $mitra->nama_mitra;
+        $newNama = strtoupper($request->nama_mitra);
+        
+        $mitra->update(['nama_mitra' => $newNama]);
+
+        if ($oldNama !== $newNama) {
+            \App\Models\EbisManualInput::where('nama_mitra', $oldNama)->update(['nama_mitra' => $newNama]);
+            \App\Models\EbisPlanningOrder::where('nama_mitra', $oldNama)->update(['nama_mitra' => $newNama]);
+        }
 
         return back()->with('success', 'Mitra berhasil diperbarui');
     }
