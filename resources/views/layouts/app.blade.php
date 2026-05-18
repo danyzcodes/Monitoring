@@ -555,51 +555,55 @@
 
     
     <script>
-        // Fix bounce-back: matikan Turbo cache sepenuhnya
-        document.addEventListener('turbo:before-cache', function() {
-            // Hapus semua Alpine state sebelum Turbo cache page
-            document.querySelectorAll('[x-data]').forEach(function(el) {
-                if (el._x_dataStack) {
-                    try { window.Alpine.destroyTree(el); } catch (e) {}
-                }
-            });
-            // Tandai semua halaman sebagai no-cache
-            const meta = document.querySelector('meta[name="turbo-cache-control"]');
-            if (!meta) {
-                const m = document.createElement('meta');
-                m.name = 'turbo-cache-control';
-                m.content = 'no-cache';
-                document.head.appendChild(m);
-            }
-        });
-
-        // Re-init Alpine.js setelah Turbo navigasi
-        document.addEventListener('turbo:load', function() {
-            if (window.Alpine) {
+        if (!window.appScriptInitialized) {
+            // Fix bounce-back: matikan Turbo cache sepenuhnya
+            document.addEventListener('turbo:before-cache', function() {
+                // Hapus semua Alpine state sebelum Turbo cache page
                 document.querySelectorAll('[x-data]').forEach(function(el) {
-                    if (!el._x_dataStack) {
-                        window.Alpine.initTree(el);
+                    if (el._x_dataStack) {
+                        try { window.Alpine.destroyTree(el); } catch (e) {}
                     }
                 });
-            }
-        });
+                // Tandai semua halaman sebagai no-cache
+                const meta = document.querySelector('meta[name="turbo-cache-control"]');
+                if (!meta) {
+                    const m = document.createElement('meta');
+                    m.name = 'turbo-cache-control';
+                    m.content = 'no-cache';
+                    document.head.appendChild(m);
+                }
+            });
 
-        // Simpan posisi scroll sebelum submit atau navigasi
-        let lastScrollY = 0;
-        let isSamePageFormSubmit = false;
+            // Re-init Alpine.js setelah Turbo navigasi
+            document.addEventListener('turbo:load', function() {
+                if (window.Alpine) {
+                    document.querySelectorAll('[x-data]').forEach(function(el) {
+                        if (!el._x_dataStack) {
+                            window.Alpine.initTree(el);
+                        }
+                    });
+                }
+            });
 
-        document.addEventListener('submit', function() {
-            lastScrollY = window.scrollY;
-            isSamePageFormSubmit = true;
-        });
+            // Simpan posisi scroll sebelum submit atau navigasi
+            window.lastScrollYPosition = 0;
+            window.isSamePageFormSubmit = false;
 
-        // Pertahankan posisi scroll jika setelah form submit kembali ke halaman yang sama
-        document.addEventListener('turbo:render', function() {
-            if (isSamePageFormSubmit) {
-                window.scrollTo(0, lastScrollY);
-                isSamePageFormSubmit = false;
-            }
-        });
+            document.addEventListener('submit', function() {
+                window.lastScrollYPosition = window.scrollY;
+                window.isSamePageFormSubmit = true;
+            });
+
+            // Pertahankan posisi scroll jika setelah form submit kembali ke halaman yang sama
+            document.addEventListener('turbo:render', function() {
+                if (window.isSamePageFormSubmit) {
+                    window.scrollTo(0, window.lastScrollYPosition);
+                    window.isSamePageFormSubmit = false;
+                }
+            });
+
+            window.appScriptInitialized = true;
+        }
     </script>
 
 </body>
