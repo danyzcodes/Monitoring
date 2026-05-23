@@ -20,12 +20,18 @@
             display: none !important
         }
 
-        
         .turbo-progress-bar {
             height: 3px;
             background-color: #ef4444; 
             box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
             z-index: 9999;
+        }
+
+        /* Force sidebar display on desktop to prevent Tailwind hidden conflict */
+        @media (min-width: 1024px) {
+            #sidebar {
+                display: flex !important;
+            }
         }
     </style>
 </head>
@@ -225,7 +231,7 @@
 
             
             <style>
-                @media (max-width: 1024px) {
+                @media (max-width: 1023px) {
                     #top-navbar {
                         left: 0 !important;
                     }
@@ -601,6 +607,26 @@
                     window.isSamePageFormSubmit = false;
                 }
             });
+
+            // Clear any stale Service Workers from other projects running on the same port (e.g. 127.0.0.1:8000)
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    let unregisteredAny = false;
+                    let promises = registrations.map(function(reg) {
+                        return reg.unregister().then(function(success) {
+                            if (success) unregisteredAny = true;
+                        });
+                    });
+                    Promise.all(promises).then(function() {
+                        if (unregisteredAny) {
+                            console.log('Stale Service Worker cleared. Reloading page...');
+                            window.location.reload();
+                        }
+                    });
+                }).catch(function(err) {
+                    console.warn('Error clearing service workers:', err);
+                });
+            }
 
             window.appScriptInitialized = true;
         }

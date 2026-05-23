@@ -27,10 +27,11 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
     </style>
 </head>
 
-<body class="relative min-h-screen overflow-hidden bg-slate-900">
+<body class="relative min-h-screen overflow-x-hidden bg-slate-900">
 
     
     <div class="absolute inset-0 z-0">
@@ -57,10 +58,10 @@
     </div>
 
     
-    <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="relative z-10 min-h-screen w-full flex flex-col items-center justify-center p-6 mx-auto">
         
         
-        <div class="text-center mb-12">
+        <div class="text-center mb-12 mx-auto">
             <span class="inline-block py-1 px-3 rounded-full bg-red-600/20 border border-red-500/30 text-red-100 text-xs font-semibold tracking-wider uppercase mb-4 backdrop-blur-sm">
                 Project Dashboard
             </span>
@@ -73,7 +74,7 @@
         </div>
 
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl mx-auto">
             
             
             <a href="#" class="group relative h-72 rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20">
@@ -86,6 +87,8 @@
                     
                     <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all"></div>
                     <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-all"></div>
+                    
+
 
                     <div class="relative z-10">
                         <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 mb-6 group-hover:scale-110 transition-transform duration-500 border border-white/10">
@@ -121,6 +124,8 @@
                      
                      <div class="absolute -right-10 -top-10 w-40 h-40 bg-red-500/20 rounded-full blur-3xl group-hover:bg-red-500/30 transition-all"></div>
                      <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl group-hover:bg-orange-500/30 transition-all"></div>
+                     
+
 
                     <div class="relative z-10">
                         <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/30 mb-6 group-hover:scale-110 transition-transform duration-500 border border-white/10">
@@ -155,6 +160,7 @@
             &copy; {{ date('Y') }} PT. Telkom Indonesia (Persero) Tbk. All rights reserved.
         </p>
     </div>
+
 
 </body>
 </html>
