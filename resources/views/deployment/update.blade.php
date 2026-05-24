@@ -144,8 +144,6 @@
                 </div>
             </form>
 
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
-            <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
             <style>
                 .filter-ts { width: 100% !important; }
                 .filter-ts .ts-control { border-radius: 0.75rem !important; border-color: #e2e8f0 !important; background: #f8fafc !important; font-size: 0.8rem !important; min-height: 40px; }
@@ -158,6 +156,7 @@
             </style>
             <script>
                 function initUpdateFilterTS() {
+                    if (typeof TomSelect === 'undefined') return;
                     ['u_status_order','u_sto','u_jenis_program','u_datel','u_tipe_desain','u_cfu','u_progres','u_status_proyek','u_nomor_batch'].forEach(function(id) {
                         const el = document.getElementById(id);
                         if (el && !el.tomselect) {

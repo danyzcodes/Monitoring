@@ -380,7 +380,7 @@
                                             <svg class="w-2 h-2" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path
-                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 0 00-2 2v12a2 0 002 2z">
+                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H5a2 0 0 0-2 2v12a2 0 0 0 2 2z">
                                                 </path>
                                             </svg>
                                             {{ \Carbon\Carbon::parse($log->data['commitment_date'])->format('d M') }}
@@ -928,7 +928,7 @@
             `).join('');
         }
 
-        let _liveTrackingPending = false;
+        var _liveTrackingPending = false;
 
         async function pollLiveTracking() {
             if (_liveTrackingPending) return;

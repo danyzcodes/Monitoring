@@ -11,6 +11,11 @@
 
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Tom Select -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
     <style>
         [x-cloak] {
             display: none !important
