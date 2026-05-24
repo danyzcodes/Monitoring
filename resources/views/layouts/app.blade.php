@@ -547,7 +547,7 @@
 
                         
                         <div class="border-t border-slate-100">
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('logout') }}" data-turbo="false">
                                 @csrf
                                 <button type="submit"
                                     class="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">

@@ -563,7 +563,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('register') }}" id="registerForm">
+                <form method="POST" action="{{ route('register') }}" id="registerForm" data-turbo="false">
                     @csrf
 
                     <!-- Nama Lengkap field -->
@@ -651,7 +651,7 @@
 
                 <div class="form-footer-links stagger-8">
                     <span class="link-item">
-                        Sudah memiliki akun? <a href="{{ route('login') }}">Masuk</a>
+                        Sudah memiliki akun? <a href="{{ route('login') }}" data-turbo="false">Masuk</a>
                     </span>
                 </div>
 

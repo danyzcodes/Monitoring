@@ -555,7 +555,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" id="loginForm">
+                <form method="POST" action="{{ route('login') }}" id="loginForm" data-turbo="false">
                     @csrf
 
                     <!-- Email field -->
@@ -609,14 +609,14 @@
                 </form>
 
                 <div class="form-footer-links stagger-6">
-                    <a href="#" class="link-item forgot-pass">
+                    <a href="{{ route('password.request') }}" class="link-item forgot-pass">
                         <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                         Lupa Password ?
                     </a>
                     <span class="link-item">
-                        Belum memiliki akun? <a href="{{ route('register') }}">Register</a>
+                        Belum memiliki akun? <a href="{{ route('register') }}" data-turbo="false">Register</a>
                     </span>
                 </div>
 

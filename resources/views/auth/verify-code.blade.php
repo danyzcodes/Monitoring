@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lupa Password | KPRO</title>
+    <title>Verifikasi OTP | KPRO</title>
     <meta name="turbo-cache-control" content="no-cache">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
@@ -229,6 +229,10 @@
             text-align: center;
         }
 
+        .form-instructions strong {
+            color: var(--text-dark);
+        }
+
         .form-group {
             margin-bottom: 1.75rem;
         }
@@ -240,36 +244,33 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
         }
 
         .input-wrapper {
             position: relative;
             display: flex;
-            align-items: center;
+            justify-content: center;
         }
 
-        .form-input {
-            width: 100%;
-            height: 40px;
+        .form-input-otp {
+            width: 80%;
+            height: 50px;
             border: none;
-            border-bottom: 1.5px solid #cbd5e1;
-            border-radius: 0;
+            border-bottom: 2px solid #cbd5e1;
             background: transparent;
-            padding: 0.5rem 0.25rem;
-            font-size: 0.95rem;
+            font-size: 1.75rem;
             color: var(--text-dark);
-            font-weight: 500;
-            transition: var(--transition);
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: 0.4em;
+            padding-left: 0.4em; /* offset letter-spacing on last char */
             outline: none;
+            transition: var(--transition);
         }
 
-        .form-input::placeholder {
-            color: #cbd5e1;
-            font-weight: 400;
-        }
-
-        .form-input:focus {
+        .form-input-otp:focus {
             border-bottom-color: var(--border-focus);
         }
 
@@ -332,6 +333,32 @@
             line-height: 1.45;
         }
 
+        .success-alert {
+            padding: 0.75rem 1rem;
+            background-color: #f0fdf4;
+            border: 1.5px solid #86efac;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-alert svg {
+            color: #16a34a;
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            margin-top: 1px;
+        }
+
+        .success-alert p {
+            font-size: 0.8rem;
+            color: #14532d;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-3px); }
@@ -363,6 +390,28 @@
 
         .link-item a:hover {
             text-decoration: underline;
+        }
+
+        .btn-resend-link {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 0.825rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn-resend-link:hover {
+            text-decoration: underline;
+        }
+
+        .btn-resend-link:disabled {
+            color: var(--text-muted);
+            cursor: not-allowed;
+            text-decoration: none;
         }
 
         .spinner {
@@ -400,7 +449,7 @@
             <div class="blob blob-3"></div>
 
             <div class="left-content">
-                <p class="welcome-label">Lupa Kata Sandi?</p>
+                <p class="welcome-label">Verifikasi OTP</p>
                 <h1 class="app-title">KPRO <span>MONITORING</span></h1>
                 <p class="app-detail">Witel Cirebon - Telkom Indonesia</p>
             </div>
@@ -412,12 +461,21 @@
                 
                 <div class="logo-section stagger-1">
                     <img class="brand-logo-img" src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom Logo">
-                    <div class="form-caption">Reset Kata Sandi</div>
+                    <div class="form-caption">Verifikasi OTP</div>
                 </div>
 
                 <div class="form-instructions stagger-2">
-                    Masukkan email Anda yang terdaftar. Kami akan mengirimkan kode verifikasi (OTP) untuk mereset kata sandi Anda.
+                    Kami telah mengirimkan 6 digit kode OTP ke email <strong>{{ $email }}</strong>. Silakan masukkan kode tersebut di bawah.
                 </div>
+
+                @if (session('status'))
+                    <div class="success-alert stagger-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p>{{ session('status') }}</p>
+                    </div>
+                @endif
 
                 @if ($errors->any())
                     <div class="error-alert stagger-2">
@@ -428,17 +486,17 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('password.email') }}" id="forgotForm" data-turbo="false">
+                <form method="POST" action="{{ route('password.verify.post') }}" id="verifyForm" data-turbo="false">
                     @csrf
 
-                    <!-- Email field -->
+                    <!-- OTP Code field -->
                     <div class="form-group stagger-3">
-                        <label for="email" class="form-label">Alamat Email</label>
+                        <label for="code" class="form-label">Masukkan 6 Digit OTP</label>
                         <div class="input-wrapper">
-                            <input type="email" name="email" id="email" required autofocus
-                                value="{{ old('email') }}"
-                                placeholder="Masukkan Email Anda"
-                                class="form-input">
+                            <input type="text" name="code" id="code" required autocomplete="off"
+                                maxlength="6" pattern="\d{6}"
+                                placeholder="------"
+                                class="form-input-otp">
                         </div>
                     </div>
 
@@ -448,13 +506,24 @@
                             <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path style="opacity:.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span id="btnText">Kirim Kode OTP</span>
+                        <span id="btnText">Verifikasi Kode</span>
                     </button>
                 </form>
 
+                <!-- Resend Link Section with JavaScript Countdown -->
                 <div class="form-footer-links stagger-5">
-                    <span class="link-item">
-                        Kembali ke <a href="{{ route('login') }}" data-turbo="false">Login</a>
+                    <form method="POST" action="{{ route('password.resend') }}" id="resendForm" class="hidden" data-turbo="false"></form>
+                    
+                    <span class="link-item" id="cooldownText">
+                        Tidak menerima kode? Kirim ulang dalam <span id="timer">{{ $secondsRemaining }}</span> detik.
+                    </span>
+                    
+                    <span class="link-item hidden" id="resendContainer">
+                        Tidak menerima kode? <button type="button" class="btn-resend-link" onclick="submitResendForm()">Kirim Ulang Kode</button>
+                    </span>
+
+                    <span class="link-item" style="margin-top: 0.5rem;">
+                        Kembali ke <a href="{{ route('password.request') }}" data-turbo="false">Lupa Password</a>
                     </span>
                 </div>
 
@@ -465,9 +534,10 @@
 
     <script>
         {
-            const forgotForm = document.getElementById('forgotForm');
-            if (forgotForm) {
-                forgotForm.addEventListener('submit', function() {
+            // Handle Submit Loading state
+            const verifyForm = document.getElementById('verifyForm');
+            if (verifyForm) {
+                verifyForm.addEventListener('submit', function() {
                     const btn = document.getElementById('submitBtn');
                     const spinner = document.getElementById('btnSpinner');
                     const text = document.getElementById('btnText');
@@ -475,8 +545,53 @@
                         if (btn) btn.disabled = true;
                     }, 0);
                     if (spinner) spinner.classList.remove('hidden');
-                    if (text) text.textContent = 'Mengirim...';
+                    if (text) text.textContent = 'Memverifikasi...';
                 });
+            }
+
+            // OTP validation (only allows numbers)
+            const otpInput = document.getElementById('code');
+            if (otpInput) {
+                otpInput.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            }
+
+            // Countdown timer script
+            let timeRemaining = parseInt("{{ $secondsRemaining }}", 10);
+            const timerSpan = document.getElementById('timer');
+            const cooldownText = document.getElementById('cooldownText');
+            const resendContainer = document.getElementById('resendContainer');
+
+            function updateTimer() {
+                if (timeRemaining <= 0) {
+                    if (cooldownText) cooldownText.classList.add('hidden');
+                    if (resendContainer) resendContainer.classList.remove('hidden');
+                } else {
+                    if (timerSpan) timerSpan.textContent = timeRemaining;
+                    timeRemaining--;
+                    setTimeout(updateTimer, 1000);
+                }
+            }
+
+            updateTimer();
+        }
+
+        function submitResendForm() {
+            const form = document.getElementById('resendForm');
+            if (form) {
+                // Prevent duplicate clicks
+                const resendBtn = document.querySelector('.btn-resend-link');
+                if (resendBtn) resendBtn.disabled = true;
+                
+                // Add CSRF to resendForm dynamic setup
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = "{{ csrf_token() }}";
+                form.appendChild(csrfInput);
+                
+                form.submit();
             }
         }
     </script>

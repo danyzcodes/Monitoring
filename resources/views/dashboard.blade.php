@@ -52,7 +52,7 @@
             <p class="text-slate-300 text-xs">{{ Auth::user()->email }}</p>
         </div>
         <div class="h-8 w-px bg-white/20 hidden md:block"></div>
-        <form method="POST" action="{{ route('logout') }}">
+        <form method="POST" action="{{ route('logout') }}" data-turbo="false">
             @csrf
             <button type="submit" class="glass-dark hover:bg-white/10 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 group">
                 <span>Keluar</span>

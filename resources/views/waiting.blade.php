@@ -85,7 +85,7 @@
             </p>
 
             
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" data-turbo="false">
                 @csrf
                 <button type="submit" class="btn-primary w-full py-3.5 rounded-xl font-semibold text-white text-sm shadow-lg flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
