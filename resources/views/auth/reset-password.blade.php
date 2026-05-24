@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setel Ulang Password | KPRO</title>
+    <title>Setel Ulang Password</title>
     <meta name="turbo-cache-control" content="no-cache">
     <link class="brand-logo-img" rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
