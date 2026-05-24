@@ -425,7 +425,7 @@
                                         <div class="flex flex-wrap gap-3">
                                             @foreach($evidences as $eKey => $ePath)
                                             <div class="group relative">
-                                                <img src="{{ asset('storage/' . $ePath) }}"
+                                                <img src="{{ asset('storage/' . $ePath) }}" loading="lazy"
                                                      class="h-14 w-auto rounded border border-slate-200 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.1)] cursor-zoom-in group-hover:shadow-[0_4px_12px_-4px_rgba(227,43,43,0.3)] group-hover:border-red-200 transition-all duration-300"
                                                      @click.prevent="imageUrl = '{{ asset('storage/' . $ePath) }}'; showImageModal = true"
                                                      title="{{ str_replace('_', ' ', $eKey) }}">
@@ -491,7 +491,7 @@
                                 <div class="text-sm font-medium text-slate-700 capitalize">{{ str_replace('_', ' ', $key) }}</div>
                                 @if(str_contains($key, 'evidence') && !str_starts_with($key, 'link_'))
                                     <div class="relative group w-fit">
-                                        <img src="{{ asset('storage/' . $value) }}"
+                                        <img src="{{ asset('storage/' . $value) }}" loading="lazy"
                                              class="h-20 w-auto rounded-lg border border-slate-200 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.1)] cursor-zoom-in group-hover:shadow-[0_4px_12px_-4px_rgba(227,43,43,0.3)] group-hover:border-red-200 transition-all duration-300"
                                              @click.prevent="imageUrl = '{{ asset('storage/' . $value) }}'; showImageModal = true">
                                              

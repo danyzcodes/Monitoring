@@ -50,7 +50,7 @@
         @endif
 
         @if(session('success'))
-            <div class="mb-6 p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded-lg shadow-sm animate-fade-in">
+            <div data-turbo-cache="false" class="mb-6 p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded-lg shadow-sm animate-fade-in">
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     <p class="text-sm font-bold text-emerald-800">{{ session('success') }}</p>
@@ -315,7 +315,7 @@
     }
 
     // CONFIGURATION
-    const progressConfig = {
+    var progressConfig = {
         "ON DESK": [{ name: "boq_on_desk", label: "BoQ On Desk", type: "number" }],
         "SURVEY": [{ name: "boq_survey", label: "BoQ Survey", type: "number" }],
         "PERIJINAN": [{ name: "evidence_perijinan", label: "Evidence Perijinan", type: "file" }],

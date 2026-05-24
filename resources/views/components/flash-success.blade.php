@@ -1,9 +1,13 @@
 @if (session('success'))
-<div x-data="{ show: true }"
+@php
+    $flash_id = uniqid();
+@endphp
+<div x-data="{ show: !sessionStorage.getItem('flash_{{ $flash_id }}') }"
      x-show="show"
-     x-init="setTimeout(() => show = false, 3000)"
+     x-init="if (show) { sessionStorage.setItem('flash_{{ $flash_id }}', 'true'); setTimeout(() => show = false, 3000); }"
      class="fixed inset-0 z-[999] flex items-center justify-center px-4"
      style="display: none;"
+     data-turbo-cache="false"
      x-cloak>
     
     
@@ -11,7 +15,7 @@
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
-         x-transition:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ``QQQQQQQQQQQQQQQQQQQQQQ`````````````````leave="transition ease-in duration-200"
+         x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"

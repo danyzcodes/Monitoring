@@ -1,9 +1,13 @@
 @if (session('error'))
-<div x-data="{ show: true }"
+@php
+    $flash_id = uniqid();
+@endphp
+<div x-data="{ show: !sessionStorage.getItem('flash_{{ $flash_id }}') }"
      x-show="show"
-     x-init="setTimeout(() => show = false, 5000)"
+     x-init="if (show) { sessionStorage.setItem('flash_{{ $flash_id }}', 'true'); setTimeout(() => show = false, 5000); }"
      class="fixed inset-0 z-[999] flex items-center justify-center px-4"
      style="display: none;"
+     data-turbo-cache="false"
      x-cloak>
     
     

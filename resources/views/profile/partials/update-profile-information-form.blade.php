@@ -78,10 +78,14 @@
             </button>
 
             @if (session('status') === 'profile-updated')
-                <p x-data="{ show: true }"
+                @php
+                    $flash_id = uniqid();
+                @endphp
+                <p x-data="{ show: !sessionStorage.getItem('flash_{{ $flash_id }}') }"
                     x-show="show"
                     x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
+                    x-init="if (show) { sessionStorage.setItem('flash_{{ $flash_id }}', 'true'); setTimeout(() => show = false, 2000); }"
+                    data-turbo-cache="false"
                     class="text-sm text-green-600 font-medium">
                     Tersimpan!
                 </p>
