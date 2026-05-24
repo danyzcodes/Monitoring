@@ -379,9 +379,9 @@
                                             style="background:#fffbeb; color:#d97706;">
                                             <svg class="w-2 h-2" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
-                                                <path
-                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H5a2 0 0 0-2 2v12a2 0 0 0 2 2z">
-                                                </path>
+                                                 <path
+                                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2 -2V7a2 2 0 0 1 -2 -2H5a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2z">
+                                                 </path>
                                             </svg>
                                             {{ \Carbon\Carbon::parse($log->data['commitment_date'])->format('d M') }}
                                         </span>
@@ -423,7 +423,7 @@
                         <div class="p-3.5 rounded-2xl shadow-lg" style="background: linear-gradient(135deg, #fef2f2, #fee2e2); color:#e32b2b;">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                    d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z">
+                                    d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4z">
                                 </path>
                             </svg>
                         </div>
@@ -644,7 +644,7 @@
                         
                         <div x-show="!loading && dates.length === 0" class="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm z-10">
                             <svg class="w-12 h-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2 -2V7a2 2 0 0 1 -2 -2H5a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2z"></path>
                             </svg>
                             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Belum Ada Data</p>
                         </div>
@@ -866,7 +866,7 @@
                         </span>
                         ${log.commitment_date ? `
                                     <span class="text-[8px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-md flex items-center gap-1" style="background:#fffbeb; color:#d97706;">
-                                        <svg class="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"></path></svg>
+                                        <svg class="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 1 2 -2V7a2 2 0 0 1 -2 -2H5a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2z"></path></svg>
                                         ${log.commitment_date}
                                     </span>` : ''}
                     </div>
