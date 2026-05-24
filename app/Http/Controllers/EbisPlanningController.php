@@ -180,11 +180,11 @@ class EbisPlanningController extends Controller
          * =============================
          */
         if ($request->filled('starclick')) {
-            $query->where('star_click_id', $request->starclick);
+            $query->where('ebis_manual_inputs.star_click_id', $request->starclick);
         }
 
         if ($request->filled('nama')) {
-            $query->where('nama_customer', 'like', '%' . $request->nama . '%');
+            $query->where('ebis_manual_inputs.nama_customer', 'like', '%' . $request->nama . '%');
         }
 
         if ($request->filled('sto')) {
@@ -316,9 +316,9 @@ class EbisPlanningController extends Controller
          * =============================
          */
         $filters = [
-            'starclicks' => EbisManualInput::select('star_click_id')->whereNotNull('star_click_id')->distinct()->pluck('star_click_id'),
+            'starclicks' => [],
 
-            'nama_customers' => EbisManualInput::select('nama_customer')->whereNotNull('nama_customer')->distinct()->pluck('nama_customer'),
+            'nama_customers' => [],
 
             'stos' => \App\Models\MasterSto::orderBy('nama_sto')->pluck('nama_sto'),
 

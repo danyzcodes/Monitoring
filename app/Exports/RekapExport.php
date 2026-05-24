@@ -27,34 +27,90 @@ class RekapExport implements FromQuery, WithHeadings, WithMapping, WithStyles
 
         // FILTER DROPDOWN ATAS
         if ($this->request->filled('starclick')) {
-            $query->where('star_click_id', $this->request->starclick);
+            $query->where('ebis_manual_inputs.star_click_id', $this->request->starclick);
         }
 
         if ($this->request->filled('nama')) {
-            $query->where('nama_customer', 'like', '%' . $this->request->nama . '%');
+            $query->where('ebis_manual_inputs.nama_customer', 'like', '%' . $this->request->nama . '%');
         }
 
         if ($this->request->filled('sto')) {
-            $query->where('sto', $this->request->sto);
+            $stos = array_filter((array) $this->request->sto);
+            if (!empty($stos)) $query->whereIn('ebis_manual_inputs.sto', $stos);
         }
 
-        if ($this->request->filled('status_order') || $this->request->filled('tipe_desain') || $this->request->filled('jenis_program')) {
+        if ($this->request->filled('datel')) {
+            $datels = array_filter((array) $this->request->datel);
+            if (!empty($datels)) $query->whereIn('ebis_manual_inputs.datel', $datels);
+        }
+
+        if ($this->request->filled('progres')) {
+            $progresses = array_filter((array) $this->request->progres);
+            if (!empty($progresses)) $query->whereIn('ebis_manual_inputs.progres', $progresses);
+        }
+
+        if ($this->request->filled('nomor_batch')) {
+            $batches = array_filter((array) $this->request->nomor_batch);
+            if (!empty($batches)) $query->whereIn('ebis_manual_inputs.nomor_batch', $batches);
+        }
+
+        $hasRelFilter = $this->request->filled('status_order') || $this->request->filled('tipe_desain') || $this->request->filled('jenis_program') || $this->request->filled('cfu') || $this->request->filled('status_proyek');
+        if ($hasRelFilter) {
             $query->whereHas('planning', function ($q) {
                 if ($this->request->filled('status_order')) {
-                    $q->where('status_order', $this->request->status_order);
+                    $vals = array_filter((array) $this->request->status_order);
+                    if (!empty($vals)) $q->whereIn('status_order', $vals);
                 }
-
                 if ($this->request->filled('tipe_desain')) {
-                    $q->where('tipe_desain', $this->request->tipe_desain);
+                    $vals = array_filter((array) $this->request->tipe_desain);
+                    if (!empty($vals)) $q->whereIn('tipe_desain', $vals);
                 }
-
                 if ($this->request->filled('jenis_program')) {
-                    $q->where('jenis_program', $this->request->jenis_program);
+                    $vals = array_filter((array) $this->request->jenis_program);
+                    if (!empty($vals)) $q->whereIn('jenis_program', $vals);
+                }
+                if ($this->request->filled('cfu')) {
+                    $vals = array_filter((array) $this->request->cfu);
+                    if (!empty($vals)) $q->whereIn('cfu', $vals);
+                }
+                if ($this->request->filled('status_proyek')) {
+                    $vals = array_filter((array) $this->request->status_proyek);
+                    if (!empty($vals)) $q->whereIn('status_proyek', $vals);
                 }
             });
         }
 
-        // CARI FILTERING (MULTIPLE)
+        if ($this->request->filled('start_date') && $this->request->filled('end_date')) {
+            $query->whereBetween('ebis_manual_inputs.created_at', [
+                $this->request->start_date . ' 00:00:00',
+                $this->request->end_date . ' 23:59:59'
+            ]);
+        } elseif ($this->request->filled('start_date')) {
+            $query->where('ebis_manual_inputs.created_at', '>=', $this->request->start_date . ' 00:00:00');
+        } elseif ($this->request->filled('end_date')) {
+            $query->where('ebis_manual_inputs.created_at', '<=', $this->request->end_date . ' 23:59:59');
+        }
+
+        if ($this->request->filled('search')) {
+            $search = $this->request->search;
+            if (str_contains($search, ',')) {
+                $values = array_filter(array_map('trim', explode(',', $search)));
+                $query->where(function ($q) use ($values) {
+                    $q->whereIn('ebis_manual_inputs.star_click_id', $values);
+                    foreach ($values as $val) {
+                        $q->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$val}%");
+                    }
+                });
+            } else {
+                $query->where(function ($q) use ($search) {
+                    $q->where('ebis_manual_inputs.star_click_id', 'like', "%{$search}%")
+                      ->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$search}%")
+                      ->orWhere('ebis_manual_inputs.nde_jt', 'like', "%{$search}%")
+                      ->orWhere('ebis_manual_inputs.sto', 'like', "%{$search}%");
+                });
+            }
+        }
+
         $key = $this->request->filter_key;
         $values = array_filter(array_map('trim', explode(',', $this->request->filter_values ?? '')));
 
@@ -62,17 +118,19 @@ class RekapExport implements FromQuery, WithHeadings, WithMapping, WithStyles
             $query->where(function ($q) use ($key, $values) {
                 foreach ($values as $val) {
                     if ($key === 'star_click_id') {
-                        $q->orWhere($key, $val);
-                    } elseif (in_array($key, ['sto', 'nama_customer'])) {
-                        $q->orWhere($key, 'like', "%{$val}%");
+                        $q->orWhere('ebis_manual_inputs.star_click_id', $val);
+                    } elseif ($key === 'sto') {
+                        $q->orWhere('ebis_manual_inputs.sto', 'like', "%{$val}%");
+                    } elseif ($key === 'nama_customer') {
+                        $q->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$val}%");
                     }
 
                     if (in_array($key, ['ihld_lop_id', 'status_order', 'tipe_desain', 'jenis_program'])) {
                         $q->orWhereHas('planning', function ($p) use ($key, $val) {
                             if ($key === 'ihld_lop_id') {
-                                $p->where($key, $val);
+                                    $p->where($key, $val);
                             } else {
-                                $p->where($key, 'like', "%{$val}%");
+                                    $p->where($key, 'like', "%{$val}%");
                             }
                         });
                     }
