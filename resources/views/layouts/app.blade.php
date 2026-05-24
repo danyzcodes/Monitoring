@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>@yield('title', 'Dashboard') </title>
 
     
@@ -31,6 +31,39 @@
         @media (min-width: 1024px) {
             #sidebar {
                 display: flex !important;
+            }
+        }
+
+        /* ====== MOBILE FIXES ====== */
+        /* Override Alpine inline margin-left on mobile — inline style wins over class,
+           so we need !important here */
+        @media (max-width: 1023px) {
+            #main-content {
+                margin-left: 0 !important;
+            }
+            #top-navbar {
+                left: 0 !important;
+                /* Safe area for Android notch */
+                padding-left: max(1.5rem, env(safe-area-inset-left));
+                padding-right: max(1.5rem, env(safe-area-inset-right));
+            }
+        }
+
+        /* Prevent content being hidden behind mobile bottom nav (~80px) */
+        @media (max-width: 1023px) {
+            #main-content {
+                padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+            }
+        }
+
+        /* Safe area for top navbar on all screens */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            #top-navbar {
+                padding-top: env(safe-area-inset-top);
+                height: calc(4rem + env(safe-area-inset-top));
+            }
+            #main-content {
+                padding-top: calc(5rem + env(safe-area-inset-top));
             }
         }
     </style>
@@ -230,17 +263,8 @@
             :style="sidebarOpen ? 'left:260px' : 'left:72px'">
 
             
-            <style>
-                @media (max-width: 1023px) {
-                    #top-navbar {
-                        left: 0 !important;
-                    }
 
-                    #main-content {
-                        margin-left: 0 !important;
-                    }
-                }
-            </style>
+
 
             
             <div class="flex items-center gap-4">

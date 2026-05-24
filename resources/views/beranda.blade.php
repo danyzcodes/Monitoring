@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Beranda</title>
     <meta name="description" content="Halaman resmi Unit Optima PT Telkom Indonesia. Monitoring proyek deployment, perencanaan jaringan, dan pengelolaan data terpusat.">
     <meta name="turbo-visit-control" content="reload">
@@ -232,12 +232,13 @@
             z-index: 2;
             max-width: 1280px;
             margin: 0 auto;
-            padding: 8rem 2rem 4rem;
+            padding: 8rem 1.5rem 4rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
+            width: 100%;
         }
 
         .hero-text {
@@ -358,6 +359,8 @@
             margin-top: 3rem;
             padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .hero-stat-item {
@@ -1258,9 +1261,8 @@
         
         @media (max-width: 1024px) {
             .hero-content {
-                grid-template-columns: 1fr;
                 text-align: center;
-                padding-top: 7rem;
+                padding: 6.5rem 1.5rem 3.5rem;
             }
 
             .hero-text { max-width: 100%; }
@@ -1275,16 +1277,49 @@
 
         @media (max-width: 768px) {
             .section { padding: 4rem 1.25rem; }
+            .hero-content { padding: 5.5rem 1.25rem 3rem; }
+            .hero h1 { font-size: clamp(1.75rem, 7vw, 2.5rem); }
+            .hero-desc { font-size: 0.95rem; }
             .hero-stats { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+            .hero-stat-value { font-size: 1.4rem; }
             .about-features { grid-template-columns: 1fr; }
             .gallery-grid { grid-template-columns: 1fr 1fr; }
             .contact-cards { grid-template-columns: 1fr; }
+            .btn-hero-primary, .btn-hero-secondary { padding: 0.8rem 1.5rem; font-size: 0.85rem; }
         }
 
         @media (max-width: 480px) {
             .gallery-grid { grid-template-columns: 1fr; }
-            .hero-actions { flex-direction: column; align-items: center; }
+            .hero-actions { flex-direction: column; align-items: center; width: 100%; }
+            .btn-hero-primary, .btn-hero-secondary { width: 100%; justify-content: center; }
             .beranda-nav { padding: 0.75rem 1rem; }
+            .hero-content { padding: 5rem 1rem 2.5rem; }
+            .hero-badge { font-size: 0.7rem; }
+        }
+
+        /* Safe area for Android notch/punch-hole */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            .beranda-nav {
+                padding-top: calc(1rem + env(safe-area-inset-top));
+            }
+            .hero-content {
+                padding-top: calc(8rem + env(safe-area-inset-top));
+            }
+            @media (max-width: 1024px) {
+                .hero-content {
+                    padding-top: calc(6.5rem + env(safe-area-inset-top));
+                }
+            }
+            @media (max-width: 768px) {
+                .hero-content {
+                    padding-top: calc(5.5rem + env(safe-area-inset-top));
+                }
+            }
+            @media (max-width: 480px) {
+                .hero-content {
+                    padding-top: calc(5rem + env(safe-area-inset-top));
+                }
+            }
         }
     </style>
 </head>
