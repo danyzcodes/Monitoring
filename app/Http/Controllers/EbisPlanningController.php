@@ -37,15 +37,15 @@ class EbisPlanningController extends Controller
         }
 
         try {
-            // Hapus data lama
-            EbisPlanningOrder::query()->delete();
-
-            // Import
+            // ✅ Import dengan mode UPSERT (tidak hapus data lama)
+            // - Data baru di Excel → INSERT
+            // - Data sudah ada (cocok star_click_id) → UPDATE kolom dari Excel saja
+            // - Data lama tidak ada di Excel → TETAP ada (tidak dihapus)
             Excel::import(new EbisPlanningImport(), $file);
         } catch (\Exception $e) {
             return redirect()
                 ->route('deployment.upload')
-                ->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+                ->with('error', 'Tidak sesuai data yang ada');
         }
 
         // CEK APAKAH ADA DATA VALID
@@ -57,7 +57,7 @@ class EbisPlanningController extends Controller
         }
 
         // ✅ JIKA ADA DATA VALID
-        return redirect()->route('deployment.upload')->with('success', 'Import berhasil. Data lama diganti dengan data baru.');
+        return redirect()->route('deployment.upload')->with('success', 'Import berhasil. Data baru ditambahkan / diperbarui. Data lama tetap tersimpan.');
     }
 
     /**

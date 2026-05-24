@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Upload Data ')
 
+
 @section('content')
 <div class="flex flex-col gap-6">
 
@@ -17,34 +18,35 @@
     <div class="bg-white rounded-3xl shadow-xl overflow-hidden border relative" style="border-color:#fde8e8; box-shadow: 0 20px 40px rgba(227,43,43,0.08);">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
         
-        <div class="p-8">
+        <div class="p-4 sm:p-8">
             <form id="importForm" action="{{ route('ebis.import') }}" method="POST" enctype="multipart/form-data" class="relative">
                 @csrf
                 
                 <input type="file" name="file" id="fileInput" class="hidden" accept=".xlsx,.xls" onchange="handleFileSelect(this)">
 
                 <div id="dropZone" 
-                     class="group relative w-full h-64 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 
+                     class="group relative w-full rounded-2xl border-2 border-dashed border-red-300 bg-red-50/30
                             flex flex-col items-center justify-center text-center cursor-pointer
-                            hover:border-red-400 hover:bg-red-50/30 transition-all duration-300"
+                            hover:border-red-400 hover:bg-red-50/50 transition-all duration-300"
+                     style="min-height: 180px; padding: 2rem 1rem;"
                      ondragover="handleDragOver(event)"
                      ondragleave="handleDragLeave(event)"
                      ondrop="handleDrop(event)"
                      onclick="document.getElementById('fileInput').click()">
 
                     
-                    <div class="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <div class="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition duration-300 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
                         </svg>
                     </div>
 
                     
                     <div class="space-y-1">
-                        <p class="text-lg font-semibold text-slate-700">
+                        <p class="text-base font-semibold text-slate-700">
                             Klik atau Drag File Excel ke Sini
                         </p>
-                        <p class="text-sm text-slate-400">
+                        <p class="text-xs text-slate-500">
                             Format yang didukung: .xlsx, .xls
                         </p>
                     </div>
@@ -141,6 +143,23 @@
 
 @push('scripts')
 <script>
+    // ===== TURBO: Paksa halaman ini selalu fresh (tidak di-cache Turbo) =====
+    (function() {
+        let meta = document.querySelector('meta[name="turbo-cache-control"]');
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.name = 'turbo-cache-control';
+            document.head.appendChild(meta);
+        }
+        meta.content = 'no-cache';
+
+        document.addEventListener('turbo:load', function() {
+            if (typeof Turbo !== 'undefined' && Turbo.clearCache) {
+                Turbo.clearCache();
+            }
+        }, { once: true });
+    })();
+
     function handleDragOver(e) {
         e.preventDefault();
         e.currentTarget.classList.add('border-red-500', 'bg-red-50');

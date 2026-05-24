@@ -543,7 +543,7 @@
                 
                 <div class="logo-section stagger-1">
                     <img class="brand-logo-img" src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom Logo">
-                    <div class="form-caption">Portal Monitoring KPRO</div>
+                    <div class="form-caption">Portal Monitoring</div>
                 </div>
 
                 @if ($errors->any())

@@ -6,9 +6,6 @@
     <title>Daftar | KPRO</title>
     <meta name="turbo-cache-control" content="no-cache">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
-    
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <meta name="theme-color" content="#ffffff">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -548,7 +545,7 @@
                 
                 <div class="logo-section stagger-1">
                     <img class="brand-logo-img" src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom Logo">
-                    <div class="form-caption">Portal Monitoring KPRO</div>
+                    <div class="form-caption">Portal Monitoring </div>
                 </div>
 
                 @if ($errors->any())

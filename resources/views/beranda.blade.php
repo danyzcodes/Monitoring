@@ -1344,7 +1344,7 @@
             <li><a href="#location">Lokasi</a></li>
             <li><a href="#contact">Kontak</a></li>
             <li>
-                <a href="{{ route('login') }}" class="nav-login-btn">
+                <a href="{{ route('login') }}" class="nav-login-btn" data-turbo="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                     </svg>
@@ -1378,7 +1378,7 @@
             <li><a href="#location" onclick="closeMobileNav()">Lokasi</a></li>
             <li><a href="#contact" onclick="closeMobileNav()">Kontak</a></li>
         </ul>
-        <a href="{{ route('login') }}" class="mobile-nav-login">
+        <a href="{{ route('login') }}" class="mobile-nav-login" data-turbo="false">
             Login ke Dashboard
         </a>
     </div>
@@ -1399,12 +1399,12 @@
                 <h1 data-aos="fade-up" data-aos-delay="100">Sistem <span>Monitoring</span> Proyek Deployment</h1>
 
                 <p class="hero-desc" data-aos="fade-up" data-aos-delay="200">
-                    Platform terpusat untuk memantau progres deployment jaringan, perencanaan proyek, dan pengelolaan data order secara real-time bagi Unit Optima Telkom.
+                    Selamat Datang Platform terpusat untuk memantau progres deployment jaringan, perencanaan proyek, dan pengelolaan data order secara real-time  Unit Optima Telkom.
                 </p>
 
                 
                 <div class="hero-actions" data-aos="fade-up" data-aos-delay="300">
-                    <a href="{{ route('login') }}" class="btn-hero-primary">
+                    <a href="{{ route('login') }}" class="btn-hero-primary" data-turbo="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                         </svg>
@@ -1439,7 +1439,7 @@
                     <p>
                         Unit Optima merupakan bagian dari PT Telkom Indonesia yang berfokus pada
                         pengelolaan dan monitoring proyek deployment jaringan telekomunikasi di wilayah
-                        Jakarta Barat.
+                        Cirebon.
                     </p>
                     <p>
                         Kami memastikan setiap eksekusi di lapangan terdata dengan sistematis,
@@ -1542,7 +1542,7 @@
                     <h3>Lokasi Kantor</h3>
                     <p>
                         Pusat administrasi dan koordinasi tim deployment Unit Optima
-                        di area Jakarta Barat. Datang dan kunjungi kami pada jam operasional.
+                        di area Cirebon. Datang dan kunjungi kami pada jam operasional.
                     </p>
 
                     <div class="location-detail-card">
@@ -1554,7 +1554,7 @@
                         </div>
                         <div class="location-detail-text">
                             <h4>Alamat Lengkap</h4>
-                            <p>Gedung Witel Jakarta Barat, Jl. Letjen S. Parman No.8, RT.3/RW.8, Tomang, Grogol petamburan, Jakarta Barat, Jakarta 11440</p>
+                            <p>Gedung Witel Cirebon, Jl. Pagongan No.11, Pekalangan, Kec. Pekalipan, Kota Cirebon, Jawa Barat 45118</p>
                         </div>
                     </div>
 
@@ -1573,7 +1573,7 @@
 
                 <div class="location-map" data-aos="fade-right">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15866.529340989087!2d106.7828062!3d-6.1804245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f6f6d0f1bd73%3A0xc85926ec38290fa8!2sTelkom%20Witel%20Jakarta%20Barat!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
+                        src="https://maps.google.com/maps?q=Jl.%20Pagongan%20No.11,%20Pekalangan,%20Kec.%20Pekalipan,%20Kota%20Cirebon,%20Jawa%20Barat%2045118&t=&z=17&ie=UTF8&iwloc=&output=embed" 
                         allowfullscreen="" 
                         loading="lazy" 
                         referrerpolicy="no-referrer-when-downgrade">
@@ -1626,7 +1626,7 @@
     <footer class="footer">
 
         <p class="footer-desc">
-            Platform monitoring proyek deployment Unit Optima — Telkom  Jakarta Barat.
+            Platform monitoring proyek deployment Unit Optima — Telkom Cirebon.
         </p>
         <div class="footer-divider"></div>
         <p class="footer-copy">&copy; {{ date('Y') }} PT Telkom Indonesia Tbk. All rights reserved.</p>
