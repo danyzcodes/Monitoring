@@ -602,17 +602,41 @@ class AdminController extends Controller
         $progA = $request->get('prog_a');
         $progB = $request->get('prog_b');
 
+        $filterYear  = $request->get('year', now()->year);
+        $filterMonth = $request->get('month');
+        $filterWeek  = $request->get('week');
+
         // Keep backward-compat single values for old links
         $filterSto   = count($filterStoArr) === 1 ? $filterStoArr[0] : null;
         $filterDatel = count($filterDatelArr) === 1 ? $filterDatelArr[0] : null;
         $filterMitra = count($filterMitraArr) === 1 ? $filterMitraArr[0] : null;
 
         // Helper: build base query with optional filters
-        $baseQuery = function () use ($filterStoArr, $filterDatelArr, $filterMitraArr) {
+        $baseQuery = function () use ($filterStoArr, $filterDatelArr, $filterMitraArr, $filterYear, $filterMonth, $filterWeek) {
             $q = EbisManualInput::query();
             if (!empty($filterStoArr))   $q->whereIn('ebis_manual_inputs.sto', $filterStoArr);
             if (!empty($filterDatelArr)) $q->whereIn('ebis_manual_inputs.datel', $filterDatelArr);
             if (!empty($filterMitraArr)) $q->whereIn('ebis_manual_inputs.nama_mitra', $filterMitraArr);
+
+            if ($filterYear) {
+                $q->whereYear('ebis_manual_inputs.created_at', $filterYear);
+            }
+            if ($filterMonth && $filterMonth !== 'all') {
+                $q->whereMonth('ebis_manual_inputs.created_at', $filterMonth);
+
+                if ($filterWeek && $filterWeek !== 'all') {
+                    $week = (int) $filterWeek;
+                    $month = (int) $filterMonth;
+                    $year = (int) $filterYear;
+                    $startDay = ($week - 1) * 7 + 1;
+                    $endDay = $week == 5 ? \Carbon\Carbon::create($year, $month)->endOfMonth()->day : $week * 7;
+
+                    $q->whereBetween('ebis_manual_inputs.created_at', [
+                        \Carbon\Carbon::create($year, $month, $startDay)->startOfDay(),
+                        \Carbon\Carbon::create($year, $month, $endDay)->endOfDay()
+                    ]);
+                }
+            }
             return $q;
         };
 
@@ -829,8 +853,112 @@ class AdminController extends Controller
             $mitraAvgTextLabels[] = $item['avg_label'];
         }
 
+        // Fetch all orders matching the basic filters to let the user select which ones to compare
+        $availableOrders = (clone $baseQuery())
+            ->orderByDesc('ebis_manual_inputs.created_at')
+            ->get(['ebis_manual_inputs.star_click_id', 'ebis_manual_inputs.nama_customer', 'ebis_manual_inputs.nama_mitra']);
+
+        $selectedOrderIds = array_filter((array) $request->get('compare_orders', []));
+
+        // No auto-fallback: visualization only shows when the user explicitly picks orders.
+
+        // Fetch selected orders to compare with their planning and progress logs
+        $compareOrders = [];
+        if (!empty($selectedOrderIds)) {
+            $compareOrders = EbisManualInput::whereIn('ebis_manual_inputs.star_click_id', $selectedOrderIds)
+                ->with(['planning.logs' => function($q) {
+                    $q->orderBy('created_at', 'asc');
+                }])
+                ->get();
+        }
+
+        // Build the timeline data for each selected order
+        $timelineData = [];
+        foreach ($compareOrders as $order) {
+            $logs = $order->planning?->logs ?? collect();
+            
+            // Map the logs to stages
+            $events = [];
+            
+            // Start with ON DESK using order's created_at (unless log for ON DESK already exists)
+            $hasOnDeskLog = $logs->contains(fn($l) => strtoupper($l->progres) === 'ON DESK');
+            if (!$hasOnDeskLog && $order->created_at) {
+                $events[] = [
+                    'stage' => 'ON DESK',
+                    'time' => $order->created_at,
+                ];
+            }
+            
+            foreach ($logs as $log) {
+                $events[] = [
+                    'stage' => strtoupper($log->progres),
+                    'time' => $log->created_at,
+                ];
+            }
+            
+            // Sort events chronologically
+            usort($events, function($a, $b) {
+                return $a['time'] <=> $b['time'];
+            });
+            
+            // Calculate durations from the previous events
+            $steps = [];
+            $stageCount = count($events);
+            for ($i = 0; $i < $stageCount; $i++) {
+                $curr = $events[$i];
+                $durationLabel = null;
+                
+                if ($i === 0) {
+                    $durationLabel = "Mulai";
+                } else {
+                    $prev = $events[$i - 1];
+                    $diffMinutes = abs($prev['time']->diffInMinutes($curr['time'], false));
+                    $days = floor($diffMinutes / 1440);
+                    $hours = floor(($diffMinutes % 1440) / 60);
+                    
+                    $durationLabel = "{$days} hari";
+                    if ($hours > 0) $durationLabel .= " {$hours} jam";
+                }
+                
+                $steps[] = [
+                    'stage' => $curr['stage'],
+                    'time' => $curr['time']->format('d M Y H:i'),
+                    'duration' => $durationLabel,
+                    'is_running' => false
+                ];
+            }
+            
+            // If the last stage is not terminal, append a "Sedang Berjalan" step showing duration to now()
+            if ($stageCount > 0) {
+                $lastEvent = $events[$stageCount - 1];
+                $terminalStages = ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON'];
+                if (!in_array($lastEvent['stage'], $terminalStages)) {
+                    $diffMinutes = abs($lastEvent['time']->diffInMinutes(now(), false));
+                    $days = floor($diffMinutes / 1440);
+                    $hours = floor(($diffMinutes % 1440) / 60);
+                    
+                    $durationLabel = "{$days} hari";
+                    if ($hours > 0) $durationLabel .= " {$hours} jam";
+                    
+                    $steps[] = [
+                        'stage' => 'SEDANG BERJALAN',
+                        'time' => now()->format('d M Y H:i'),
+                        'duration' => $durationLabel,
+                        'is_running' => true
+                    ];
+                }
+            }
+            
+            $timelineData[] = [
+                'star_click_id' => $order->star_click_id,
+                'nama_customer' => $order->nama_customer,
+                'mitra' => $order->nama_mitra ?? 'Tanpa Mitra',
+                'steps' => $steps
+            ];
+        }
+
         // Check if any filter is active
-        $hasFilter = !empty($filterStoArr) || !empty($filterDatelArr) || !empty($filterMitraArr) || ($progA && $progB);
+        $hasFilter = !empty($filterStoArr) || !empty($filterDatelArr) || !empty($filterMitraArr) || ($progA && $progB) || $filterMonth || $filterWeek || !empty($request->get('compare_orders'));
 
         return view('deployment.progress-overview', compact(
             'datelLabels', 'stackedData', 'totalAll', 'totalOverdue', 'totalSelesai', 'totalOnTrack',
@@ -839,7 +967,8 @@ class AdminController extends Controller
             'filterStoArr', 'filterDatelArr', 'filterMitraArr', 'hasFilter',
             'topProgress', 'topProgressCount',
             'ihldStatuses', 'ihldStackedData',
-            'progA', 'progB', 'avgDurationAB', 'mitraAvgLabels', 'mitraAvgValues', 'mitraAvgTextLabels', 'mitraAvgArray', 'stages'
+            'progA', 'progB', 'avgDurationAB', 'mitraAvgLabels', 'mitraAvgValues', 'mitraAvgTextLabels', 'mitraAvgArray', 'stages',
+            'filterYear', 'filterMonth', 'filterWeek', 'availableOrders', 'selectedOrderIds', 'timelineData'
         ));
     }
 
@@ -859,20 +988,31 @@ class AdminController extends Controller
         $firstDay  = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $lastDay   = $firstDay->copy()->endOfMonth();
 
-        // Get all orders for the month
-        $orders = EbisManualInput::whereMonth('created_at', $month)
+        // Get all progress updates for the month for the 5 target progress stages
+        $logs = EbisPlanningProgressLog::whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
-            ->select('created_at', 'nama_mitra')
+            ->whereIn(DB::raw('UPPER(progres)'), ['SURVEY', 'PERIJINAN', 'MATDEV', 'INSTALASI', 'SELESAI FISIK'])
+            ->with(['planning.manualInput'])
             ->get();
 
-        // Build a lookup: date => [mitra => count]
+        // Build a lookup: date => [ "mitra - progres" => count ]
         $ordersByDate = [];
-        foreach ($orders as $order) {
-            $d = Carbon::parse($order->created_at)->format('Y-m-d');
-            $mitra = $order->nama_mitra ?? 'Tanpa Mitra';
+        foreach ($logs as $log) {
+            $d = Carbon::parse($log->created_at)->format('Y-m-d');
+            $mitra = 'Tanpa Mitra';
+            if ($log->planning) {
+                if ($log->planning->manualInput && $log->planning->manualInput->nama_mitra) {
+                    $mitra = $log->planning->manualInput->nama_mitra;
+                } elseif ($log->planning->nama_mitra) {
+                    $mitra = $log->planning->nama_mitra;
+                }
+            }
+            $progres = strtoupper($log->progres);
+            $keyLookup = $mitra . ' - ' . $progres;
+
             if (!isset($ordersByDate[$d])) $ordersByDate[$d] = [];
-            if (!isset($ordersByDate[$d][$mitra])) $ordersByDate[$d][$mitra] = 0;
-            $ordersByDate[$d][$mitra]++;
+            if (!isset($ordersByDate[$d][$keyLookup])) $ordersByDate[$d][$keyLookup] = 0;
+            $ordersByDate[$d][$keyLookup]++;
         }
 
         // Build the calendar grid (Mon-Sun, with padding)
@@ -902,8 +1042,16 @@ class AdminController extends Controller
             $details = [];
             $total = 0;
             if (isset($ordersByDate[$key])) {
-                foreach ($ordersByDate[$key] as $mitra => $cnt) {
-                    $details[] = ['mitra' => $mitra, 'count' => $cnt];
+                foreach ($ordersByDate[$key] as $keyLookup => $cnt) {
+                    $parts = explode(' - ', $keyLookup);
+                    $mitra = $parts[0] ?? 'Tanpa Mitra';
+                    $progres = $parts[1] ?? '-';
+
+                    $details[] = [
+                        'mitra'   => $mitra,
+                        'progres' => $progres,
+                        'count'   => $cnt
+                    ];
                     $total += $cnt;
                 }
                 usort($details, fn($a, $b) => $b['count'] <=> $a['count']);
@@ -933,13 +1081,101 @@ class AdminController extends Controller
             ];
         }
 
-        $maxOrders = count($orders) > 0 ? max(array_map(fn($d) => $d['count'], $days)) : 10;
+        $maxOrders = count($logs) > 0 ? max(array_map(fn($d) => $d['count'], $days)) : 10;
         $globalCap = max($maxOrders, 10);
 
         return response()->json([
             'week_headers' => $days,
             'global_cap'   => $globalCap,
         ]);
+    }
+
+    public function workloadDetailsPage(Request $request)
+    {
+        $year = $request->get('year', now()->year);
+        $month = $request->get('month', now()->month);
+        $week = $request->get('week');
+        $mitra = $request->get('mitra');
+        $progres = $request->get('progres');
+        $search = $request->get('search');
+
+        $query = EbisPlanningProgressLog::with(['user', 'planning.manualInput'])
+            ->whereIn(DB::raw('UPPER(progres)'), ['SURVEY', 'PERIJINAN', 'MATDEV', 'INSTALASI', 'SELESAI FISIK']);
+
+        // Filter by Year
+        if ($year && $year !== 'all') {
+            $query->whereYear('created_at', $year);
+        }
+
+        // Filter by Month
+        if ($month && $month !== 'all') {
+            $query->whereMonth('created_at', $month);
+        }
+
+        // Filter by Week (based on day of the month)
+        if ($week && $week !== 'all') {
+            if ($week == 1) {
+                $query->whereRaw('DAY(created_at) BETWEEN 1 AND 7');
+            } elseif ($week == 2) {
+                $query->whereRaw('DAY(created_at) BETWEEN 8 AND 14');
+            } elseif ($week == 3) {
+                $query->whereRaw('DAY(created_at) BETWEEN 15 AND 21');
+            } elseif ($week == 4) {
+                $query->whereRaw('DAY(created_at) BETWEEN 22 AND 28');
+            } elseif ($week == 5) {
+                $query->whereRaw('DAY(created_at) >= 29');
+            }
+        }
+
+        // Filter by Mitra
+        if ($mitra) {
+            $query->whereHas('planning', function ($q) use ($mitra) {
+                $q->where('nama_mitra', $mitra)
+                  ->orWhereHas('manualInput', function ($m) use ($mitra) {
+                      $m->where('nama_mitra', $mitra);
+                  });
+            });
+        }
+
+        // Filter by Progres
+        if ($progres) {
+            $query->where('progres', $progres);
+        }
+
+        // Filter by Search Keyword
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('planning', function ($p) use ($search) {
+                    $p->where('star_click_id', 'like', "%{$search}%")
+                      ->orWhere('nama_customer', 'like', "%{$search}%")
+                      ->orWhereHas('manualInput', function ($m) use ($search) {
+                          $m->where('nama_customer', 'like', "%{$search}%")
+                            ->orWhere('star_click_id', 'like', "%{$search}%");
+                      });
+                });
+            });
+        }
+
+        // Paginate logs
+        $logs = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+
+        // Get filter options
+        $mitraList = \App\Models\MasterMitra::orderBy('nama_mitra')->pluck('nama_mitra');
+        $yearsList = range(now()->year - 5, now()->year + 2);
+        $stagesList = ['SURVEY', 'PERIJINAN', 'MATDEV', 'INSTALASI', 'SELESAI FISIK'];
+
+        return view('deployment.workload', compact(
+            'logs',
+            'mitraList',
+            'yearsList',
+            'stagesList',
+            'year',
+            'month',
+            'week',
+            'mitra',
+            'progres',
+            'search'
+        ));
     }
 
     public function getTopMitras(Request $request)

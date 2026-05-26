@@ -9,12 +9,15 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
 
-class RekapExport implements FromQuery, WithHeadings, WithMapping, WithStyles
+class RekapExport implements FromQuery, WithHeadings, WithMapping, WithStyles, WithEvents
 {
     protected $request;
+    private $rowNum = 1;
 
     public function __construct(Request $request)
     {
@@ -23,7 +26,7 @@ class RekapExport implements FromQuery, WithHeadings, WithMapping, WithStyles
 
     public function query()
     {
-        $query = EbisManualInput::with('planning');
+        $query = EbisManualInput::with(['planning.logs']);
 
         // FILTER DROPDOWN ATAS
         if ($this->request->filled('starclick')) {
@@ -163,18 +166,36 @@ class RekapExport implements FromQuery, WithHeadings, WithMapping, WithStyles
             'Total BOQ',
             'Jenis Program',
             'Nama CFU',
-            'Progres',
             'Tanggal Update',
             'Catatan',
+            'Usia Order',
+            'Pilih Progres',
+            'Durasi Progres',
+            'ON DESK',
+            'SURVEY',
+            'PERIJINAN',
+            'DRM',
+            'APPROVED BY EBIS',
+            'MATDEV',
+            'INSTALASI',
+            'SELESAI FISIK',
+            'GOLIVE',
+            'PS',
+            'KENDALA',
+            'UJI TERIMA',
+            'REKON',
         ];
     }
 
     public function map($row): array
     {
+        $this->rowNum++;
+        $rowNum = $this->rowNum;
+
         $planning = $row->planning;
         $date = optional($planning)->tanggal_update_progres ?? $row->tanggal_update_progres;
 
-        return [
+        $baseData = [
             $row->nde_jt ?? '-',
             $row->star_click_id ?? '-',
             $row->nama_customer ?? '-',
@@ -191,9 +212,138 @@ class RekapExport implements FromQuery, WithHeadings, WithMapping, WithStyles
             optional($planning)->total_boq ? number_format(optional($planning)->total_boq, 0, ',', '.') : '-',
             optional($planning)->jenis_program ?? '-',
             optional($planning)->nama_cfu ?? '-',
-            optional($planning)->progres ?? $row->progres ?? '-',
             $date ? Carbon::parse($date)->format('d-m-Y H:i') : '-',
             $row->keterangan ?? '-',
+        ];
+
+        $stages = [
+            'ON DESK',
+            'SURVEY',
+            'PERIJINAN',
+            'DRM',
+            'APPROVED BY EBIS',
+            'MATDEV',
+            'INSTALASI',
+            'SELESAI FISIK',
+            'GOLIVE',
+            'PS',
+            'KENDALA',
+            'UJI TERIMA',
+            'REKON'
+        ];
+
+        $stageDates = [];
+        $logs = optional($planning)->logs ?? collect();
+        foreach ($logs as $log) {
+            $stage = strtoupper(trim($log->progres));
+            $logDate = Carbon::parse($log->created_at);
+            if (!isset($stageDates[$stage])) {
+                $stageDates[$stage] = $logDate;
+            } else {
+                if ($logDate->lt($stageDates[$stage])) {
+                    $stageDates[$stage] = $logDate;
+                }
+            }
+        }
+
+        // Fallback: If current progress exists but log is missing
+        $currentStage = strtoupper(trim($row->progres ?? optional($planning)->progres ?? ''));
+        $currentDate = $row->tanggal_update_progres ?? optional($planning)->tanggal_update_progres;
+        if ($currentStage && !isset($stageDates[$currentStage]) && $currentDate) {
+            $stageDates[$currentStage] = Carbon::parse($currentDate);
+        }
+
+        // Calculate durations from ON DESK for each stage
+        $onDeskDate = $stageDates['ON DESK'] ?? null;
+        
+        $durationsData = [];
+        foreach ($stages as $stageName) {
+            if ($stageName === 'ON DESK') {
+                $durationsData[] = $onDeskDate ? '0 hari' : '-';
+            } else {
+                $dateObj = $stageDates[$stageName] ?? null;
+                if ($onDeskDate && $dateObj) {
+                    $diffInMinutes = abs($onDeskDate->diffInMinutes($dateObj, false));
+                    $days = floor($diffInMinutes / 1440);
+                    $hours = round(($diffInMinutes % 1440) / 60);
+                    if ($hours >= 24) {
+                        $days += 1;
+                        $hours -= 24;
+                    }
+                    
+                    $parts = [];
+                    if ($days > 0) {
+                        $parts[] = $days . " hari";
+                    }
+                    if ($hours > 0) {
+                        $parts[] = $hours . " jam";
+                    }
+                    
+                    $durationsData[] = !empty($parts) ? implode(' ', $parts) : '0 jam';
+                } else {
+                    $durationsData[] = '-';
+                }
+            }
+        }
+
+        // Calculate Usia Order from created_at
+        $createdAt = $row->created_at ? Carbon::parse($row->created_at) : null;
+        if ($createdAt) {
+            $diffCreated = abs($createdAt->diffInMinutes(now(), false));
+            $cDays = floor($diffCreated / 1440);
+            $cHours = round(($diffCreated % 1440) / 60);
+            if ($cHours >= 24) {
+                $cDays += 1;
+                $cHours -= 24;
+            }
+            $cParts = [];
+            if ($cDays > 0) {
+                $cParts[] = $cDays . " hari";
+            }
+            if ($cHours > 0) {
+                $cParts[] = $cHours . " jam";
+            }
+            $usiaOrder = !empty($cParts) ? implode(' ', $cParts) : '0 jam';
+        } else {
+            $usiaOrder = '-';
+        }
+
+        // Formula for Column U:
+        $formula = "=IFERROR(INDEX(V" . $rowNum . ":AH" . $rowNum . ", MATCH(T" . $rowNum . ", \$V\$1:\$AH\$1, 0)), \"-\")";
+
+        // We set 'SURVEY' as the default selection in Column T
+        $defaultSelection = 'SURVEY';
+
+        return array_merge($baseData, [$usiaOrder, $defaultSelection, $formula], $durationsData);
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function(AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+                $highestRow = $sheet->getHighestRow();
+
+                for ($row = 2; $row <= $highestRow; $row++) {
+                    $validation = $sheet->getCell("T$row")->getDataValidation();
+                    $validation->setType(\PhpOffice\PhpSpreadsheet\Cell\DataValidation::TYPE_LIST);
+                    $validation->setErrorStyle(\PhpOffice\PhpSpreadsheet\Cell\DataValidation::STYLE_INFORMATION);
+                    $validation->setAllowBlank(true);
+                    $validation->setShowInputMessage(true);
+                    $validation->setShowErrorMessage(true);
+                    $validation->setShowDropDown(true);
+
+                    $validation->setFormula1('"ON DESK,SURVEY,PERIJINAN,DRM,APPROVED BY EBIS,MATDEV,INSTALASI,SELESAI FISIK,GOLIVE,PS,KENDALA,UJI TERIMA,REKON"');
+                }
+
+                // Hide source data columns V to AH
+                foreach (range('V', 'Z') as $col) {
+                    $sheet->getColumnDimension($col)->setVisible(false);
+                }
+                foreach (['AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH'] as $col) {
+                    $sheet->getColumnDimension($col)->setVisible(false);
+                }
+            }
         ];
     }
 
@@ -207,6 +357,17 @@ class RekapExport implements FromQuery, WithHeadings, WithMapping, WithStyles
                     'startColor' => ['rgb' => 'DC2626'],
                 ],
             ],
+            'S' => [
+                'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            ],
+            'T' => [
+                'font' => ['italic' => true, 'color' => ['rgb' => '1D4ED8']],
+                'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            ],
+            'U' => [
+                'font' => ['bold' => true],
+                'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            ]
         ];
     }
 }

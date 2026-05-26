@@ -128,6 +128,10 @@ Route::middleware(['auth', 'role:optima,admin,tif,telkom_akses'])->group(functio
     /* ================= PROGRESS OVERVIEW DASHBOARD ================= */
     Route::get('/deployment/progress-overview', [AdminController::class, 'progressOverview'])
         ->name('deployment.progress-overview');
+
+    /* ================= WORKLOAD DETAILS PAGE ================= */
+    Route::get('/admin/workload', [AdminController::class, 'workloadDetailsPage'])
+        ->name('admin.workload');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

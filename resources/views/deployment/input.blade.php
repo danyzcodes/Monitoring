@@ -63,10 +63,12 @@
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Nomor Batch
                                 </label>
-                                <input name="nomor_batch" type="text" value="{{ date('Ym') }}"
-                                    class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white text-slate-600
-                                       focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
-                                    placeholder="Contoh: 1234">
+                                <select id="nomor_batch" name="nomor_batch" class="w-full" placeholder="Pilih Nomor Batch...">
+                                    <option value="">Pilih Nomor Batch...</option>
+                                    @for ($i = 1; $i <= 10; $i++)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
                                 @error('nomor_batch')
                                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                                 @enderror
@@ -119,42 +121,51 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            
-                            <div data-field-wrapper class="md:col-span-2" x-data="{
-                                gettingAddress: false,
-                                getAddress() {
-                                    if (!navigator.geolocation) {
-                                        alert('Browser Anda tidak mendukung fitur lokasi');
+                            <div data-field-wrapper class="md:col-span-2 relative" x-data="{
+                                value: '',
+                                suggestions: [],
+                                loading: false,
+                                open: false,
+                                timeout: null,
+                                
+                                fetchSuggestions() {
+                                    if (this.value.trim().length < 4) {
+                                        this.suggestions = [];
+                                        this.open = false;
                                         return;
                                     }
-                            
-                                    this.gettingAddress = true;
-                                    navigator.geolocation.getCurrentPosition(
-                                        (position) => {
-                                            const lat = position.coords.latitude;
-                                            const lng = position.coords.longitude;
-                            
-                                            // Menggunakan OpenStreetMap Nominatim API untuk mendeteksi nama jalan & kota
-                                            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                                                .then(res => res.json())
-                                                .then(data => {
-                                                    if (data && data.display_name) {
-                                                        document.querySelector('input[name=\'alamat_pelanggan\']').value = data.display_name;
-                                                    } else {
-                                                        alert('Alamat tidak ditemukan dari koordinat ini.');
-                                                    }
-                                                    this.gettingAddress = false;
-                                                })
-                                                .catch(err => {
-                                                    alert('Gagal mengambil detail alamat dari server.');
-                                                    this.gettingAddress = false;
-                                                });
-                                        },
-                                        (error) => {
-                                            alert('Gagal mengambil lokasi. Pastikan Anda mengizinkan akses lokasi pada browser.');
-                                            this.gettingAddress = false;
-                                        }, { enableHighAccuracy: true }
-                                    );
+                                    
+                                    this.loading = true;
+                                    this.open = true;
+                                    
+                                    if (this.timeout) clearTimeout(this.timeout);
+                                    
+                                    this.timeout = setTimeout(() => {
+                                        let query = this.value.trim();
+                                        if (!query.toLowerCase().includes('jawa barat') && !query.toLowerCase().includes('jabar')) {
+                                            query += ', Jawa Barat';
+                                        }
+                                        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=id&limit=5`)
+                                            .then(res => res.json())
+                                            .then(data => {
+                                                this.suggestions = data || [];
+                                                this.loading = false;
+                                            })
+                                            .catch(() => {
+                                                this.loading = false;
+                                            });
+                                    }, 600);
+                                },
+                                
+                                select(item) {
+                                    this.value = item.display_name;
+                                    this.open = false;
+                                    this.suggestions = [];
+                                    
+                                    // Auto-fill coordinates via event dispatch
+                                    window.dispatchEvent(new CustomEvent('address-selected', {
+                                        detail: { lat: item.lat, lon: item.lon }
+                                    }));
                                 }
                             }">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
@@ -162,95 +173,61 @@
                                 </label>
                                 <div class="relative">
                                     <input name="alamat_pelanggan" type="text" data-required="true"
-                                        class="w-full rounded-xl border-slate-400 bg-slate-100 pl-10 pr-36 py-3 text-sm focus:bg-white
+                                        x-model="value"
+                                        @input="fetchSuggestions()"
+                                        @focus="if (suggestions.length > 0) open = true"
+                                        @click.outside="open = false"
+                                        class="w-full rounded-xl border-slate-400 bg-slate-100 pl-10 pr-12 py-3 text-sm focus:bg-white
                                            focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
-                                        placeholder="Jl. Contoh No. 123">
+                                        placeholder="Ketik alamat pelanggan...">
+                                    
                                     <svg xmlns="http://www.w3.org/2000/svg"
-                                        class="w-5 h-5 text-slate-400 absolute left-3 top-3.5" fill="none"
+                                        class="w-5 h-5 text-slate-400 absolute left-3 top-3.5 pointer-events-none" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-
-                                    <button type="button" @click="getAddress()"
-                                        class="absolute right-1.5 top-1.5 bottom-1.5 px-3 rounded-lg bg-blue-50 text-blue-600 font-bold text-xs hover:bg-blue-100 hover:text-blue-700 transition flex items-center gap-1 focus:ring-2 focus:ring-blue-200 outline-none">
-                                        <svg x-show="!gettingAddress" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    
+                                    <div x-show="loading" x-cloak class="absolute right-4 top-3.5">
+                                        <svg class="animate-spin h-5 w-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        <svg x-show="gettingAddress" x-cloak class="animate-spin w-4 h-4"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10"
-                                                stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor"
-                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                            </path>
-                                        </svg>
-                                        <span x-text="gettingAddress ? 'Mencari...' : 'Klik Lokasi anda'"></span>
-                                    </button>
+                                    </div>
                                 </div>
+
+                                <div x-show="open" x-cloak
+                                    class="absolute left-0 right-0 z-50 mt-1 bg-white border border-slate-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                                    <template x-for="item in suggestions" :key="item.place_id">
+                                        <div @click="select(item)"
+                                            class="px-4 py-3 text-xs cursor-pointer hover:bg-red-50 text-slate-700 hover:text-red-700 transition border-b border-slate-50 last:border-0">
+                                            <span x-text="item.display_name"></span>
+                                        </div>
+                                    </template>
+                                    <div x-show="!loading && suggestions.length === 0"
+                                        class="px-4 py-3 text-xs text-slate-400 italic text-center">Mengetik alamat... (gunakan minimal 4 karakter)</div>
+                                </div>
+
                                 <p x-show="showError && errorField === 'alamat_pelanggan'" x-transition
                                     class="text-xs text-red-500 mt-1 font-medium">Wajib diisi</p>
                                 @error('alamat_pelanggan')
                                     <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-
-                            
-                            <div data-field-wrapper x-data="{
-                                gettingLocation: false,
-                                getLocation() {
-                                    if (!navigator.geolocation) {
-                                        alert('Browser Anda tidak mendukung fitur lokasi');
-                                        return;
-                                    }
-                            
-                                    this.gettingLocation = true;
-                                    navigator.geolocation.getCurrentPosition(
-                                        (position) => {
-                                            const lat = position.coords.latitude;
-                                            const lng = position.coords.longitude;
-                                            document.querySelector('input[name=\'tikor_pelanggan\']').value = lat + ', ' + lng;
-                                            this.gettingLocation = false;
-                                        },
-                                        (error) => {
-                                            alert('Gagal mengambil lokasi. Pastikan Anda mengizinkan akses lokasi pada browser.');
-                                            this.gettingLocation = false;
-                                        }, { enableHighAccuracy: true }
-                                    );
-                                }
-                            }">
+ 
+                             
+                            <div data-field-wrapper x-data="{}"
+                            x-on:address-selected.window="if($event.detail.lat && $event.detail.lon) { document.querySelector('input[name=\'tikor_pelanggan\']').value = $event.detail.lat + ', ' + $event.detail.lon }">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Titik Koordinat <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
                                     <input name="tikor_pelanggan" type="text" data-required="true"
-                                        class="w-full rounded-xl border-slate-400 bg-slate-100 pl-4 py-3 pr-32 text-sm focus:bg-white font-mono text-slate-600
+                                        class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white font-mono text-slate-600
                                            focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                         placeholder="-6.xxxxx, 108.xxxxx">
-
-                                    <button type="button" @click="getLocation()"
-                                        class="absolute right-1.5 top-1.5 bottom-1.5 px-3 rounded-lg bg-blue-50 text-blue-600 font-bold text-xs hover:bg-blue-100 hover:text-blue-700 transition flex items-center gap-1 focus:ring-2 focus:ring-blue-200 outline-none">
-                                        <svg x-show="!gettingLocation" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                        <svg x-show="gettingLocation" x-cloak class="animate-spin w-4 h-4"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10"
-                                                stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor"
-                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                            </path>
-                                        </svg>
-                                        <span x-text="gettingLocation ? 'Mencari...' : 'Klik Lokasi anda'"></span>
-                                    </button>
                                 </div>
                                 <p x-show="showError && errorField === 'tikor_pelanggan'" x-transition
                                     class="text-xs text-red-500 mt-1 font-medium">Wajib diisi</p>
@@ -273,7 +250,7 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             
-                            <div id="datel_wrapper" data-field-wrapper x-data="searchableSelect(@js($datels))" class="relative">
+                            <div id="datel_wrapper" data-field-wrapper x-data="searchableSelect(@js($datels))" x-on:starclick-selected.window="if($event.detail.datel) { select($event.detail.datel) }" class="relative">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Datel <span class="text-red-500">*</span>
                                 </label>
@@ -312,7 +289,7 @@
                             </div>
 
                             
-                            <div id="sto_wrapper" data-field-wrapper x-data="searchableSelect(@js($stos))" class="relative">
+                            <div id="sto_wrapper" data-field-wrapper x-data="searchableSelect(@js($stos))" x-on:starclick-selected.window="if($event.detail.sto) { select($event.detail.sto) }" class="relative">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     STO <span class="text-red-500">*</span>
                                 </label>
@@ -477,7 +454,8 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <style>
         
-        .ts-wrapper.starclick-select .ts-control {
+        .ts-wrapper.starclick-select .ts-control,
+        .ts-wrapper.batch-select .ts-control {
             border-radius: 0.75rem !important;
             border: 1px solid #94a3b8 !important;
             background-color: #f1f5f9 !important; 
@@ -490,13 +468,15 @@
             color: #475569 !important; 
         }
 
-        .ts-wrapper.starclick-select.focus .ts-control {
+        .ts-wrapper.starclick-select.focus .ts-control,
+        .ts-wrapper.batch-select.focus .ts-control {
             background-color: #ffffff !important;
             border-color: #ef4444 !important;
             box-shadow: 0 0 0 2px rgba(254, 226, 226, 1) !important;
         }
 
-        .ts-wrapper.starclick-select .ts-control>input {
+        .ts-wrapper.starclick-select .ts-control>input,
+        .ts-wrapper.batch-select .ts-control>input {
             font-weight: 500 !important;
             font-size: 0.875rem !important;
         }
@@ -659,46 +639,87 @@
 
             const starClickEl = document.getElementById('star_click_id');
 
-            if (!starClickEl) return;
+            if (starClickEl) {
+                // 🔥 cegah double init (tanpa ubah desain)
+                if (starClickEl.tomselect) {
+                    starClickEl.tomselect.destroy();
+                }
 
-            // 🔥 cegah double init (tanpa ubah desain)
-            if (starClickEl.tomselect) {
-                starClickEl.tomselect.destroy();
+                new TomSelect('#star_click_id', {
+                    wrapperClass: 'ts-wrapper single starclick-select',
+                    valueField: 'id',
+                    labelField: 'text',
+                    searchField: ['id', 'text'],
+                    placeholder: 'Ketik ID Starclick...',
+                    dropdownParent: 'body',
+                    createOnBlur: true,
+                    preload: true,
+
+                    create: function(input) {
+                        return {
+                            id: input,
+                            text: input
+                        };
+                    },
+
+                    onChange: function(value) {
+                        if (!value) return;
+                        const option = this.options[value];
+                        if (option) {
+                            if (option.nama_customer) {
+                                const customerInput = document.querySelector('input[name="nama_customer"]');
+                                if (customerInput) {
+                                    customerInput.value = option.nama_customer;
+                                }
+                            }
+                            window.dispatchEvent(new CustomEvent('starclick-selected', { detail: option }));
+                        }
+                    },
+
+                    load: function(query, callback) {
+                        fetch('/deployment/api/search-starclick?q=' + encodeURIComponent(query))
+                            .then(r => r.json())
+                            .then(json => {
+                                // 🔥 pastikan format aman tanpa ubah desain
+                                // Note: API already filters out used Starclick IDs
+                                const data = (json || []).map(item => ({
+                                    id: item.id,
+                                    text: item.text || item.id,
+                                    nama_customer: item.nama_customer || '',
+                                    datel: item.datel || '',
+                                    sto: item.sto || ''
+                                }));
+                                callback(data);
+                            })
+                            .catch(() => callback());
+                    }
+                });
             }
 
-            new TomSelect('#star_click_id', {
-                wrapperClass: 'ts-wrapper single starclick-select',
-                valueField: 'id',
-                labelField: 'text',
-                searchField: ['id', 'text'],
-                placeholder: 'Ketik ID Starclick...',
-                dropdownParent: 'body',
-
-                preload: true,
-
-                create: function(input) {
-                    return {
-                        id: input,
-                        text: input
-                    };
-                },
-
-                load: function(query, callback) {
-                    fetch('/deployment/api/search-starclick?q=' + encodeURIComponent(query))
-                        .then(r => r.json())
-                        .then(json => {
-                            // 🔥 pastikan format aman tanpa ubah desain
-                            // Note: API already filters out used Starclick IDs
-                            const data = (json || []).map(item => ({
-                                id: item.id,
-                                text: item.text || item.id,
-                                nama_customer: item.nama_customer || ''
-                            }));
-                            callback(data);
-                        })
-                        .catch(() => callback());
+            const nomorBatchEl = document.getElementById('nomor_batch');
+            if (nomorBatchEl) {
+                if (nomorBatchEl.tomselect) {
+                    nomorBatchEl.tomselect.destroy();
                 }
-            });
+
+                new TomSelect('#nomor_batch', {
+                    wrapperClass: 'ts-wrapper single batch-select',
+                    create: function(input) {
+                        const trimmed = input.trim();
+                        // Hanya izinkan input berupa angka (numeric)
+                        if (isNaN(trimmed) || trimmed === '') {
+                            return false;
+                        }
+                        return {
+                            value: trimmed,
+                            text: trimmed
+                        };
+                    },
+                    placeholder: 'Pilih Nomor Batch...',
+                    dropdownParent: 'body',
+                    createOnBlur: true
+                });
+            }
         }
 
         // event tetap (tidak ubah flow kamu)
