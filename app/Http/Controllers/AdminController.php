@@ -1104,7 +1104,7 @@ class AdminController extends Controller
         $search = $request->get('search');
 
         $query = EbisPlanningProgressLog::with(['user', 'planning.manualInput'])
-            ->whereIn(DB::raw('UPPER(progres)'), ['ON DESK', 'SURVEY', 'PERIJINAN', 'DRM', 'APPROVED BY EBIS', 'MATDEV', 'INSTALASI', 'SELESAI FISIK', 'GOLIVE', 'PS', 'KENDALA', 'UJI TERIMA', 'REKON']);
+            ->whereIn(DB::raw('UPPER(progres)'), ['SURVEY', 'PERIJINAN', 'MATDEV', 'INSTALASI', 'SELESAI FISIK']);
 
         // Filter by Year
         if ($year && $year !== 'all') {
@@ -1166,7 +1166,7 @@ class AdminController extends Controller
         // Get filter options
         $mitraList = \App\Models\MasterMitra::orderBy('nama_mitra')->pluck('nama_mitra');
         $yearsList = range(now()->year - 5, now()->year + 2);
-        $stagesList = ['ON DESK', 'SURVEY', 'PERIJINAN', 'DRM', 'APPROVED BY EBIS', 'MATDEV', 'INSTALASI', 'SELESAI FISIK', 'GOLIVE', 'PS', 'KENDALA', 'UJI TERIMA', 'REKON'];
+        $stagesList = ['SURVEY', 'PERIJINAN', 'MATDEV', 'INSTALASI', 'SELESAI FISIK'];
 
         return view('deployment.workload', compact(
             'logs',
