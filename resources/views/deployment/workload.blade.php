@@ -25,7 +25,7 @@
                     Filter & Pencarian Workload
                 </h3>
 
-                <form method="GET" action="{{ route('admin.workload') }}" class="space-y-6" data-turbo="false">
+                <form method="GET" action="{{ route('admin.workload') }}" class="space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         
                         <!-- PENCARIAN -->
@@ -166,11 +166,19 @@
                             @php
                                 $progresName = strtoupper($log->progres);
                                 $badgeClass = match ($progresName) {
-                                    'SURVEY' => 'bg-amber-100 text-amber-800 border-amber-200',
-                                    'PERIJINAN' => 'bg-purple-100 text-purple-800 border-purple-200',
-                                    'MATDEV' => 'bg-sky-100 text-sky-800 border-sky-200',
-                                    'INSTALASI' => 'bg-orange-100 text-orange-800 border-orange-200',
-                                    'SELESAI FISIK' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                                    'ON DESK' => 'bg-indigo-100 text-indigo-800 border-indigo-200',
+                                    'SURVEY' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                    'PERIJINAN' => 'bg-cyan-100 text-cyan-800 border-cyan-200',
+                                    'DRM' => 'bg-teal-100 text-teal-800 border-teal-200',
+                                    'APPROVED BY EBIS' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                                    'MATDEV' => 'bg-green-100 text-green-800 border-green-200',
+                                    'INSTALASI' => 'bg-lime-100 text-lime-800 border-lime-200',
+                                    'SELESAI FISIK' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                                    'GOLIVE' => 'bg-amber-100 text-amber-800 border-amber-200',
+                                    'PS' => 'bg-orange-100 text-orange-800 border-orange-200',
+                                    'KENDALA' => 'bg-red-100 text-red-800 border-red-200',
+                                    'UJI TERIMA' => 'bg-purple-100 text-purple-800 border-purple-200',
+                                    'REKON' => 'bg-pink-100 text-pink-800 border-pink-200',
                                     default => 'bg-slate-100 text-slate-800 border-slate-200',
                                 };
                                 $mitra = $log->planning->manualInput->nama_mitra 
@@ -260,7 +268,7 @@
         function setProgresFilter(value) {
             document.getElementById('progres-filter-input').value = value;
             // Submit form to apply filter immediately
-            document.getElementById('progres-filter-input').closest('form').submit();
+            document.getElementById('progres-filter-input').closest('form').requestSubmit();
         }
     </script>
 @endsection

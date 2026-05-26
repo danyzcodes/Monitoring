@@ -8,7 +8,7 @@
         
         <div class="flex items-center gap-3 text-sm text-slate-500">
             <a href="{{ route('dashboard') }}" class="font-bold text-slate-800 text-xs uppercase tracking-wider">Dashboard</a>
-            <span class="text-slate-300 font-bold">â¯</span>
+            <span class="text-slate-300 font-bold">❯</span>
             <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">Progress Overview</span>
         </div>
 
@@ -175,7 +175,7 @@
                     {{-- Tahun --}}
                     <div>
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400">Tahun</label>
-                        <select name="year" onchange="this.form.submit()"
+                        <select name="year" onchange="this.form.requestSubmit()"
                             class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2 px-3 focus:ring-red-500 focus:border-red-500 transition">
                             @for ($y = date('Y'); $y >= date('Y') - 3; $y--)
                                 <option value="{{ $y }}" {{ ($filterYear ?? date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
@@ -186,7 +186,7 @@
                     {{-- Bulan --}}
                     <div>
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400">Bulan</label>
-                        <select name="month" onchange="this.form.submit()"
+                        <select name="month" onchange="this.form.requestSubmit()"
                             class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2 px-3 focus:ring-red-500 focus:border-red-500 transition">
                             <option value="all">Semua Bulan</option>
                             @foreach ([1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',5=>'Mei',6=>'Jun',7=>'Jul',8=>'Agu',9=>'Sep',10=>'Okt',11=>'Nov',12=>'Des'] as $num => $name)
@@ -198,7 +198,7 @@
                     {{-- Minggu --}}
                     <div>
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400">Minggu</label>
-                        <select name="week" onchange="this.form.submit()"
+                        <select name="week" onchange="this.form.requestSubmit()"
                             class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2 px-3 focus:ring-red-500 focus:border-red-500 transition"
                             {{ empty($filterMonth) || $filterMonth == 'all' ? 'disabled' : '' }}>
                             <option value="all">Semua Minggu</option>
@@ -1140,7 +1140,7 @@
         }
 
         function triggerFormSubmit() {
-            document.getElementById('filterForm')?.submit();
+            document.getElementById('filterForm')?.requestSubmit();
         }
 
         function toggleMultiSelect(type) {

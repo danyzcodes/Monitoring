@@ -988,14 +988,14 @@ class AdminController extends Controller
         $firstDay  = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $lastDay   = $firstDay->copy()->endOfMonth();
 
-        // Get all progress updates for the month for the 5 target progress stages
+        // Get all progress updates for the month for all 13 progress stages
         $logs = EbisPlanningProgressLog::whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
-            ->whereIn(DB::raw('UPPER(progres)'), ['SURVEY', 'PERIJINAN', 'MATDEV', 'INSTALASI', 'SELESAI FISIK'])
+            ->whereIn(DB::raw('UPPER(progres)'), ['ON DESK', 'SURVEY', 'PERIJINAN', 'DRM', 'APPROVED BY EBIS', 'MATDEV', 'INSTALASI', 'SELESAI FISIK', 'GOLIVE', 'PS', 'KENDALA', 'UJI TERIMA', 'REKON'])
             ->with(['planning.manualInput'])
             ->get();
 
-        // Build a lookup: date => [ "mitra - progres" => count ]
+        // Build a lookup: date => [ "mitra" => [ "count" => X, "stages" => [stage1, stage2] ] ]
         $ordersByDate = [];
         foreach ($logs as $log) {
             $d = Carbon::parse($log->created_at)->format('Y-m-d');
@@ -1008,11 +1008,18 @@ class AdminController extends Controller
                 }
             }
             $progres = strtoupper($log->progres);
-            $keyLookup = $mitra . ' - ' . $progres;
 
             if (!isset($ordersByDate[$d])) $ordersByDate[$d] = [];
-            if (!isset($ordersByDate[$d][$keyLookup])) $ordersByDate[$d][$keyLookup] = 0;
-            $ordersByDate[$d][$keyLookup]++;
+            if (!isset($ordersByDate[$d][$mitra])) {
+                $ordersByDate[$d][$mitra] = [
+                    'count'  => 0,
+                    'stages' => []
+                ];
+            }
+            $ordersByDate[$d][$mitra]['count']++;
+            if (!in_array($progres, $ordersByDate[$d][$mitra]['stages'])) {
+                $ordersByDate[$d][$mitra]['stages'][] = $progres;
+            }
         }
 
         // Build the calendar grid (Mon-Sun, with padding)
@@ -1042,17 +1049,14 @@ class AdminController extends Controller
             $details = [];
             $total = 0;
             if (isset($ordersByDate[$key])) {
-                foreach ($ordersByDate[$key] as $keyLookup => $cnt) {
-                    $parts = explode(' - ', $keyLookup);
-                    $mitra = $parts[0] ?? 'Tanpa Mitra';
-                    $progres = $parts[1] ?? '-';
-
+                foreach ($ordersByDate[$key] as $mitra => $data) {
                     $details[] = [
                         'mitra'   => $mitra,
-                        'progres' => $progres,
-                        'count'   => $cnt
+                        'progres' => implode(', ', $data['stages']),
+                        'stages'  => $data['stages'],
+                        'count'   => $data['count']
                     ];
-                    $total += $cnt;
+                    $total += $data['count'];
                 }
                 usort($details, fn($a, $b) => $b['count'] <=> $a['count']);
             }
@@ -1100,7 +1104,7 @@ class AdminController extends Controller
         $search = $request->get('search');
 
         $query = EbisPlanningProgressLog::with(['user', 'planning.manualInput'])
-            ->whereIn(DB::raw('UPPER(progres)'), ['SURVEY', 'PERIJINAN', 'MATDEV', 'INSTALASI', 'SELESAI FISIK']);
+            ->whereIn(DB::raw('UPPER(progres)'), ['ON DESK', 'SURVEY', 'PERIJINAN', 'DRM', 'APPROVED BY EBIS', 'MATDEV', 'INSTALASI', 'SELESAI FISIK', 'GOLIVE', 'PS', 'KENDALA', 'UJI TERIMA', 'REKON']);
 
         // Filter by Year
         if ($year && $year !== 'all') {
@@ -1162,7 +1166,7 @@ class AdminController extends Controller
         // Get filter options
         $mitraList = \App\Models\MasterMitra::orderBy('nama_mitra')->pluck('nama_mitra');
         $yearsList = range(now()->year - 5, now()->year + 2);
-        $stagesList = ['SURVEY', 'PERIJINAN', 'MATDEV', 'INSTALASI', 'SELESAI FISIK'];
+        $stagesList = ['ON DESK', 'SURVEY', 'PERIJINAN', 'DRM', 'APPROVED BY EBIS', 'MATDEV', 'INSTALASI', 'SELESAI FISIK', 'GOLIVE', 'PS', 'KENDALA', 'UJI TERIMA', 'REKON'];
 
         return view('deployment.workload', compact(
             'logs',

@@ -250,14 +250,14 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             
-                            <div id="datel_wrapper" data-field-wrapper x-data="searchableSelect(@js($datels))" x-on:starclick-selected.window="if($event.detail.datel) { select($event.detail.datel) }" class="relative">
+                            <div id="datel_wrapper" data-field-wrapper x-data="searchableSelect(@js($datels))" class="relative">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Datel <span class="text-red-500">*</span>
                                 </label>
 
                                 <div class="relative">
                                     <input type="text" x-model="search" @focus="open = true" @click="open = true"
-                                        @input="open = true; clearIfEmpty()" @blur="clearIfEmpty()"
+                                        @input="open = true; updateSelected()" @blur="updateSelected()"
                                         class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
                                               focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                         placeholder="Pilih Datel">
@@ -289,14 +289,14 @@
                             </div>
 
                             
-                            <div id="sto_wrapper" data-field-wrapper x-data="searchableSelect(@js($stos))" x-on:starclick-selected.window="if($event.detail.sto) { select($event.detail.sto) }" class="relative">
+                            <div id="sto_wrapper" data-field-wrapper x-data="searchableSelect(@js($stos))" class="relative">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     STO <span class="text-red-500">*</span>
                                 </label>
 
                                 <div class="relative">
                                     <input type="text" x-model="search" @focus="open = true" @click="open = true"
-                                        @input="open = true; clearIfEmpty()" @blur="clearIfEmpty()"
+                                        @input="open = true; updateSelected()" @blur="updateSelected()"
                                         class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
                                               focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                         placeholder="Pilih STO">
@@ -626,6 +626,10 @@
 
                 clearIfEmpty() {
                     if (this.search.trim() === '') this.selected = '';
+                },
+
+                updateSelected() {
+                    this.selected = this.search.trim();
                 }
             }
         }

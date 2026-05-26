@@ -550,6 +550,28 @@
                             } finally {
                                 this.loading = false;
                             }
+                        },
+                        getMitraColor(mitra) {
+                            if (!mitra || mitra === 'Tanpa Mitra') return '#94a3b8';
+                            const colors = [
+                                '#ef4444', // red
+                                '#3b82f6', // blue
+                                '#10b981', // green
+                                '#f59e0b', // amber
+                                '#8b5cf6', // purple
+                                '#ec4899', // pink
+                                '#06b6d4', // cyan
+                                '#f97316', // orange
+                                '#14b8a6', // teal
+                                '#84cc16', // lime
+                            ];
+                            let hash = 0;
+                            for (let i = 0; i < mitra.length; i++) {
+                                hash = ((hash << 5) - hash) + mitra.charCodeAt(i);
+                                hash |= 0; // Convert to 32bit integer
+                            }
+                            const index = Math.abs(hash) % colors.length;
+                            return colors[index];
                         }
                     }" x-init="fetchWorkload()">
                     
@@ -637,6 +659,15 @@
                                     <span class="block text-[11px] font-extrabold leading-none mt-0.5" :class="(day.count / global_cap) > 0.7 ? 'text-white' : 'text-slate-700'" x-text="day.num_label.split(' ')[0]"></span>
                                 </div>
                                 
+                                <!-- Mitra Indicators (Dots or small pills) -->
+                                <div class="absolute top-[32px] left-2.5 z-10 flex gap-0.5 flex-wrap max-w-[65%] pointer-events-none">
+                                    <template x-for="detail in day.details">
+                                        <span class="w-1.5 h-1.5 rounded-full border shadow-sm" 
+                                              :style="'background-color: ' + getMitraColor(detail.mitra)"
+                                              :class="(day.count / global_cap) > 0.7 ? 'border-white/50' : 'border-slate-300/50'"></span>
+                                    </template>
+                                </div>
+                                
                                 
                                 <div class="relative z-10 flex flex-col items-end justify-end h-full w-full p-2 text-right pointer-events-none">
                                     <span class="text-[16px] font-black leading-none drop-shadow-sm" :class="(day.count / global_cap) > 0.3 ? 'text-white' : 'text-slate-700'" x-text="day.count"></span>
@@ -684,19 +715,27 @@
                                 <template x-if="selectedDay && selectedDay.details && selectedDay.details.length > 0">
                                     <template x-for="(detail, i) in selectedDay.details" :key="i">
                                         <div class="flex items-center justify-between p-3.5 rounded-2xl border transition-colors"
-                                             :class="detail.count > 3 ? 'bg-red-50 border-red-200 hover:border-red-300' : 'bg-slate-50 border-slate-100 hover:border-slate-200'">
+                                             :class="detail.count > 3 ? 'bg-red-50 border-red-200 hover:border-red-300' : 'bg-slate-50 border-slate-100 hover:border-slate-200'"
+                                             :style="'border-left: 4px solid ' + getMitraColor(detail.mitra)">
                                             <div class="flex items-center gap-3">
                                                 <div class="w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs shadow-sm"
-                                                     :class="detail.count > 3 ? 'bg-red-200 text-red-800' : (i === 0 ? 'bg-blue-100 text-blue-700' : 'bg-white text-slate-500')">
+                                                     :style="'background-color: ' + getMitraColor(detail.mitra) + '18; color: ' + getMitraColor(detail.mitra) + '; border: 1px solid ' + getMitraColor(detail.mitra) + '30'">
                                                     <span x-text="'#' + (i + 1)"></span>
                                                 </div>
                                                 <div class="flex flex-col">
                                                     <span class="text-sm font-bold" :class="detail.count > 3 ? 'text-red-800' : 'text-slate-700'" x-text="detail.mitra"></span>
-                                                    <template x-if="detail.progres">
-                                                        <span class="text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md mt-1 self-start"
-                                                              style="background:rgba(59,130,246,0.1); color:#3b82f6;"
-                                                              x-text="detail.progres"></span>
-                                                    </template>
+                                                    <div class="flex flex-wrap gap-1 mt-1">
+                                                        <template x-for="stage in (detail.stages || [])">
+                                                            <span class="text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md"
+                                                                  style="background:rgba(59,130,246,0.1); color:#3b82f6;"
+                                                                  x-text="stage"></span>
+                                                        </template>
+                                                        <template x-if="!detail.stages && detail.progres">
+                                                            <span class="text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md"
+                                                                  style="background:rgba(59,130,246,0.1); color:#3b82f6;"
+                                                                  x-text="detail.progres"></span>
+                                                        </template>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="text-right flex flex-col items-end">
