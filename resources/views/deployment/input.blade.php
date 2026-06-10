@@ -37,7 +37,7 @@
                                     Nomor NDE JT
                                 </label>
                                 <input name="nde_jt" type="text" value="{{ 'NDE-' . date('ymd-His') }}"
-                                    class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white text-slate-600
+                                    class="w-full rounded-xl border border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white text-slate-600
                                        focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                     placeholder="Contoh: NDE-123/456" readonly>
                             </div>
@@ -93,7 +93,7 @@
                                     Nama Pelanggan <span class="text-red-500">*</span>
                                 </label>
                                 <input name="nama_customer" type="text" data-required="true"
-                                    class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
+                                    class="w-full rounded-xl border border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
                                        focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                     placeholder="Nama Lengkap">
                                 <p x-show="showError && errorField === 'nama_customer'" x-transition
@@ -109,7 +109,7 @@
                                     Telepon <span class="text-red-500">*</span>
                                 </label>
                                 <input name="telepon_pelanggan" type="text" data-required="true"
-                                    class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
+                                    class="w-full rounded-xl border border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
                                        focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                     placeholder="08xxxxxxxxxx">
                                 <p x-show="showError && errorField === 'telepon_pelanggan'" x-transition
@@ -177,7 +177,7 @@
                                         @input="fetchSuggestions()"
                                         @focus="if (suggestions.length > 0) open = true"
                                         @click.outside="open = false"
-                                        class="w-full rounded-xl border-slate-400 bg-slate-100 pl-10 pr-12 py-3 text-sm focus:bg-white
+                                        class="w-full rounded-xl border border-slate-400 bg-slate-100 pl-10 pr-12 py-3 text-sm focus:bg-white
                                            focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                         placeholder="Ketik alamat pelanggan...">
                                     
@@ -199,7 +199,8 @@
                                 </div>
 
                                 <div x-show="open" x-cloak
-                                    class="absolute left-0 right-0 z-50 mt-1 bg-white border border-slate-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+                                    style="position: absolute; left: 0; right: 0; z-index: 50; margin-top: 4px;"
+                                    class="bg-white border border-slate-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
                                     <template x-for="item in suggestions" :key="item.place_id">
                                         <div @click="select(item)"
                                             class="px-4 py-3 text-xs cursor-pointer hover:bg-red-50 text-slate-700 hover:text-red-700 transition border-b border-slate-50 last:border-0">
@@ -225,7 +226,7 @@
                                 </label>
                                 <div class="relative">
                                     <input name="tikor_pelanggan" type="text" data-required="true"
-                                        class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white font-mono text-slate-600
+                                        class="w-full rounded-xl border border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white font-mono text-slate-600
                                            focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                         placeholder="-6.xxxxx, 108.xxxxx">
                                 </div>
@@ -258,7 +259,7 @@
                                 <div class="relative">
                                     <input type="text" x-model="search" @focus="open = true" @click="open = true"
                                         @input="open = true; updateSelected()" @blur="updateSelected()"
-                                        class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
+                                        class="w-full rounded-xl border border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
                                               focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                         placeholder="Pilih Datel">
                                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -272,8 +273,9 @@
                                 <input type="hidden" name="datel" x-model="selected" data-required="true">
 
                                 
-                                <div x-show="open" @click.outside="open = false" x-transition.opacity
-                                    class="absolute z-50 mt-1 w-full bg-white border border-slate-100 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+                                <div x-show="open" @click.outside="open = false"
+                                    style="position: absolute; z-index: 50; margin-top: 4px; width: 100%;"
+                                    class="bg-white border border-slate-100 rounded-xl shadow-xl max-h-48 overflow-y-auto">
                                     <template x-for="item in filtered()" :key="item">
                                         <div @click="select(item)"
                                             class="px-4 py-2.5 text-sm cursor-pointer hover:bg-red-50 text-slate-700 hover:text-red-700 transition">
@@ -297,7 +299,7 @@
                                 <div class="relative">
                                     <input type="text" x-model="search" @focus="open = true" @click="open = true"
                                         @input="open = true; updateSelected()" @blur="updateSelected()"
-                                        class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
+                                        class="w-full rounded-xl border border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
                                               focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                         placeholder="Pilih STO">
                                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -310,8 +312,9 @@
 
                                 <input type="hidden" name="sto" x-model="selected" data-required="true">
 
-                                <div x-show="open" @click.outside="open = false" x-transition.opacity
-                                    class="absolute z-50 mt-1 w-full bg-white border border-slate-100 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+                                <div x-show="open" @click.outside="open = false"
+                                    style="position: absolute; z-index: 50; margin-top: 4px; width: 100%;"
+                                    class="bg-white border border-slate-100 rounded-xl shadow-xl max-h-48 overflow-y-auto">
                                     <template x-for="item in filtered()" :key="item">
                                         <div @click="select(item)"
                                             class="px-4 py-2.5 text-sm cursor-pointer hover:bg-red-50 text-slate-700 hover:text-red-700 transition">
@@ -337,7 +340,7 @@
                                 <div class="relative">
                                     <input type="text" x-model="search" @focus="open = true" @click="open = true"
                                         @input="open = true; clearIfEmpty()" @blur="clearIfEmpty()"
-                                        class="w-full rounded-xl border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
+                                        class="w-full rounded-xl border border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
                                             focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
                                         placeholder="Pilih Mitra">
 
@@ -351,8 +354,9 @@
 
                                 <input type="hidden" name="nama_mitra" x-model="selected" data-required="true">
 
-                                <div x-show="open" @click.outside="open = false" x-transition.opacity
-                                    class="absolute z-50 mt-1 w-full bg-white border border-slate-100 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+                                <div x-show="open" @click.outside="open = false"
+                                    style="position: absolute; z-index: 50; margin-top: 4px; width: 100%;"
+                                    class="bg-white border border-slate-100 rounded-xl shadow-xl max-h-48 overflow-y-auto">
                                     <template x-for="item in filtered()" :key="item">
                                         <div @click="select(item)"
                                             class="px-4 py-2.5 text-sm cursor-pointer hover:bg-red-50 text-slate-700 hover:text-red-700 transition">
@@ -459,10 +463,13 @@
             border-radius: 0.75rem !important;
             border: 1px solid #94a3b8 !important;
             background-color: #f1f5f9 !important; 
-            padding: 0.85rem 1rem !important;
+            padding: 0 1rem !important;
             font-size: 0.875rem !important;
             font-weight: 500 !important;
-            min-height: auto !important;
+            min-height: 46px !important;
+            height: 46px !important;
+            display: flex !important;
+            align-items: center !important;
             box-shadow: none !important;
             transition: all 0.2s ease-in-out;
             color: #475569 !important; 
@@ -479,6 +486,14 @@
         .ts-wrapper.batch-select .ts-control>input {
             font-weight: 500 !important;
             font-size: 0.875rem !important;
+            margin: 0 !important;
+        }
+        
+        .ts-wrapper.starclick-select .ts-control .item,
+        .ts-wrapper.batch-select .ts-control .item {
+            margin: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
         }
 
         

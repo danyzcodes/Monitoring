@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col gap-6">
 
-        <!-- BREADCRUMBS -->
+        
         <div class="flex items-center gap-3 text-sm text-slate-500">
             <a href="{{ route('admin.dashboard') }}"
                 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Dashboard</a>
@@ -13,7 +13,7 @@
             <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">Rincian Workload</span>
         </div>
 
-        <!-- FILTER CARD -->
+        
         <div class="bg-white rounded-3xl shadow-xl border border-slate-100 relative">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600 rounded-t-3xl"></div>
 
@@ -26,9 +26,12 @@
                 </h3>
 
                 <form method="GET" action="{{ route('admin.workload') }}" class="space-y-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    @if (request('date'))
+                        <input type="hidden" name="date" value="{{ request('date') }}">
+                    @endif
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                         
-                        <!-- PENCARIAN -->
+                        
                         <div class="sm:col-span-2">
                             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                 Kata Kunci
@@ -37,14 +40,14 @@
                                 <input type="text" name="search" value="{{ $search }}"
                                     class="w-full rounded-xl border-slate-300 bg-slate-50 pl-10 pr-4 py-2.5 text-xs font-semibold text-slate-700 focus:bg-white
                                            focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
-                                    placeholder="Cari Starclick ID / Customer...">
+                                     placeholder="Cari Starclick ID / Customer...">
                                 <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
                         </div>
 
-                        <!-- FILTER TAHUN -->
+                        
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                 Tahun
@@ -57,7 +60,7 @@
                             </select>
                         </div>
 
-                        <!-- FILTER BULAN -->
+                        
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                 Bulan
@@ -70,39 +73,51 @@
                             </select>
                         </div>
 
-                        <!-- FILTER MINGGU -->
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                                Minggu
-                            </label>
-                            <select name="week" class="w-full rounded-xl border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-semibold text-slate-700 focus:bg-white focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition cursor-pointer">
-                                <option value="">Semua Minggu</option>
-                                <option value="1" {{ $week == '1' ? 'selected' : '' }}>Minggu 1 (Tgl 1-7)</option>
-                                <option value="2" {{ $week == '2' ? 'selected' : '' }}>Minggu 2 (Tgl 8-14)</option>
-                                <option value="3" {{ $week == '3' ? 'selected' : '' }}>Minggu 3 (Tgl 15-21)</option>
-                                <option value="4" {{ $week == '4' ? 'selected' : '' }}>Minggu 4 (Tgl 22-28)</option>
-                                <option value="5" {{ $week == '5' ? 'selected' : '' }}>Minggu 5 (Tgl 29+)</option>
-                            </select>
-                        </div>
-
-                        <!-- FILTER MITRA -->
-                        <div>
+                        
+                        <div class="relative" id="mitra-multiselect">
                             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                 Mitra
                             </label>
-                            <select name="mitra" class="w-full rounded-xl border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-semibold text-slate-700 focus:bg-white focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition cursor-pointer">
-                                <option value="">Semua Mitra</option>
-                                @foreach ($mitraList as $m)
-                                    <option value="{{ $m }}" {{ $mitra == $m ? 'selected' : '' }}>{{ $m }}</option>
-                                @endforeach
-                            </select>
+                            <button type="button" onclick="toggleWorkloadMitraSelect()"
+                                class="w-full rounded-xl border border-slate-300 bg-slate-50 text-xs font-semibold py-2.5 px-3 text-left flex items-center justify-between transition hover:border-red-500 focus:bg-white">
+                                <span id="mitra-label" class="truncate text-slate-700">
+                                    @if (!empty($mitra)) 
+                                        {{ is_array($mitra) ? count(array_filter($mitra)) : 1 }} Mitra dipilih
+                                    @else 
+                                        Semua Mitra 
+                                    @endif
+                                </span>
+                                <svg class="w-4 h-4 shrink-0 ml-2 text-slate-400" id="mitra-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div id="mitra-dropdown" class="hidden absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-xl max-h-52 overflow-y-auto" style="min-width:200px;">
+                                <div class="p-2 border-b border-slate-100">
+                                    <input type="text" placeholder="Cari Mitra..." oninput="filterWorkloadMitraOptions(this.value)"
+                                        class="w-full rounded-lg border-slate-200 text-xs py-1.5 px-2 focus:ring-red-500 focus:border-red-500 outline-none">
+                                </div>
+                                <div id="mitra-options" class="p-1">
+                                    @php
+                                        $selectedMitras = array_filter((array) $mitra);
+                                    @endphp
+                                    @foreach ($mitraList as $m)
+                                        <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-red-50 cursor-pointer text-xs font-semibold text-slate-700 mitra-option" data-value="{{ strtolower($m) }}">
+                                            <input type="checkbox" name="mitra[]" value="{{ $m }}"
+                                                class="rounded border-slate-300 text-red-600 focus:ring-red-500"
+                                                {{ in_array($m, $selectedMitras) ? 'checked' : '' }}
+                                                onchange="updateWorkloadMitraLabel()">
+                                            {{ $m }}
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
 
                     </div>
 
-                    <!-- ACTION BUTTONS -->
+                    
                     <div class="flex items-center justify-between gap-4 pt-4 border-t border-slate-100">
-                        <!-- PROGRESS FILTER -->
+                        
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-xs font-bold text-slate-500 mr-2">Progres:</span>
                             <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
@@ -120,7 +135,7 @@
                             <input type="hidden" name="progres" id="progres-filter-input" value="{{ $progres }}">
                         </div>
 
-                        <!-- BUTTON RUN / RESET -->
+                        
                         <div class="flex items-center gap-3">
                             <a href="{{ route('admin.workload') }}" 
                                 class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition">
@@ -136,16 +151,23 @@
             </div>
         </div>
 
-        <!-- TABLE CARD -->
+        
         <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
             <div class="p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
                 <div>
-                    <h3 class="text-base font-bold text-slate-800">Daftar Aktivitas & Rincian Kerja</h3>
+                    <h3 class="text-base font-bold text-slate-800 flex items-center gap-2 flex-wrap">
+                        Daftar Aktivitas & Rincian Kerja
+                        @if (request('date'))
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100">
+                                Tanggal: {{ \Carbon\Carbon::parse(request('date'))->locale('id')->isoFormat('D MMMM Y') }}
+                            </span>
+                        @endif
+                    </h3>
                     <p class="text-xs text-slate-400 mt-1">Total ditemukan {{ $logs->total() }} aktivitas update progress</p>
                 </div>
             </div>
 
-            <!-- TABLE CONTENT -->
+            
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
@@ -257,7 +279,7 @@
                 </table>
             </div>
 
-            <!-- PAGINATION -->
+            
             <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
                 {{ $logs->links() }}
             </div>
@@ -270,5 +292,53 @@
             // Submit form to apply filter immediately
             document.getElementById('progres-filter-input').closest('form').requestSubmit();
         }
+
+        function toggleWorkloadMitraSelect() {
+            const dropdown = document.getElementById('mitra-dropdown');
+            const chevron = document.getElementById('mitra-chevron');
+            if (!dropdown) return;
+            const isHidden = dropdown.classList.contains('hidden');
+            if (isHidden) {
+                dropdown.classList.remove('hidden');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                dropdown.classList.add('hidden');
+                if (chevron) chevron.style.removeProperty('transform');
+            }
+        }
+
+        function updateWorkloadMitraLabel() {
+            const checkboxes = document.querySelectorAll('#mitra-options input[type="checkbox"]:checked');
+            const label = document.getElementById('mitra-label');
+            if (!label) return;
+            const count = checkboxes.length;
+            if (count === 0) {
+                label.textContent = 'Semua Mitra';
+            } else {
+                label.textContent = count + ' Mitra dipilih';
+            }
+        }
+
+        function filterWorkloadMitraOptions(query) {
+            const options = document.querySelectorAll('.mitra-option');
+            const q = query.toLowerCase();
+            options.forEach(opt => {
+                const val = opt.getAttribute('data-value') || '';
+                opt.style.display = val.includes(q) ? '' : 'none';
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const container = document.getElementById('mitra-multiselect');
+            const dropdown = document.getElementById('mitra-dropdown');
+            const chevron = document.getElementById('mitra-chevron');
+            if (container && !container.contains(e.target)) {
+                if (dropdown && !dropdown.classList.contains('hidden')) {
+                    dropdown.classList.add('hidden');
+                    if (chevron) chevron.style.removeProperty('transform');
+                }
+            }
+        });
     </script>
 @endsection

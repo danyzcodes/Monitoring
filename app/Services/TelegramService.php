@@ -25,11 +25,11 @@ class TelegramService
             return false;
         }
 
-        // 1. Simpan pesan ke antrian Database agar UI web bisa langsung selesai (Loading 0ms)
+        
         dispatch(new \App\Jobs\SendTelegramNotification($text, $chatId ?? $this->chatId));
 
-        // 2. Trik Sulap: Paksa sistem operasi Windows untuk diam-diam membuka "Pekerja Kirim"
-        // secara gaib di belakang layar yang tugasnya mengirim 1 antrian telegram lalu mati sendiri.
+        
+        
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $artisan = base_path('artisan');
             pclose(popen("start /B php \"$artisan\" queue:work --once > NUL 2>&1", "r"));
@@ -38,9 +38,7 @@ class TelegramService
         return true;
     }
 
-    /**
-     * Notifikasi saat order baru dibuat.
-     */
+    
     public function notifyNewOrder(EbisManualInput $order): void
     {
         $text  = "📢 <b>ORDER BARU DIBUAT</b>\n";
@@ -62,9 +60,7 @@ class TelegramService
         $this->sendMessage($text);
     }
 
-    /**
-     * Notifikasi saat progress di-update, termasuk riwayat lengkap.
-     */
+    
     public function notifyProgressUpdate(EbisManualInput $order, string $progres, ?string $keterangan = null): void
     {
         $text  = "📢 <b>UPDATE PROGRESS DEPLOYMENT</b>\n";
@@ -76,7 +72,7 @@ class TelegramService
 
         $text .= "📊 <b>Progress:</b> {$progres}\n";
 
-        // Ambil riwayat progress dari log
+        
         $planning = $order->planning;
         if ($planning) {
             $logs = $planning->logs()->with('user')->orderBy('created_at', 'asc')->get();
@@ -99,9 +95,7 @@ class TelegramService
         $this->sendMessage($text);
     }
 
-    /**
-     * Laporan Harian: Semua progress hari ini dengan format lengkap.
-     */
+    
     public function sendDailyReport(): void
     {
         $dateStr = now()->format('d M Y');
@@ -115,7 +109,7 @@ class TelegramService
         $text .= "Kategori Umur | Wilayah Telkom | Nomor NDE JT | Starclick ID/NCX | Nama Pelanggan | Nama Mitra | Status Order | Status Tomps | Status Alokasi Alpro\n\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
 
-        // Status mapping
+        
         $statuses = [
             'NEW ORDER' => ['NEW ORDER', 'NEW'],
             'ON DESK' => ['ON DESK'],
@@ -150,13 +144,13 @@ class TelegramService
             'REKON' => '📑',
         ];
 
-        // Get all active orders (not completed)
+        
         $orders = \App\Models\EbisManualInput::with(['planning'])
             ->whereNotIn('progres', ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON', 'GAGAL', 'CANCEL'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Also get completed orders today
+        
         $completedToday = \App\Models\EbisManualInput::with(['planning'])
             ->whereIn('progres', ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON'])
             ->whereDate('updated_at', now()->format('Y-m-d'))
@@ -190,7 +184,7 @@ class TelegramService
                 $text .= "(Belum ada data)\n\n";
             } else {
                 foreach ($filteredOrders as $order) {
-                    // Calculate duration in days from creation (rounded to whole number)
+                    
                     $daysSinceCreated = round($order->created_at->diffInDays(now()));
                     if ($daysSinceCreated <= 6) {
                         $ageCategory = '≤6HR';
@@ -207,7 +201,7 @@ class TelegramService
                     $statusOrder = $order->progres ?? '-';
                     $datel = strtoupper($order->datel ?? '-');
 
-                    // Get tomps status from planning
+                    
                     $tompsStatus = '-';
                     $alproStatus = 'Waiting for Allocation';
                     if ($order->planning) {
@@ -215,19 +209,19 @@ class TelegramService
                         $alproStatus = $order->planning->status_alokasi_alpro ?? 'Waiting for Allocation';
                     }
 
-                    // Format as pipe-separated line
+                    
                     $text .= "{$ageCategory} | {$datel} | {$nde} | {$starclick} | {$customer} | {$mitra} | {$statusOrder} | {$tompsStatus} | {$alproStatus}\n\n";
                 }
             }
         }
 
-        // Add completed orders section
+        
         if ($completedToday->isNotEmpty()) {
             $text .= "<b>🚀 SELESAI HARI INI</b>\n";
             $text .= "────────────────────────────\n\n";
 
             foreach ($completedToday as $order) {
-                // Calculate duration from creation to completion (rounded to whole number)
+                
                 $daysToComplete = round($order->created_at->diffInDays($order->updated_at));
                 $ageCategory = $daysToComplete . ' HR';
 
@@ -238,7 +232,7 @@ class TelegramService
                 $statusOrder = $order->progres ?? '-';
                 $datel = strtoupper($order->datel ?? '-');
 
-                // Get tomps status from planning
+                
                 $tompsStatus = '-';
                 $alproStatus = 'Waiting for Allocation';
                 if ($order->planning) {

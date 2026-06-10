@@ -10,9 +10,7 @@ class MasterDataSeeder extends Seeder
 {
     public function run(): void
     {
-        /**
-         * DATEL
-         */
+        
         $datels = DB::table('ebis_manual_inputs')
             ->select('datel')
             ->whereNotNull('datel')
@@ -26,9 +24,7 @@ class MasterDataSeeder extends Seeder
             );
         }
 
-        /**
-         * STO
-         */
+        
         $stos = DB::table('ebis_manual_inputs')
             ->select('sto')
             ->whereNotNull('sto')
@@ -42,9 +38,7 @@ class MasterDataSeeder extends Seeder
             );
         }
 
-        /**
-         * MITRA
-         */
+        
         $mitras = DB::table('ebis_manual_inputs')
             ->select('nama_mitra')
             ->whereNotNull('nama_mitra')

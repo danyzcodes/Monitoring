@@ -29,6 +29,8 @@ class MasterInputController extends Controller
             'nama_datel' => strtoupper($request->nama_datel)
         ]);
 
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
+
         return back()->with('success', 'Datel berhasil ditambahkan');
     }
 
@@ -41,6 +43,8 @@ class MasterInputController extends Controller
         MasterSto::create([
             'nama_sto' => strtoupper($request->nama_sto)
         ]);
+
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
 
         return back()->with('success', 'STO berhasil ditambahkan');
     }
@@ -55,10 +59,12 @@ class MasterInputController extends Controller
             'nama_mitra' => strtoupper($request->nama_mitra)
         ]);
 
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
+
         return back()->with('success', 'Mitra berhasil ditambahkan');
     }
 
-    // ================= UPDATE =================
+    
 
     public function updateDatel(Request $request, $id)
     {
@@ -76,6 +82,8 @@ class MasterInputController extends Controller
             \App\Models\EbisManualInput::where('datel', $oldNama)->update(['datel' => $newNama]);
             \App\Models\EbisPlanningOrder::where('datel', $oldNama)->update(['datel' => $newNama]);
         }
+
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
 
         return back()->with('success', 'Datel berhasil diperbarui');
     }
@@ -97,6 +105,8 @@ class MasterInputController extends Controller
             \App\Models\EbisPlanningOrder::where('sto', $oldNama)->update(['sto' => $newNama]);
         }
 
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
+
         return back()->with('success', 'STO berhasil diperbarui');
     }
 
@@ -117,26 +127,31 @@ class MasterInputController extends Controller
             \App\Models\EbisPlanningOrder::where('nama_mitra', $oldNama)->update(['nama_mitra' => $newNama]);
         }
 
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
+
         return back()->with('success', 'Mitra berhasil diperbarui');
     }
 
-    // ================= DELETE =================
+    
 
     public function destroyDatel($id)
     {
         MasterDatel::findOrFail($id)->delete();
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
         return back()->with('success', 'Datel berhasil dihapus');
     }
 
     public function destroySto($id)
     {
         MasterSto::findOrFail($id)->delete();
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
         return back()->with('success', 'STO berhasil dihapus');
     }
 
     public function destroyMitra($id)
     {
         MasterMitra::findOrFail($id)->delete();
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
         return back()->with('success', 'Mitra berhasil dihapus');
     }
 }

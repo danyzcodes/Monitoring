@@ -21,7 +21,7 @@ class UserController extends Controller
 
         $user = User::findOrFail($id);
 
-        // ❌ Admin tidak boleh downgrade dirinya sendiri
+        
         if (
             Auth::id() === $user->id &&
             Auth::user()->role === 'admin' &&

@@ -12,18 +12,14 @@ class SendTelegramNotification implements ShouldQueue
     protected string $text;
     protected string $chatId;
 
-    /**
-     * Create a new job instance.
-     */
+    
     public function __construct(string $text, string $chatId)
     {
         $this->text = $text;
         $this->chatId = $chatId;
     }
 
-    /**
-     * Execute the job.
-     */
+    
     public function handle(): void
     {
         $botToken = config('services.telegram.bot_token', '');

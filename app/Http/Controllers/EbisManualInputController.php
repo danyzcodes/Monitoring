@@ -15,11 +15,7 @@ use App\Services\TelegramService;
 
 class EbisManualInputController extends Controller
 {
-    /**
-     * =============================
-     * INPUT DATA (SEMUA MANUAL)
-     * =============================
-     */
+    
     public function index()
     {
         $datels = MasterDatel::orderBy('nama_datel')->pluck('nama_datel');
@@ -31,11 +27,7 @@ class EbisManualInputController extends Controller
         return view('deployment.input', compact('datels', 'stos', 'rows', 'mitras'));
     }
 
-    /**
-     * =============================
-     * SIMPAN DATA MANUAL
-     * =============================
-     */
+    
     public function store(Request $request)
     {
         $validated = $request->validate(
@@ -69,7 +61,7 @@ class EbisManualInputController extends Controller
 
         $order = EbisManualInput::create($validated);
 
-        // Kirim notifikasi Telegram secara asinkron (dilatarbelakangi) agar input terasa instan
+        
         defer(function () use ($order) {
             try {
                 (new TelegramService())->notifyNewOrder($order);
@@ -78,28 +70,17 @@ class EbisManualInputController extends Controller
             }
         });
 
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
         return redirect()->back()->with('success', 'Data berhasil disimpan');
     }
 
-    /**
-     * =============================
-     * UPDATE DATA (LIST = REKAP)
-     * =============================
-     */
+    
     public function updateList(Request $request)
     {
-        /**
-         * =============================
-         * QUERY UTAMA
-         * =============================
-         */
+        
         $rows = EbisManualInput::with('planning');
 
-        /**
-         * =============================
-         * FILTER DARI FORM (DROPDOWN)
-         * =============================
-         */
+        
         if ($request->filled('starclick')) {
             $rows->where('star_click_id', $request->starclick);
         }
@@ -128,7 +109,7 @@ class EbisManualInputController extends Controller
             if (!empty($batches)) $rows->whereIn('ebis_manual_inputs.nomor_batch', $batches);
         }
 
-        // FILTER DARI RELASI PLANNING
+        
         $hasRelFilter = $request->filled('status_order') || $request->filled('tipe_desain') || $request->filled('jenis_program') || $request->filled('cfu') || $request->filled('status_proyek');
         if ($hasRelFilter) {
             $rows->whereHas('planning', function ($q) use ($request) {
@@ -155,16 +136,12 @@ class EbisManualInputController extends Controller
             });
         }
 
-        /**
-         * =============================
-         * FILTER KHUSUS (OVERDUE dll)
-         * =============================
-         */
+        
         if ($request->usia == 'overdue') {
             $today = \Carbon\Carbon::now()->startOfDay()->format('Y-m-d');
             
             $rows->whereHas('planning', function($q) {
-                // Ensure we only count active orders (not already finished)
+                
                 $q->whereNotIn('status_order', ['Success', 'Gagal', 'Cancel']);
             })
             ->whereNotIn('ebis_manual_inputs.progres', ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON'])
@@ -173,11 +150,7 @@ class EbisManualInputController extends Controller
             ->whereRaw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(data, '$.commitment_date')), '%Y-%m-%d') < ?", [$today]);
         }
 
-        /**
-         * =============================
-         * FILTER TANGGAL (CREATED AT)
-         * =============================
-         */
+        
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $rows->whereBetween('created_at', [
                 $request->start_date . ' 00:00:00',
@@ -189,15 +162,11 @@ class EbisManualInputController extends Controller
             $rows->where('created_at', '<=', $request->end_date . ' 23:59:59');
         }
 
-        /**
-         * =============================
-         * SMART SEARCH (BULK / SINGLE)
-         * =============================
-         */
+        
         if ($request->filled('search')) {
             $search = $request->search;
             if (str_contains($search, ',')) {
-                // BULK SEARCH (Starclick ID OR Nama Customer)
+                
                 $values = array_filter(array_map('trim', explode(',', $search)));
                 $rows->where(function ($q) use ($values) {
                     $q->whereIn('star_click_id', $values);
@@ -206,7 +175,7 @@ class EbisManualInputController extends Controller
                     }
                 });
             } else {
-                // SINGLE SEARCH (Wildcard)
+                
                 $rows->where(function ($q) use ($search) {
                     $q->where('ebis_manual_inputs.star_click_id', 'like', "%{$search}%")
                       ->orWhere('ebis_manual_inputs.nde_jt', 'like', "%{$search}%")
@@ -216,27 +185,23 @@ class EbisManualInputController extends Controller
             }
         }
 
-        /**
-         * =============================
-         * CARI FILTERING (MULTIPLE)
-         * =============================
-         */
+        
         $key = $request->filter_key;
         $values = array_filter(array_map('trim', explode(',', $request->filter_values ?? '')));
 
         if ($key && !empty($values)) {
             $rows->where(function ($q) use ($key, $values) {
                 foreach ($values as $val) {
-                    // FIELD MANUAL INPUT
+                    
                     if ($key === 'star_click_id') {
-                        $q->orWhere('ebis_manual_inputs.star_click_id', $val); // exact match
+                        $q->orWhere('ebis_manual_inputs.star_click_id', $val); 
                     } elseif ($key === 'sto') {
                         $q->orWhere('ebis_manual_inputs.sto', 'like', "%{$val}%");
                     } elseif ($key === 'nama_customer') {
                         $q->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$val}%");
                     }
 
-                    // FIELD PLANNING (RELASI)
+                    
                     if (in_array($key, ['ihld_lop_id', 'status_order', 'tipe_desain', 'jenis_program'])) {
                         $q->orWhereHas('planning', function ($p) use ($key, $val) {
                             if ($key === 'ihld_lop_id') {
@@ -250,39 +215,11 @@ class EbisManualInputController extends Controller
             });
         }
 
-        // PAGINATION (HARUS PALING BAWAH)
+        
         $rows = $rows->paginate(10)->withQueryString();
 
-        /**
-         * =============================
-         * DROPDOWN FILTER DINAMIS
-         * (DIAMBIL DARI DATA TABEL)
-         * =============================
-         */
-        $filters = [
-            'starclicks' => [],
-
-            'nama_customers' => [],
-
-            'stos' => \App\Models\MasterSto::orderBy('nama_sto')->pluck('nama_sto'),
-
-            'datels' => \App\Models\MasterDatel::orderBy('nama_datel')->pluck('nama_datel'),
-
-            'progresses' => EbisManualInput::select('progres')->whereNotNull('progres')->where('progres', '!=', '')->distinct()->orderBy('progres')->pluck('progres'),
-
-            // dari relasi planning
-            'status_orders' => EbisPlanningOrder::select('status_order')->whereNotNull('status_order')->distinct()->pluck('status_order'),
-
-            'tipe_desains' => EbisPlanningOrder::select('tipe_desain')->whereNotNull('tipe_desain')->distinct()->pluck('tipe_desain'),
-
-            'jenis_programs' => EbisPlanningOrder::select('jenis_program')->whereNotNull('jenis_program')->distinct()->pluck('jenis_program'),
-
-            'cfus' => EbisPlanningOrder::select('cfu')->whereNotNull('cfu')->where('cfu', '!=', '')->distinct()->orderBy('cfu')->pluck('cfu'),
-
-            'status_proyeks' => EbisPlanningOrder::select('status_proyek')->whereNotNull('status_proyek')->where('status_proyek', '!=', '')->distinct()->orderBy('status_proyek')->pluck('status_proyek'),
-
-            'nomor_batches' => EbisManualInput::select('nomor_batch')->whereNotNull('nomor_batch')->where('nomor_batch', '!=', '')->distinct()->orderBy('nomor_batch')->pluck('nomor_batch'),
-        ];
+        
+        $filters = DropdownHelper::getDynamicFilters();
 
         if ($request->ajax()) {
             return view('deployment.partials.update-table', compact('rows'))->render();
@@ -291,11 +228,7 @@ class EbisManualInputController extends Controller
         return view('deployment.update', compact('rows', 'filters'));
     }
 
-    /**
-     * =============================
-     * FORM EDIT DEPLOYMENT
-     * =============================
-     */
+    
     public function edit($id)
     {
         $data = EbisManualInput::with('planning')->findOrFail($id);
@@ -306,17 +239,12 @@ class EbisManualInputController extends Controller
         return view('deployment.edit', compact('data', 'datels', 'stos'));
     }
 
-    /**
-     * =============================
-     * UPDATE DATA DEPLOYMENT
-     * (HANYA PLANNING)
-     * =============================
-     */
+    
     public function update(Request $request, $id)
     {
-        // =================================
-        // 1️⃣ VALIDASI (DASAR + DINAMIS)
-        // =================================
+        
+        
+        
         $manual = EbisManualInput::findOrFail($id);
         $existingData = is_array($manual->data) ? $manual->data : [];
 
@@ -326,7 +254,7 @@ class EbisManualInputController extends Controller
             'commitment_date' => 'nullable|date',
         ];
 
-        // Evidence fields: required hanya kalau belum ada data sebelumnya
+        
         if ($request->progres === 'PERIJINAN') {
             $rules['evidence_perijinan'] = empty($existingData['evidence_perijinan'])
                 ? 'required|image|max:2048'
@@ -373,9 +301,9 @@ class EbisManualInputController extends Controller
 
         $request->validate($rules);
 
-        // =================================
-        // 2️⃣ AMBIL PLANNING
-        // =================================
+        
+        
+        
         $planning = $manual->planning;
 
         if (!$planning) {
@@ -387,21 +315,21 @@ class EbisManualInputController extends Controller
             $planning->save();
         }
 
-        // =================================
-        // 3️⃣ MERGE DATA: existing + new input
-        // =================================
+        
+        
+        
         $newData = $request->except(['_token', '_method', 'progres', 'keterangan']);
         
-        // Cek jika ada update tanggal komitmen, simpan ID user yang melakukan update
+        
         if ($request->filled('commitment_date') && $request->commitment_date !== ($existingData['commitment_date'] ?? null)) {
             $newData['commitment_updated_by'] = auth()->id();
         }
 
         $data = array_merge($existingData, $newData);
 
-        // =================================
-        // 4️⃣ HANDLE UPLOAD FILE
-        // =================================
+        
+        
+        
         foreach ($request->allFiles() as $key => $file) {
             if ($file->isValid()) {
                 $filename = uniqid() . '.' . $file->getClientOriginalExtension();
@@ -415,9 +343,9 @@ class EbisManualInputController extends Controller
             return $value !== null && $value !== '';
         });
 
-        // =================================
-        // 5️⃣ UPDATE DATA TERAKHIR (STATUS SAAT INI)
-        // =================================
+        
+        
+        
         $manual->update([
             'progres' => $request->progres,
             'keterangan' => $request->keterangan,
@@ -425,9 +353,9 @@ class EbisManualInputController extends Controller
             'tanggal_update_progres' => now(),
         ]);
 
-        // =================================
-        // 6️⃣ SIMPAN RIWAYAT PROGRES (LOG 🔥)
-        // =================================
+        
+        
+        
         EbisPlanningProgressLog::create([
             'ebis_planning_order_id' => $planning->id,
             'user_id' => auth()->id(),
@@ -436,7 +364,7 @@ class EbisManualInputController extends Controller
             'data' => $data,
         ]);
 
-        // Kirim notifikasi Telegram secara asinkron (dilatarbelakangi) agar update terasa instan
+        
         defer(function () use ($manual, $request) {
             try {
                 $manual->refresh();
@@ -446,6 +374,7 @@ class EbisManualInputController extends Controller
             }
         });
 
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
         return redirect()->route('deployment.update')->with('success', 'Progress deployment berhasil diperbarui');
     }
 
@@ -457,7 +386,7 @@ class EbisManualInputController extends Controller
             return response()->json([]);
         }
 
-        // Get already used Starclick IDs from ebis_manual_inputs
+        
         $usedStarclicks = EbisManualInput::whereNotNull('star_click_id')
             ->where('star_click_id', '!=', '')
             ->pluck('star_click_id')
@@ -467,7 +396,7 @@ class EbisManualInputController extends Controller
             ->where('star_click_id', '!=', '-')
             ->where('star_click_id', '!=', '')
             ->whereNotNull('star_click_id')
-            ->whereNotIn('star_click_id', $usedStarclicks) // Exclude already used IDs
+            ->whereNotIn('star_click_id', $usedStarclicks) 
             ->where(function ($q) use ($query) {
                 $q->where('star_click_id', 'LIKE', "%{$query}%")
                   ->orWhere('nama_customer', 'LIKE', "%{$query}%");
@@ -490,11 +419,7 @@ class EbisManualInputController extends Controller
         return response()->json($results);
     }
 
-    /**
-     * =============================
-     * CHECK IF STARCLICK ID EXISTS
-     * =============================
-     */
+    
     public function checkStarclickExists(Request $request)
     {
         $starclickId = $request->get('starclick_id', '');

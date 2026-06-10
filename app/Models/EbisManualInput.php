@@ -17,13 +17,7 @@ class EbisManualInput extends Model
         'data' => 'array',
     ];
 
-    /**
-     * ======================================
-     * RELATION KE DATA UPLOAD (EXCEL)
-     * ======================================
-     * Ambil data dari ebis_planning_orders
-     * berdasarkan star_click_id
-     */
+    
     public function planning()
     {
         return $this->belongsTo(\App\Models\EbisPlanningOrder::class, 'star_click_id', 'star_click_id');

@@ -1297,7 +1297,7 @@
             .hero-badge { font-size: 0.7rem; }
         }
 
-        /* Safe area for Android notch/punch-hole */
+        
         @supports (padding-top: env(safe-area-inset-top)) {
             .beranda-nav {
                 padding-top: calc(1rem + env(safe-area-inset-top));

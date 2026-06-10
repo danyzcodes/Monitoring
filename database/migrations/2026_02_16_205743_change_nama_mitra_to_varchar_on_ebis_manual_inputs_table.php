@@ -7,17 +7,13 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
         DB::statement("ALTER TABLE ebis_manual_inputs MODIFY nama_mitra VARCHAR(255) NULL");
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         DB::statement("

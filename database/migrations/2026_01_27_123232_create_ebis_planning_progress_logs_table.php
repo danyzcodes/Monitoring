@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->text('keterangan')->nullable();
             $table->json('data')->nullable();
 
-            $table->timestamps(); // created_at = waktu progres terjadi
+            $table->timestamps(); 
 
             $table->foreign('ebis_planning_order_id')
                   ->references('id')

@@ -12,40 +12,7 @@
             <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">Progress Overview</span>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 relative overflow-hidden"
-            style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); border-radius: 2rem;">
-            
-            <div class="absolute -top-10 -right-10 w-48 h-48 rounded-full blur-3xl opacity-30" style="background:#e32b2b;">
-            </div>
 
-            <div class="relative z-10">
-                <div class="flex items-center gap-2 mb-1">
-                    <div class="p-2 rounded-xl" style="background:rgba(227,43,43,0.25);">
-                        <svg class="w-5 h-5" style="color:#fca5a5;" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                            </path>
-                        </svg>
-                    </div>
-                    <span class="text-[10px] font-black uppercase tracking-[0.25em]" style="color:#fca5a5;">Progress
-                        Overview</span>
-                </div>
-                <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Monitoring Progress Deployment</h1>
-                <p class="text-xs mt-1" style="color:#94a3b8;">Grafik distribusi tahapan progress seluruh deployment</p>
-            </div>
-
-            
-            <div class="relative z-10 flex flex-col sm:flex-row items-end sm:items-center gap-6 mt-4 sm:mt-0">
-                <div class="text-right hidden sm:flex flex-col items-end">
-                    <div id="live-date" class="text-xs font-semibold mb-1" style="color:#94a3b8;"></div>
-                    <div id="live-clock" class="text-4xl font-black text-white tabular-nums tracking-tight"
-                        style="font-variant-numeric: tabular-nums;"></div>
-                    <div class="text-[10px] mt-1 font-bold uppercase tracking-widest" style="color:#6b7280;">WIB Â· Indonesia
-                    </div>
-                </div>
-            </div>
-        </div>
 
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -54,8 +21,6 @@
             <a href="{{ route('deployment.update') }}"
                 class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 block"
                 style="border-color:#fde8e8; box-shadow: 0 4px 20px rgba(227,43,43,0.06);">
-                <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-20"
-                    style="background:#e32b2b;"></div>
                 <div class="relative z-10">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="p-2 rounded-xl" style="background:#fef2f2;">
@@ -77,8 +42,6 @@
             <a href="{{ route('deployment.update', ['filter_key' => 'progres', 'filter_values' => 'ON DESK,SURVEY,PERIJINAN,DRM,APPROVED BY EBIS,MATDEV,INSTALASI,SELESAI FISIK']) }}"
                 class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 block"
                 style="border-color:#d1fae5; box-shadow: 0 4px 20px rgba(16,185,129,0.06);">
-                <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-20"
-                    style="background:#10b981;"></div>
                 <div class="relative z-10">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="p-2 rounded-xl" style="background:#ecfdf5;">
@@ -90,8 +53,7 @@
                         </div>
                         <span class="text-[10px] font-bold uppercase tracking-widest" style="color:#9ca3af;">On Track</span>
                     </div>
-                    <p class="text-3xl font-black tracking-tight" style="color:#065f46;">{{ number_format($totalOnTrack) }}
-                    </p>
+                    <p class="text-3xl font-black tracking-tight" style="color:#065f46;">{{ number_format($totalOnTrack) }}</p>
                     <p class="text-[10px] font-bold mt-1" style="color:#9ca3af;">Berjalan Normal</p>
                 </div>
             </a>
@@ -100,8 +62,6 @@
             <a href="{{ route('deployment.update', ['filter_key' => 'progres', 'filter_values' => 'GOLIVE,PS,UJI TERIMA,REKON']) }}"
                 class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 block"
                 style="border-color:#dbeafe; box-shadow: 0 4px 20px rgba(59,130,246,0.06);">
-                <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-20"
-                    style="background:#3b82f6;"></div>
                 <div class="relative z-10">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="p-2 rounded-xl" style="background:#eff6ff;">
@@ -113,8 +73,7 @@
                         </div>
                         <span class="text-[10px] font-bold uppercase tracking-widest" style="color:#9ca3af;">Finish</span>
                     </div>
-                    <p class="text-3xl font-black tracking-tight" style="color:#1e40af;">
-                        {{ number_format($totalSelesai) }}</p>
+                    <p class="text-3xl font-black tracking-tight" style="color:#1e40af;">{{ number_format($totalSelesai) }}</p>
                     <p class="text-[10px] font-bold mt-1" style="color:#9ca3af;">Tahap Akhir & Done</p>
                 </div>
             </a>
@@ -123,8 +82,6 @@
             <a href="{{ route('deployment.update', ['usia' => 'overdue']) }}"
                 class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 block"
                 style="border-color:#fee2e2; box-shadow: 0 4px 20px rgba(239,68,68,0.06);">
-                <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full blur-2xl opacity-20"
-                    style="background:#ef4444;"></div>
                 <div class="relative z-10">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="p-2 rounded-xl" style="background:#fef2f2;">
@@ -135,21 +92,19 @@
                                 </path>
                             </svg>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-widest"
-                            style="color:#9ca3af;">OVERDUE</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest" style="color:#9ca3af;">OVERDUE</span>
                     </div>
-                    <p class="text-3xl font-black tracking-tight" style="color:#991b1b;">
-                        {{ number_format($totalOverdue) }}</p>
+                    <p class="text-3xl font-black tracking-tight" style="color:#991b1b;">{{ number_format($totalOverdue) }}</p>
                     <p class="text-[10px] font-bold mt-1" style="color:#9ca3af;">Melewati Commitment Date</p>
                 </div>
             </a>
 
         </div>
 
-        {{-- ===== VISUALISASI TIMELINE PROGRES (dengan filter terintegrasi) ===== --}}
+        
         <div class="bg-white rounded-[2rem] shadow-xl border" style="border-color:#fde8e8; box-shadow: 0 20px 40px rgba(227,43,43,0.06);">
 
-            {{-- Card Header --}}
+            
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 sm:px-8 pt-6 sm:pt-8 pb-0">
                 <div class="flex items-center gap-3">
                     <div class="p-3 rounded-2xl" style="background:#fef2f2; color:#e32b2b;">
@@ -166,13 +121,13 @@
                 </div>
             </div>
 
-            {{-- ── Integrated Filter Form ── --}}
+            
             <form method="GET" action="{{ route('deployment.progress-overview') }}" id="filterForm" class="px-6 sm:px-8 pt-5 pb-0">
 
-                {{-- Filter Row: Tahun · Bulan · Minggu · Mitra · Order --}}
+                
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-3 p-4 rounded-2xl border bg-slate-50 border-slate-100">
 
-                    {{-- Tahun --}}
+                    
                     <div>
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400">Tahun</label>
                         <select name="year" onchange="this.form.requestSubmit()"
@@ -183,7 +138,7 @@
                         </select>
                     </div>
 
-                    {{-- Bulan --}}
+                    
                     <div>
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400">Bulan</label>
                         <select name="month" onchange="this.form.requestSubmit()"
@@ -195,20 +150,24 @@
                         </select>
                     </div>
 
-                    {{-- Minggu --}}
+                    
                     <div>
-                        <label class="block text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400">Minggu</label>
-                        <select name="week" onchange="this.form.requestSubmit()"
-                            class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2 px-3 focus:ring-red-500 focus:border-red-500 transition"
-                            {{ empty($filterMonth) || $filterMonth == 'all' ? 'disabled' : '' }}>
-                            <option value="all">Semua Minggu</option>
-                            @for ($w = 1; $w <= 5; $w++)
-                                <option value="{{ $w }}" {{ ($filterWeek ?? '') == $w ? 'selected' : '' }}>Minggu {{ $w }}</option>
-                            @endfor
-                        </select>
+                        <label class="block text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400">Dari Tanggal</label>
+                        <input type="date" name="date_from" id="date_from"
+                            value="{{ request('date_from') }}"
+                            onchange="this.form.requestSubmit()"
+                            class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2 px-3 focus:ring-red-500 focus:border-red-500 transition">
                     </div>
 
-                    {{-- Mitra Multiselect --}}
+                    <div>
+                        <label class="block text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400">Sampai Tanggal</label>
+                        <input type="date" name="date_to" id="date_to"
+                            value="{{ request('date_to') }}"
+                            onchange="this.form.requestSubmit()"
+                            class="w-full rounded-xl border-slate-200 bg-white text-xs font-semibold py-2 px-3 focus:ring-red-500 focus:border-red-500 transition">
+                    </div>
+
+                    
                     <div class="relative" id="mitra-multiselect">
                         <label class="block text-[9px] font-bold uppercase tracking-widest mb-1 text-slate-400">Mitra</label>
                         <button type="button" onclick="toggleMultiSelect('mitra')"
@@ -241,181 +200,125 @@
                         </div>
                     </div>
 
-                    {{-- Order Multiselect Dropdown --}}
-                    <div class="relative" id="orders-multiselect">
-                        <div class="flex items-center justify-between mb-1">
-                            <label class="block text-[9px] font-bold uppercase tracking-widest text-slate-400">Order</label>
-                            <span class="text-[8px] font-black px-1.5 py-0.5 rounded-full" style="background:#fef2f2; color:#e32b2b;">Maks 10</span>
-                        </div>
-                        <button type="button" onclick="toggleMultiSelect('orders')"
-                            class="w-full rounded-xl border border-slate-200 bg-white text-xs font-semibold py-2 px-3 text-left flex items-center justify-between transition hover:border-red-300">
-                            <span id="orders-label" class="truncate">
-                                @if (!empty($selectedOrderIds)) {{ count($selectedOrderIds) }} Order dipilih
-                                @else Pilih Order
-                                @endif
-                            </span>
-                            <svg class="w-4 h-4 shrink-0 ml-2 text-slate-400" id="orders-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div id="orders-dropdown" class="hidden absolute right-0 z-50 mt-1 w-72 md:w-80 bg-white border border-slate-200 rounded-xl shadow-xl max-h-64 overflow-y-auto" style="min-width:300px;">
-                            <div class="p-2 border-b border-slate-100 flex items-center justify-between gap-2 bg-slate-50 sticky top-0 z-10">
-                                <input type="text" placeholder="Cari Order..." oninput="filterOptions('orders', this.value)"
-                                    class="w-full rounded-lg border-slate-200 text-[11px] py-1 px-2 focus:ring-red-500 focus:border-red-500 bg-white">
-                                <button type="button" onclick="toggleSelectAllOrders(this)"
-                                    class="text-[9px] font-black text-red-600 hover:text-red-700 transition shrink-0 uppercase tracking-wider px-1">Pilih Semua</button>
-                            </div>
-                            <div id="orders-options" class="p-1 space-y-0.5 max-h-48 overflow-y-auto">
-                                @forelse ($availableOrders as $order)
-                                    @php
-                                        $searchValue = strtolower($order->star_click_id . ' ' . $order->nama_customer . ' ' . ($order->nama_mitra ?? ''));
-                                    @endphp
-                                    <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-red-50 cursor-pointer text-xs font-semibold orders-option" data-value="{{ $searchValue }}">
-                                        <input type="checkbox" name="compare_orders[]" value="{{ $order->star_click_id }}"
-                                            class="rounded border-slate-300 text-red-600 focus:ring-red-500 order-checkbox"
-                                            {{ in_array($order->star_click_id, $selectedOrderIds ?? []) ? 'checked' : '' }}
-                                            onchange="limitCheckboxSelection(this)">
-                                        <div class="flex flex-col min-w-0">
-                                            <span class="font-mono font-bold text-slate-800 truncate">{{ $order->star_click_id }}</span>
-                                            <span class="text-[10px] text-slate-500 font-semibold truncate">{{ $order->nama_customer }}</span>
-                                            @if ($order->nama_mitra)
-                                                <span class="text-[8px] text-slate-400 font-bold uppercase tracking-wider">{{ $order->nama_mitra }}</span>
-                                            @endif
-                                        </div>
-                                    </label>
-                                @empty
-                                    <div class="p-4 text-center text-xs text-slate-400 italic">
-                                        Tidak ada order untuk filter ini.
-                                    </div>
-                                @endforelse
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
-            </form>
-
-            @if (!empty($timelineData))
-                {{-- Divider --}}
+                  @if (!empty($timelineData))
+                
                 <div class="mx-6 sm:mx-8 border-t border-slate-100"></div>
 
-                {{-- ── Timeline Visualization Area ── --}}
+                
                 <div class="px-6 sm:px-8 pb-6 sm:pb-8 pt-6">
-                    @php $groupedTimeline = collect($timelineData)->groupBy('mitra'); @endphp
 
                 <div class="space-y-8">
-                    @foreach ($groupedTimeline as $mitraName => $ordersTimeline)
+                    @foreach ($timelineData as $mitraTimeline)
                         <div class="space-y-4">
-                            {{-- Mitra Group Title --}}
+                            
                             <div class="flex items-center gap-3">
                                 <span class="px-4 py-1.5 rounded-full text-xs font-black uppercase bg-red-600 text-white tracking-widest shadow-md">
-                                    Mitra: {{ $mitraName }}
+                                    Mitra: {{ $mitraTimeline['mitra'] }}
                                 </span>
                                 <div class="flex-1 h-px bg-slate-100"></div>
-                                <span class="text-xs font-bold text-slate-400">{{ $ordersTimeline->count() }} Order</span>
+                                <span class="text-xs font-bold text-slate-400">{{ $mitraTimeline['total_orders'] }} Total Order</span>
                             </div>
 
                             <div class="space-y-6 pl-4 border-l-2 border-slate-100">
-                                @foreach ($ordersTimeline as $orderTimeline)
-                                    <div class="border border-slate-100 rounded-3xl shadow-sm p-6 bg-white hover:shadow-md transition relative">
+                                <div class="border border-slate-100 rounded-3xl shadow-sm p-6 bg-white hover:shadow-md transition relative">
 
-                                        {{-- Order info header --}}
-                                        <div class="flex flex-wrap items-center justify-between gap-2 mb-6 pb-3 border-b border-slate-50">
-                                            <div class="flex items-center gap-2">
-                                                <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
-                                                <span class="text-sm font-extrabold text-slate-800">{{ $orderTimeline['nama_customer'] }}</span>
-                                                <span class="text-slate-300">Â·</span>
-                                                <span class="font-mono text-xs font-bold text-slate-500">{{ $orderTimeline['star_click_id'] }}</span>
-                                            </div>
-                                            <div class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-500 uppercase tracking-wider">
-                                                {{ count($orderTimeline['steps']) }} Tahap
-                                            </div>
-                                        </div>
+                                    
+                                    <div class="overflow-x-auto pb-2" style="scrollbar-width:thin; scrollbar-color:#e2e8f0 transparent;">
+                                        <div class="relative flex min-w-max" style="padding: 0 24px;">
+                                            <div class="absolute left-0 right-0" style="top: 140px; height: 2px; border-top: 2px dotted #cbd5e1; z-index: 0;"></div>
 
-                                        {{-- Alternating Horizontal Timeline --}}
-                                        <div class="overflow-x-auto pb-2" style="scrollbar-width:thin; scrollbar-color:#e2e8f0 transparent;">
-                                            <div class="relative flex min-w-max" style="padding: 0 24px;">
-                                                <div class="absolute left-0 right-0" style="top: 140px; height: 2px; border-top: 2px dotted #cbd5e1; z-index: 0;"></div>
-
-                                                @foreach ($orderTimeline['steps'] as $index => $step)
+                                            {{-- Connector labels between nodes --}}
+                                            @foreach ($mitraTimeline['steps'] as $idx => $s)
+                                                @if ($idx > 0)
                                                     @php
-                                                        $stageColors = [
-                                                            'ON DESK'          => ['badge_bg' => '#e0e7ff', 'badge_text' => '#3730a3', 'node_bg' => '#6366f1', 'node_ring' => '#c7d2fe', 'connector' => '#6366f1'],
-                                                            'SURVEY'           => ['badge_bg' => '#dbeafe', 'badge_text' => '#1d4ed8', 'node_bg' => '#3b82f6', 'node_ring' => '#bfdbfe', 'connector' => '#3b82f6'],
-                                                            'PERIJINAN'        => ['badge_bg' => '#e0f2fe', 'badge_text' => '#0369a1', 'node_bg' => '#0ea5e9', 'node_ring' => '#bae6fd', 'connector' => '#0ea5e9'],
-                                                            'DRM'              => ['badge_bg' => '#ccfbf1', 'badge_text' => '#0f766e', 'node_bg' => '#14b8a6', 'node_ring' => '#99f6e4', 'connector' => '#14b8a6'],
-                                                            'APPROVED BY EBIS' => ['badge_bg' => '#d1fae5', 'badge_text' => '#065f46', 'node_bg' => '#10b981', 'node_ring' => '#a7f3d0', 'connector' => '#10b981'],
-                                                            'MATDEV'           => ['badge_bg' => '#dcfce7', 'badge_text' => '#166534', 'node_bg' => '#22c55e', 'node_ring' => '#bbf7d0', 'connector' => '#22c55e'],
-                                                            'INSTALASI'        => ['badge_bg' => '#ecfccb', 'badge_text' => '#3f6212', 'node_bg' => '#84cc16', 'node_ring' => '#d9f99d', 'connector' => '#84cc16'],
-                                                            'SELESAI FISIK'    => ['badge_bg' => '#fef9c3', 'badge_text' => '#854d0e', 'node_bg' => '#eab308', 'node_ring' => '#fde68a', 'connector' => '#eab308'],
-                                                            'GOLIVE'           => ['badge_bg' => '#fef3c7', 'badge_text' => '#92400e', 'node_bg' => '#f59e0b', 'node_ring' => '#fde68a', 'connector' => '#f59e0b'],
-                                                            'PS'               => ['badge_bg' => '#ffedd5', 'badge_text' => '#9a3412', 'node_bg' => '#f97316', 'node_ring' => '#fed7aa', 'connector' => '#f97316'],
-                                                            'KENDALA'          => ['badge_bg' => '#fee2e2', 'badge_text' => '#991b1b', 'node_bg' => '#ef4444', 'node_ring' => '#fecaca', 'connector' => '#ef4444'],
-                                                            'UJI TERIMA'       => ['badge_bg' => '#f3e8ff', 'badge_text' => '#6b21a8', 'node_bg' => '#a855f7', 'node_ring' => '#e9d5ff', 'connector' => '#a855f7'],
-                                                            'REKON'            => ['badge_bg' => '#fce7f3', 'badge_text' => '#9d174d', 'node_bg' => '#ec4899', 'node_ring' => '#fbcfe8', 'connector' => '#ec4899'],
-                                                            'SEDANG BERJALAN'  => ['badge_bg' => '#fee2e2', 'badge_text' => '#b91c1c', 'node_bg' => '#e32b2b', 'node_ring' => '#fca5a5', 'connector' => '#e32b2b'],
-                                                        ];
-                                                        $col = $stageColors[$step['stage']] ?? ['badge_bg' => '#f1f5f9', 'badge_text' => '#475569', 'node_bg' => '#94a3b8', 'node_ring' => '#e2e8f0', 'connector' => '#94a3b8'];
-                                                        $isTop = ($index % 2 === 0);
-                                                        $isRunning = ($step['stage'] === 'SEDANG BERJALAN');
+                                                        $prevStage = $mitraTimeline['steps'][$idx - 1]['stage'];
+                                                        $currStage = $s['stage'];
+                                                        // midpoint between two nodes: 24px padding + node center offset
+                                                        $leftPos   = 24 + $idx * 220;
                                                     @endphp
-
-                                                    <div class="relative flex flex-col items-center shrink-0" style="width:220px; z-index:10;">
-
-                                                        {{-- TOP BLOCK: 112px --}}
-                                                        <div style="height:112px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;">
-                                                            @if ($isTop)
-                                                                <div style="display:flex; flex-direction:column; align-items:center; text-align:center; max-width:200px;">
-                                                                    <span style="font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.05em; background:{{ $col['badge_bg'] }}; color:{{ $col['badge_text'] }}; border:1px solid {{ $col['node_ring'] }}; padding:2px 10px; border-radius:999px; white-space:nowrap;">{{ $step['duration'] }}</span>
-                                                                    <span style="font-size:10px; font-weight:800; color:#64748b; margin-top:5px; text-transform:uppercase; letter-spacing:0.04em; line-height:1.3; max-width:180px;">{{ $step['stage'] }}</span>
-                                                                    <span style="font-size:8px; font-weight:700; color:#94a3b8; font-family:monospace; margin-top:3px;">{{ $step['time'] }}</span>
-                                                                </div>
-                                                                <div style="width:1px; height:28px; border-left:2px dotted {{ $col['connector'] }}; margin-top:6px; opacity:0.5;"></div>
-                                                            @else
-                                                                <div style="height:112px;"></div>
-                                                            @endif
-                                                        </div>
-
-                                                        {{-- MIDDLE BLOCK: 56px â€” node --}}
-                                                        <div style="height:56px; display:flex; align-items:center; justify-content:center; position:relative; z-index:20;">
-                                                            @if ($isRunning)
-                                                                <div style="width:22px; height:22px; border-radius:50%; border:3px dashed {{ $col['node_bg'] }}; background:white; animation:spin 1.5s linear infinite; box-shadow:0 0 0 4px {{ $col['node_ring'] }}, 0 0 12px rgba(227,43,43,0.3);"></div>
-                                                            @else
-                                                                <div style="width:18px; height:18px; border-radius:50%; background:{{ $col['node_bg'] }}; border:3px solid white; box-shadow:0 0 0 3px {{ $col['node_ring'] }}, 0 2px 8px rgba(0,0,0,0.12);"></div>
-                                                            @endif
-                                                        </div>
-
-                                                        {{-- BOTTOM BLOCK: 112px --}}
-                                                        <div style="height:112px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;">
-                                                            @if (!$isTop)
-                                                                <div style="width:1px; height:28px; border-left:2px dotted {{ $col['connector'] }}; margin-bottom:6px; opacity:0.5;"></div>
-                                                                <div style="display:flex; flex-direction:column; align-items:center; text-align:center; max-width:200px;">
-                                                                    <span style="font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.05em; background:{{ $col['badge_bg'] }}; color:{{ $col['badge_text'] }}; border:1px solid {{ $col['node_ring'] }}; padding:2px 10px; border-radius:999px; white-space:nowrap;">{{ $step['duration'] }}</span>
-                                                                    <span style="font-size:10px; font-weight:800; color:#64748b; margin-top:5px; text-transform:uppercase; letter-spacing:0.04em; line-height:1.3; max-width:180px;">{{ $step['stage'] }}</span>
-                                                                    <span style="font-size:8px; font-weight:700; color:#94a3b8; font-family:monospace; margin-top:3px;">{{ $step['time'] }}</span>
-                                                                </div>
-                                                            @else
-                                                                <div style="height:112px;"></div>
-                                                            @endif
-                                                        </div>
-
+                                                    <div style="position:absolute; top:82px; left:{{ $leftPos }}px; transform:translateX(-50%); z-index:15; white-space:nowrap; display:flex; flex-direction:column; align-items:center; gap:3px;">
+                                                        <span style="display:inline-flex; align-items:center; gap:3px; font-size:8px; font-weight:800; color:#6366f1; background:#eef2ff; border:1px solid #c7d2fe; border-radius:999px; padding:2px 8px; letter-spacing:0.05em; text-transform:uppercase; box-shadow:0 1px 4px rgba(99,102,241,0.12);">
+                                                            {{ $prevStage }} &#8594; {{ $currStage }}
+                                                        </span>
+                                                        @if ($s['duration'] !== 'N/A')
+                                                        <span style="font-size:9px; font-weight:900; color:#4f46e5; letter-spacing:0.03em; text-transform:uppercase;">
+                                                            {{ $s['duration'] }}
+                                                        </span>
+                                                        @endif
                                                     </div>
-                                                @endforeach
+                                                @endif
+                                            @endforeach
 
-                                            </div>
+                                            @foreach ($mitraTimeline['steps'] as $index => $step)
+                                                @php
+                                                    $stageColors = [
+                                                        'ON DESK'          => ['badge_bg' => '#e0e7ff', 'badge_text' => '#3730a3', 'node_bg' => '#6366f1', 'node_ring' => '#c7d2fe', 'connector' => '#6366f1'],
+                                                        'SURVEY'           => ['badge_bg' => '#dbeafe', 'badge_text' => '#1d4ed8', 'node_bg' => '#3b82f6', 'node_ring' => '#bfdbfe', 'connector' => '#3b82f6'],
+                                                        'PERIJINAN'        => ['badge_bg' => '#e0f2fe', 'badge_text' => '#0369a1', 'node_bg' => '#0ea5e9', 'node_ring' => '#bae6fd', 'connector' => '#0ea5e9'],
+                                                        'DRM'              => ['badge_bg' => '#ccfbf1', 'badge_text' => '#0f766e', 'node_bg' => '#14b8a6', 'node_ring' => '#99f6e4', 'connector' => '#14b8a6'],
+                                                        'APPROVED BY EBIS' => ['badge_bg' => '#d1fae5', 'badge_text' => '#065f46', 'node_bg' => '#10b981', 'node_ring' => '#a7f3d0', 'connector' => '#10b981'],
+                                                        'MATDEV'           => ['badge_bg' => '#dcfce7', 'badge_text' => '#166534', 'node_bg' => '#22c55e', 'node_ring' => '#bbf7d0', 'connector' => '#22c55e'],
+                                                        'INSTALASI'        => ['badge_bg' => '#ecfccb', 'badge_text' => '#3f6212', 'node_bg' => '#84cc16', 'node_ring' => '#d9f99d', 'connector' => '#84cc16'],
+                                                        'SELESAI FISIK'    => ['badge_bg' => '#fef9c3', 'badge_text' => '#854d0e', 'node_bg' => '#eab308', 'node_ring' => '#fde68a', 'connector' => '#eab308'],
+                                                        'GOLIVE'           => ['badge_bg' => '#fef3c7', 'badge_text' => '#92400e', 'node_bg' => '#f59e0b', 'node_ring' => '#fde68a', 'connector' => '#f59e0b'],
+                                                        'PS'               => ['badge_bg' => '#ffedd5', 'badge_text' => '#9a3412', 'node_bg' => '#f97316', 'node_ring' => '#fed7aa', 'connector' => '#f97316'],
+                                                        'KENDALA'          => ['badge_bg' => '#fee2e2', 'badge_text' => '#991b1b', 'node_bg' => '#ef4444', 'node_ring' => '#fecaca', 'connector' => '#ef4444'],
+                                                        'UJI TERIMA'       => ['badge_bg' => '#f3e8ff', 'badge_text' => '#6b21a8', 'node_bg' => '#a855f7', 'node_ring' => '#e9d5ff', 'connector' => '#a855f7'],
+                                                        'REKON'            => ['badge_bg' => '#fce7f3', 'badge_text' => '#9d174d', 'node_bg' => '#ec4899', 'node_ring' => '#fbcfe8', 'connector' => '#ec4899'],
+                                                    ];
+                                                    $col = $stageColors[$step['stage']] ?? ['badge_bg' => '#f1f5f9', 'badge_text' => '#475569', 'node_bg' => '#94a3b8', 'node_ring' => '#e2e8f0', 'connector' => '#94a3b8'];
+                                                    $isTop = ($index % 2 === 0);
+                                                @endphp
+
+                                                <div class="relative flex flex-col items-center shrink-0" style="width:220px; z-index:10;">
+
+                                                    
+                                                    <div style="height:112px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;">
+                                                        @if ($isTop)
+                                                            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; max-width:200px;">
+                                                                <span style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:0.04em; line-height:1.3; max-width:180px;">{{ $step['stage'] }}</span>
+                                                                <span style="font-size:8px; font-weight:700; color:#94a3b8; font-family:monospace; margin-top:3px;">{{ $step['time'] }}</span>
+                                                            </div>
+                                                            <div style="width:1px; height:28px; border-left:2px dotted {{ $col['connector'] }}; margin-top:6px; opacity:0.5;"></div>
+                                                        @else
+                                                            <div style="height:112px;"></div>
+                                                        @endif
+                                                    </div>
+
+                                                    
+                                                    <div style="height:56px; display:flex; align-items:center; justify-content:center; position:relative; z-index:20;">
+                                                        <div style="width:18px; height:18px; border-radius:50%; background:{{ $col['node_bg'] }}; border:3px solid white; box-shadow:0 0 0 3px {{ $col['node_ring'] }}, 0 2px 8px rgba(0,0,0,0.12);"></div>
+                                                    </div>
+
+                                                    
+                                                    <div style="height:112px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;">
+                                                        @if (!$isTop)
+                                                            <div style="width:1px; height:28px; border-left:2px dotted {{ $col['connector'] }}; margin-bottom:6px; opacity:0.5;"></div>
+                                                            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; max-width:200px;">
+                                                                <span style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:0.04em; line-height:1.3; max-width:180px;">{{ $step['stage'] }}</span>
+                                                                <span style="font-size:8px; font-weight:700; color:#94a3b8; font-family:monospace; margin-top:3px;">{{ $step['time'] }}</span>
+                                                            </div>
+                                                        @else
+                                                            <div style="height:112px;"></div>
+                                                        @endif
+                                                    </div>
+
+                                                </div>
+                                            @endforeach
+
                                         </div>
-
                                     </div>
-                                @endforeach
+                                </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
-            @endif
 
-            </div>{{-- end timeline area --}}
-        </div>{{-- end Visualisasi card --}}
+                </div>
+            @endif
+        </div>
 
 
         
@@ -1152,7 +1055,7 @@
             let submitNeeded = false;
 
             // Close all other dropdowns first
-            ['sto', 'datel', 'mitra', 'orders'].forEach(t => {
+            ['sto', 'datel', 'mitra'].forEach(t => {
                 if (t !== type) {
                     const otherDropdown = document.getElementById(t + '-dropdown');
                     if (otherDropdown && !otherDropdown.classList.contains('hidden')) {
@@ -1190,17 +1093,12 @@
             const typeNames = {
                 sto: 'STO',
                 datel: 'Datel',
-                mitra: 'Mitra',
-                orders: 'Order'
+                mitra: 'Mitra'
             };
             const typeName = typeNames[type] || type;
 
             if (count === 0) {
-                if (type === 'orders') {
-                    label.textContent = 'Pilih Order';
-                } else {
-                    label.textContent = 'Semua ' + typeName;
-                }
+                label.textContent = 'Semua ' + typeName;
             } else {
                 label.textContent = count + ' ' + typeName + ' dipilih';
             }
@@ -1218,7 +1116,7 @@
         // Close dropdowns on click outside
         document.addEventListener('click', function(e) {
             let submitNeeded = false;
-            ['sto', 'datel', 'mitra', 'orders'].forEach(type => {
+            ['sto', 'datel', 'mitra'].forEach(type => {
                 const container = document.getElementById(type + '-multiselect');
                 const dropdown = document.getElementById(type + '-dropdown');
                 const chevron = document.getElementById(type + '-chevron');
@@ -1263,64 +1161,7 @@
         updateProgressClock();
         window._progressClockInterval = setInterval(updateProgressClock, 1000);
 
-        // ======= ORDER COMPARISON CHECKBOX LOGIC =======
-        const MAX_COMPARE_ORDERS = 10;
 
-        function limitCheckboxSelection(checkbox) {
-            const allChecked = document.querySelectorAll('.order-checkbox:checked');
-            if (allChecked.length > MAX_COMPARE_ORDERS) {
-                checkbox.checked = false;
-                // Brief highlight to indicate limit reached
-                const list = document.getElementById('orders-dropdown');
-                if (list) {
-                    list.style.borderColor = '#ef4444';
-                    list.style.boxShadow = '0 0 0 2px rgba(239,68,68,0.2)';
-                    setTimeout(() => {
-                        list.style.borderColor = '';
-                        list.style.boxShadow = '';
-                    }, 800);
-                }
-            }
-            updateMultiLabel('orders');
-
-            // Update "Pilih Semua" button text
-            const btn = document.querySelector('[onclick="toggleSelectAllOrders(this)"]');
-            if (btn) {
-                const totalBoxes = document.querySelectorAll('.order-checkbox').length;
-                const checkedBoxes = document.querySelectorAll('.order-checkbox:checked').length;
-                if (checkedBoxes > 0 && checkedBoxes >= Math.min(totalBoxes, MAX_COMPARE_ORDERS)) {
-                    btn.textContent = 'Batal Semua';
-                } else {
-                    btn.textContent = 'Pilih Semua';
-                }
-            }
-        }
-
-        function toggleSelectAllOrders(btn) {
-            const allBoxes = document.querySelectorAll('.order-checkbox');
-            const isSelectAll = btn.textContent.trim() === 'Pilih Semua';
-
-            if (isSelectAll) {
-                // Select up to MAX_COMPARE_ORDERS
-                let count = 0;
-                allBoxes.forEach(cb => {
-                    const labelEl = cb.closest('label');
-                    const isVisible = !labelEl || labelEl.style.display !== 'none';
-                    if (isVisible && count < MAX_COMPARE_ORDERS) {
-                        cb.checked = true;
-                        count++;
-                    } else {
-                        cb.checked = false;
-                    }
-                });
-                btn.textContent = 'Batal Semua';
-            } else {
-                // Deselect all
-                allBoxes.forEach(cb => { cb.checked = false; });
-                btn.textContent = 'Pilih Semua';
-            }
-            updateMultiLabel('orders');
-        }
 
         // Cleanup for Turbo
         document.addEventListener('turbo:before-cache', function() {

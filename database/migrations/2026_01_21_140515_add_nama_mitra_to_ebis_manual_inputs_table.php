@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::table('ebis_manual_inputs', function (Blueprint $table) {
             $table->string('nama_mitra')
-                  ->after('nama_customer'); // sesuaikan posisi kolom
+                  ->after('nama_customer'); 
         });
     }
 

@@ -12,13 +12,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 class EbisPlanningImport implements OnEachRow, WithHeadingRow
 {
-    /**
-     * Bersihkan kolom DATE
-     * support:
-     * - null / kosong / "-"
-     * - string tanggal
-     * - numeric tanggal Excel
-     */
+    
     private function cleanDate($value)
     {
         if ($value === null || $value === '' || $value === '-') {
@@ -26,23 +20,21 @@ class EbisPlanningImport implements OnEachRow, WithHeadingRow
         }
 
         try {
-            // Kalau numeric (tanggal bawaan Excel)
+            
             if (is_numeric($value)) {
                 return Carbon::instance(
                     ExcelDate::excelToDateTimeObject($value)
                 )->format('Y-m-d');
             }
 
-            // Kalau string
+            
             return Carbon::parse($value)->format('Y-m-d');
         } catch (\Exception $e) {
             return null;
         }
     }
 
-    /**
-     * Bersihkan kolom ANGKA (INT / DECIMAL)
-     */
+    
     private function cleanNumber($value)
     {
         if ($value === null || $value === '' || $value === '-') {
@@ -59,12 +51,12 @@ class EbisPlanningImport implements OnEachRow, WithHeadingRow
     {
         $r = $row->toArray();
 
-        // Lewati baris kosong
+        
         if (empty(array_filter($r))) {
             return;
         }
 
-        // Kolom yang berasal dari Excel (tidak termasuk kolom manual)
+        
         $excelData = [
             'track_id'                              => $r['track_id'] ?? null,
             'ticket_id'                             => $r['ticket_id'] ?? null,
@@ -133,20 +125,20 @@ class EbisPlanningImport implements OnEachRow, WithHeadingRow
             'kategori'                              => $r['kategori'] ?? null,
         ];
 
-        $starClickId = $r['star_click_id'] ?? null;
+        $starClickId = trim($r['star_click_id'] ?? '');
 
-        if ($starClickId) {
-            // UPSERT: jika star_click_id sudah ada → UPDATE kolom Excel saja
-            //         jika belum ada → INSERT baru
-            EbisPlanningOrder::updateOrCreate(
-                ['star_click_id' => $starClickId],  // kunci pencocokan
-                $excelData                           // data yang di-update/insert
-                // ⚠️ kolom 'progres' dan 'tanggal_update_progres' TIDAK ada di $excelData
-                //    sehingga tidak akan ditimpa jika record sudah ada
-            );
-        } else {
-            // Jika tidak ada star_click_id, insert saja tanpa upsert
-            EbisPlanningOrder::create($excelData);
+        if (empty($starClickId) || $starClickId === '-') {
+            
+            return;
         }
+
+        
+        
+        EbisPlanningOrder::updateOrCreate(
+            ['star_click_id' => $starClickId],  
+            $excelData                           
+            
+            
+        );
     }
 }

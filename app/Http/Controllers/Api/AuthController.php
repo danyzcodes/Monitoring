@@ -9,12 +9,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    /**
-     * Login user and create token
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+    
     public function login(Request $request)
     {
         $request->validate([
@@ -30,7 +25,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request['email'])->firstOrFail();
 
-        // Create a new token for the user
+        
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -40,26 +35,16 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Get the authenticated User
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+    
     public function me(Request $request)
     {
         return response()->json($request->user());
     }
 
-    /**
-     * Logout user (Revoke the token)
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+    
     public function logout(Request $request)
     {
-        // Revoke the token that was used to authenticate the current request
+        
         $token = $request->user()->currentAccessToken();
         \Illuminate\Support\Facades\Log::info('Logout requested for token: ' . ($token ? $token->id : 'null') . ' class: ' . get_class($token));
         

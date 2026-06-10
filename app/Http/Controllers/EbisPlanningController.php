@@ -15,19 +15,12 @@ use DB;
 
 class EbisPlanningController extends Controller
 {
-    /**
-     * =============================
-     * IMPORT EXCEL (STRICT HEADER)
-     * =============================
-     */
     public function import(Request $request)
     {
-        // ❌ Validasi: file harus ada
         if (!$request->hasFile('file')) {
             return redirect()->route('deployment.upload')->with('error', 'File tidak ditemukan! Silakan pilih file untuk diimport.');
         }
 
-        // ❌ Validasi: hanya file Excel (.xlsx, .xls)
         $file = $request->file('file');
         $allowedMimes = ['xlsx', 'xls'];
         $extension = strtolower($file->getClientOriginalExtension());
@@ -37,10 +30,29 @@ class EbisPlanningController extends Controller
         }
 
         try {
-            // ✅ Import dengan mode UPSERT (tidak hapus data lama)
-            // - Data baru di Excel → INSERT
-            // - Data sudah ada (cocok star_click_id) → UPDATE kolom dari Excel saja
-            // - Data lama tidak ada di Excel → TETAP ada (tidak dihapus)
+            $headings = (new \Maatwebsite\Excel\HeadingRowImport)->toArray($file);
+            $firstSheetHeadings = $headings[0][0] ?? [];
+
+            $requiredHeadings = ['star_click_id', 'nama_customer'];
+            $missingHeadings = [];
+            foreach ($requiredHeadings as $required) {
+                if (!in_array($required, $firstSheetHeadings)) {
+                    $missingHeadings[] = $required;
+                }
+            }
+
+            if (!empty($missingHeadings)) {
+                $friendlyNames = [
+                    'star_click_id' => 'Starclick ID',
+                    'nama_customer' => 'Nama Customer'
+                ];
+                $missingFriendly = array_map(fn($h) => $friendlyNames[$h] ?? $h, $missingHeadings);
+                
+                return redirect()
+                    ->route('deployment.upload')
+                    ->with('error', 'Import ditolak! File Excel tidak memiliki kolom wajib: ' . implode(', ', $missingFriendly) . '.');
+            }
+
             Excel::import(new EbisPlanningImport(), $file);
         } catch (\Exception $e) {
             return redirect()
@@ -48,47 +60,31 @@ class EbisPlanningController extends Controller
                 ->with('error', 'Tidak sesuai data yang ada');
         }
 
-        // CEK APAKAH ADA DATA VALID
         $validData = EbisPlanningOrder::whereNotNull('star_click_id')->orWhereNotNull('track_id')->orWhereNotNull('ticket_id')->orWhereNotNull('nama_customer')->count();
 
-        // ❌ JIKA TIDAK ADA DATA VALID
         if ($validData === 0) {
             return redirect()->route('deployment.upload')->with('error', 'Import ditolak! Data tidak sesuai dengan format yang diharapkan.');
         }
 
-        // ✅ JIKA ADA DATA VALID
-        return redirect()->route('deployment.upload')->with('success', 'Import berhasil. Data baru ditambahkan / diperbarui. Data lama tetap tersimpan.');
+        \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
+        return redirect()->route('deployment.upload')->with('success', 'Import berhasil');
     }
 
-    /**
-     * =============================
-     * EXPORT EXCEL
-     * =============================
-     */
     public function export()
     {
         return Excel::download(new EbisPlanningExport(), 'ebis_planning_export.xlsx');
     }
 
-    /**
-     * =============================
-     * LIST DATA UPLOAD
-     * =============================
-     */
     public function index(Request $request)
     {
         $searchableColumns = ['star_click_id', 'track_id', 'ticket_id', 'nama_customer', 'status_order', 'tipe_desain', 'jenis_program', 'datel', 'sto', 'nama_pengguna_melakukan_alokasi_alpro', 'id_odp_alokasi_alpro', 'nama_odp_alokasi_alpro', 'reservation_id_alokasi_alpro', 'username_nik_melakukan_alokasi_alpro', 'sales_code', 'segment', 'cfu', 'source_app', 'regional', 'witel', 'witel_lama', 'wok', 'status_eproposal', 'status_tomps', 'status_sap', 'status_proyek', 'kode_program', 'nama_proyek', 'batch_program', 'kategori', 'tahun'];
 
         $rows = EbisPlanningOrder::query()
-            
-            // ❌ FILTER DUMMY RECORDS: Sembunyikan relasi fiktif yang terbuat dari Input Manual
             ->where(function($q) {
                 $q->whereNotNull('sto')
                   ->orWhereNotNull('status_order')
                   ->orWhereNotNull('track_id');
             })
-
-            // 🔍 GLOBAL SEARCH (SEMUA KOLOM)
             ->when($request->search, function ($query) use ($request, $searchableColumns) {
                 $query->where(function ($q) use ($request, $searchableColumns) {
                     foreach ($searchableColumns as $column) {
@@ -96,25 +92,17 @@ class EbisPlanningController extends Controller
                     }
                 });
             })
-
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        // ✅ AJAX → table saja
         if ($request->ajax()) {
             return view('deployment.partials.table', compact('rows'))->render();
         }
 
-        // ✅ NORMAL → full page
         return view('deployment.upload', compact('rows'));
     }
 
-    /**
-     * =============================
-     * LIST UPDATE DATA
-     * =============================
-     */
     public function updateList(Request $request)
     {
         $rows = EbisPlanningOrder::select(['id', 'star_click_id', 'nama_customer', 'datel', 'sto', 'status_order', 'tipe_desain', 'progres'])
@@ -127,11 +115,6 @@ class EbisPlanningController extends Controller
         return view('deployment.update', compact('rows'));
     }
 
-    /**
-     * =============================
-     * FORM EDIT
-     * =============================
-     */
     public function edit($id)
     {
         $data = EbisPlanningOrder::findOrFail($id);
@@ -142,11 +125,6 @@ class EbisPlanningController extends Controller
         return view('deployment.edit', compact('data', 'datels', 'stos'));
     }
 
-    /**
-     * =============================
-     * UPDATE DATA
-     * =============================
-     */
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -165,20 +143,10 @@ class EbisPlanningController extends Controller
         return redirect()->route('deployment.update.list')->with('success', 'Data berhasil diperbarui');
     }
 
-    /**
-     * =============================
-     * LIHAT DATA (MANUAL + UPLOAD)
-     * =============================
-     */
     public function lihatData(Request $request)
     {
         $query = EbisManualInput::with('planning');
 
-        /**
-         * =============================
-         * FILTER DROPDOWN ATAS
-         * =============================
-         */
         if ($request->filled('starclick')) {
             $query->where('ebis_manual_inputs.star_click_id', $request->starclick);
         }
@@ -233,11 +201,6 @@ class EbisPlanningController extends Controller
             });
         }
 
-        /**
-         * =============================
-         * FILTER TANGGAL (CREATED AT)
-         * =============================
-         */
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('ebis_manual_inputs.created_at', [
                 $request->start_date . ' 00:00:00',
@@ -249,15 +212,9 @@ class EbisPlanningController extends Controller
             $query->where('ebis_manual_inputs.created_at', '<=', $request->end_date . ' 23:59:59');
         }
 
-        /**
-         * =============================
-         * SMART SEARCH (BULK / SINGLE)
-         * =============================
-         */
         if ($request->filled('search')) {
             $search = $request->search;
             if (str_contains($search, ',')) {
-                // BULK SEARCH (Starclick ID OR Nama Customer)
                 $values = array_filter(array_map('trim', explode(',', $search)));
                 $query->where(function ($q) use ($values) {
                     $q->whereIn('ebis_manual_inputs.star_click_id', $values);
@@ -266,7 +223,6 @@ class EbisPlanningController extends Controller
                     }
                 });
             } else {
-                // SINGLE SEARCH (Wildcard)
                 $query->where(function ($q) use ($search) {
                     $q->where('ebis_manual_inputs.star_click_id', 'like', "%{$search}%")
                       ->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$search}%")
@@ -276,27 +232,20 @@ class EbisPlanningController extends Controller
             }
         }
 
-        /**
-         * =============================
-         * CARI FILTERING (MULTIPLE)
-         * =============================
-         */
         $key = $request->filter_key;
         $values = array_filter(array_map('trim', explode(',', $request->filter_values ?? '')));
 
         if ($key && !empty($values)) {
             $query->where(function ($q) use ($key, $values) {
                 foreach ($values as $val) {
-                    // FIELD MANUAL INPUT
                     if ($key === 'star_click_id') {
-                        $q->orWhere('ebis_manual_inputs.star_click_id', $val); // exact match
+                        $q->orWhere('ebis_manual_inputs.star_click_id', $val);
                     } elseif ($key === 'sto') {
                         $q->orWhere('ebis_manual_inputs.sto', 'like', "%{$val}%");
                     } elseif ($key === 'nama_customer') {
                         $q->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$val}%");
                     }
 
-                    // FIELD PLANNING
                     if (in_array($key, ['ihld_lop_id', 'status_order', 'tipe_desain', 'jenis_program'])) {
                         $q->orWhereHas('planning', function ($p) use ($key, $val) {
                             if ($key === 'ihld_lop_id') {
@@ -310,40 +259,8 @@ class EbisPlanningController extends Controller
             });
         }
 
-        /**
-         * =============================
-         * DROPDOWN FILTER DINAMIS
-         * =============================
-         */
-        $filters = [
-            'starclicks' => [],
+        $filters = DropdownHelper::getDynamicFilters();
 
-            'nama_customers' => [],
-
-            'stos' => \App\Models\MasterSto::orderBy('nama_sto')->pluck('nama_sto'),
-
-            'datels' => \App\Models\MasterDatel::orderBy('nama_datel')->pluck('nama_datel'),
-
-            'progresses' => EbisManualInput::select('progres')->whereNotNull('progres')->where('progres', '!=', '')->distinct()->orderBy('progres')->pluck('progres'),
-
-            'status_orders' => EbisPlanningOrder::select('status_order')->whereNotNull('status_order')->distinct()->pluck('status_order'),
-
-            'tipe_desains' => EbisPlanningOrder::select('tipe_desain')->whereNotNull('tipe_desain')->distinct()->pluck('tipe_desain'),
-
-            'jenis_programs' => EbisPlanningOrder::select('jenis_program')->whereNotNull('jenis_program')->distinct()->pluck('jenis_program'),
-
-            'cfus' => EbisPlanningOrder::select('cfu')->whereNotNull('cfu')->where('cfu', '!=', '')->distinct()->orderBy('cfu')->pluck('cfu'),
-
-            'status_proyeks' => EbisPlanningOrder::select('status_proyek')->whereNotNull('status_proyek')->where('status_proyek', '!=', '')->distinct()->orderBy('status_proyek')->pluck('status_proyek'),
-
-            'nomor_batches' => EbisManualInput::select('nomor_batch')->whereNotNull('nomor_batch')->where('nomor_batch', '!=', '')->distinct()->orderBy('nomor_batch')->pluck('nomor_batch'),
-        ];
-
-        /**
-         * =============================
-         * FINAL RESULT
-         * =============================
-         */
         $rows = $query
             ->leftJoin('ebis_planning_orders', 'ebis_manual_inputs.star_click_id', '=', 'ebis_planning_orders.star_click_id')
             ->select('ebis_manual_inputs.*')
@@ -358,11 +275,6 @@ class EbisPlanningController extends Controller
         return view('deployment.lihat_data', compact('rows', 'filters'));
     }
 
-    /**
-     * =============================
-     * DETAIL LIHAT DATA
-     * =============================
-     */
     public function detailLihatData($id)
     {
         $data = EbisManualInput::with(['planning.logs' => function ($q) {
@@ -372,11 +284,6 @@ class EbisPlanningController extends Controller
         return view('deployment.detail_lihat', compact('data'));
     }
 
-    /**
-     * =============================
-     * EXPORT REKAP KE EXCEL
-     * =============================
-     */
     public function exportLihatData(Request $request)
     {
         return Excel::download(new \App\Exports\RekapExport($request), 'lihat_data_b2b_' . date('Ymd_His') . '.xlsx');

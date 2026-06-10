@@ -9,7 +9,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Jadwal Pengiriman Laporan Harian Telegram (Jam 5 Sore)
+
 Schedule::call(function () {
     try {
         (new TelegramService())->sendDailyReport();

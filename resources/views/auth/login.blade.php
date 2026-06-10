@@ -7,7 +7,7 @@
     <meta name="turbo-cache-control" content="no-cache">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
-    <!-- Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -40,14 +40,14 @@
             overflow-x: hidden;
         }
 
-        /* Split Layout Container */
+        
         .split-container {
             display: flex;
             width: 100%;
             min-height: 100vh;
         }
 
-        /* Left Panel (Visual Showcase) */
+        
         .left-panel {
             width: 60%;
             position: relative;
@@ -60,7 +60,7 @@
             overflow: hidden;
         }
 
-        /* White wash overlay + soft blurry red blobs matching user screenshot */
+        
         .left-overlay {
             position: absolute;
             inset: 0;
@@ -102,7 +102,7 @@
             top: 10%;
         }
 
-        /* Content inside Left Panel */
+        
         .left-content {
             position: relative;
             z-index: 3;
@@ -178,7 +178,7 @@
             box-shadow: 0 0 8px var(--primary);
         }
 
-        /* Right Panel (Form Showcase) */
+        
         .right-panel {
             width: 40%;
             background: #ffffff;
@@ -206,7 +206,7 @@
             }
         }
 
-        /* Staggered entrance for form elements */
+        
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -232,7 +232,7 @@
             width: 100%;
         }
 
-        /* Header Logo & Red Title */
+        
         .logo-section {
             display: flex;
             flex-direction: column;
@@ -255,7 +255,7 @@
             letter-spacing: 0.08em;
         }
 
-        /* Input Controls - Minimalist bottom-bordered matching user screenshot */
+        
         .form-group {
             margin-bottom: 1.75rem;
         }
@@ -318,7 +318,7 @@
             color: var(--text-dark);
         }
 
-        /* Checkbox & Options */
+        
         .form-options {
             display: flex;
             align-items: center;
@@ -384,7 +384,7 @@
             border-color: var(--primary);
         }
 
-        /* Submit Button */
+        
         .btn-submit {
             width: 100%;
             height: 44px;
@@ -417,7 +417,7 @@
             cursor: not-allowed;
         }
 
-        /* Error Alert box */
+        
         .error-alert {
             padding: 0.75rem 1rem;
             background-color: var(--primary-light);
@@ -451,7 +451,7 @@
             75% { transform: translateX(3px); }
         }
 
-        /* Footer links */
+        
         .form-footer-links {
             margin-top: 1.5rem;
             display: flex;
@@ -491,7 +491,7 @@
             text-decoration: underline;
         }
 
-        /* Spinner Loading */
+        
         .spinner {
             animation: spin 0.8s linear infinite;
         }
@@ -504,7 +504,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Responsive Design */
+        
         @media (max-width: 900px) {
             .left-panel {
                 display: none;
@@ -521,7 +521,7 @@
 
     <div class="split-container">
         
-        <!-- Left Panel: Information & Image Showcase -->
+        
         <div class="left-panel">
             <div class="left-overlay"></div>
             <div class="blob blob-1"></div>
@@ -530,20 +530,20 @@
 
             <div class="left-content">
                 <p class="welcome-label">Selamat Datang di</p>
-                <h1 class="app-title">MONITORING <span>KPRO</span></h1>
+                <h1 class="app-title">PORTAL <span>MONITORING</span></h1>
                 <p class="app-detail">Witel Cirebon - Telkom Indonesia</p>
             </div>
 
             
         </div>
 
-        <!-- Right Panel: Form Section -->
+        
         <div class="right-panel">
             <div class="form-container">
-                
                 <div class="logo-section stagger-1">
                     <img class="brand-logo-img" src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom Logo">
-                    <div class="form-caption">Portal Monitoring</div>
+                    <div class="form-caption">Login</div>
+                    <p class="app-detail">Silakan login untuk mengakses dashboard</p>
                 </div>
 
                 @if ($errors->any())
@@ -558,7 +558,7 @@
                 <form method="POST" action="{{ route('login') }}" id="loginForm" data-turbo="false">
                     @csrf
 
-                    <!-- Email field -->
+                    
                     <div class="form-group stagger-2">
                         <label for="email" class="form-label">Email</label>
                         <div class="input-wrapper">
@@ -569,7 +569,7 @@
                         </div>
                     </div>
 
-                    <!-- Password field -->
+                    
                     <div class="form-group stagger-3">
                         <label for="passwordInput" class="form-label">Password</label>
                         <div class="input-wrapper">
@@ -585,7 +585,7 @@
                         </div>
                     </div>
 
-                    <!-- Remember Option -->
+                    
                     <div class="form-options stagger-4">
                         <label class="checkbox-container">
                             <input type="checkbox" name="remember" id="remember">
@@ -598,7 +598,7 @@
                         </label>
                     </div>
 
-                    <!-- Submit Button -->
+                    
                     <button type="submit" id="loginBtn" class="btn-submit stagger-5">
                         <svg id="btnSpinner" class="spinner hidden" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

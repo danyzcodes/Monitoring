@@ -161,7 +161,7 @@ class EbisPlanningExport implements FromQuery, WithHeadings, WithMapping, WithSt
             $row->tahun ?? '-',
             $row->kategori ?? '-',
             $row->progres ?? '-',
-            $row->tanggal_update_progres ? Carbon::parse($row->tanggal_update_progres)->format('d-m-Y H:i') : '-'
+            $row->tanggal_update_progres ? Carbon::parse($row->tanggal_update_progres)->format('d-m-Y H:i:s') : '-'
         ];
     }
 

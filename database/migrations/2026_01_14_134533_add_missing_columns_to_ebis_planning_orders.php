@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::table('ebis_planning_orders', function (Blueprint $table) {
 
-            // Penyesuaian nama kolom
+            
             if (!Schema::hasColumn('ebis_planning_orders', 'id_odp_alokasi')) {
                 $table->string('id_odp_alokasi')->nullable()
                       ->after('status_alokasi_alpro');
@@ -25,7 +25,7 @@ return new class extends Migration {
                       ->after('tanggal_waiting_caring');
             }
 
-            // Soft delete
+            
             if (!Schema::hasColumn('ebis_planning_orders', 'deleted_at')) {
                 $table->softDeletes();
             }

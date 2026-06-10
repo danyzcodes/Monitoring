@@ -7,7 +7,7 @@
     <meta name="turbo-cache-control" content="no-cache">
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
-    <!-- Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -392,7 +392,7 @@
 
     <div class="split-container">
         
-        <!-- Left Panel: Information & Image Showcase -->
+        
         <div class="left-panel">
             <div class="left-overlay"></div>
             <div class="blob blob-1"></div>
@@ -401,12 +401,12 @@
 
             <div class="left-content">
                 <p class="welcome-label">Lupa Kata Sandi?</p>
-                <h1 class="app-title">KPRO <span>MONITORING</span></h1>
+                <h1 class="app-title">PORTAL <span>MONITORING</span></h1>
                 <p class="app-detail">Witel Cirebon - Telkom Indonesia</p>
             </div>
         </div>
 
-        <!-- Right Panel: Form Section -->
+        
         <div class="right-panel">
             <div class="form-container">
                 
@@ -431,7 +431,7 @@
                 <form method="POST" action="{{ route('password.email') }}" id="forgotForm" data-turbo="false">
                     @csrf
 
-                    <!-- Email field -->
+                    
                     <div class="form-group stagger-3">
                         <label for="email" class="form-label">Alamat Email</label>
                         <div class="input-wrapper">
@@ -442,7 +442,7 @@
                         </div>
                     </div>
 
-                    <!-- Submit Button -->
+                    
                     <button type="submit" id="submitBtn" class="btn-submit stagger-4">
                         <svg id="btnSpinner" class="spinner hidden" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

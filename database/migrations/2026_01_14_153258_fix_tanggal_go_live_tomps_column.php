@@ -10,12 +10,12 @@ return new class extends Migration
     {
         Schema::table('ebis_planning_orders', function (Blueprint $table) {
 
-            // HAPUS kolom DATE lama
+            
             if (Schema::hasColumn('ebis_planning_orders', 'tanggal_go_live_tomps')) {
                 $table->dropColumn('tanggal_go_live_tomps');
             }
 
-            // TAMBAH ulang sebagai STRING
+            
             $table->string('tanggal_go_live_tomps', 100)
                   ->nullable()
                   ->after('tanggal_validasi_abd_tomps');

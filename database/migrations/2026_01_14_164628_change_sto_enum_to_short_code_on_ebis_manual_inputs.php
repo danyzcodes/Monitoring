@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // HAPUS kolom sto lama
+        
         Schema::table('ebis_manual_inputs', function (Blueprint $table) {
             $table->dropColumn('sto');
         });
 
-        // TAMBAH kolom sto baru (ENUM SINGKATAN)
+        
         Schema::table('ebis_manual_inputs', function (Blueprint $table) {
             $table->enum('sto', [
                 'AWN','BON','CBN','CKI','HAR',
@@ -28,7 +28,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        // rollback ke ENUM lama (nama panjang)
+        
         Schema::table('ebis_manual_inputs', function (Blueprint $table) {
             $table->dropColumn('sto');
         });

@@ -49,7 +49,7 @@ Route::get('/waiting', function () {
 
 Route::middleware('auth')->group(function () {
 
-    /* ================= PROFILE ================= */
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -58,17 +58,17 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:optima,admin,tif,telkom_akses'])->group(function () {
 
-    /* ================= MENU B2B ================= */
+    
     Route::get('/deployment/b2b', function () {
         return view('deployment.b2b');
     })->name('deployment.b2b');
 
-    /* ================= MENU OLO ================= */
+    
     Route::get('/deployment/olo', function () {
         return view('deployment.olo');
     })->name('deployment.olo');
 
-    /* ================= MANUAL INPUT ================= */
+    
     Route::get('/deployment/input', [EbisManualInputController::class, 'index'])
         ->name('deployment.input');
 
@@ -81,7 +81,7 @@ Route::middleware(['auth', 'role:optima,admin,tif,telkom_akses'])->group(functio
     Route::get('/deployment/api/check-starclick', [EbisManualInputController::class, 'checkStarclickExists'])
         ->name('deployment.api.check-starclick');
 
-    /* ================= LIHAT DATA ================= */
+    
     Route::get('/deployment/lihat-data', [EbisPlanningController::class, 'lihatData'])
         ->name('deployment.lihat-data');
 
@@ -91,23 +91,23 @@ Route::middleware(['auth', 'role:optima,admin,tif,telkom_akses'])->group(functio
     Route::get('/deployment/lihat-data/export', [EbisPlanningController::class, 'exportLihatData'])
         ->name('deployment.lihat-data.export');
 
-    // REDIRECT LEGACY ROUTE
+    
     Route::get('/deployment/rekap', function () {
         return redirect()->route('deployment.lihat-data');
     });
 
-    /* ================= UPDATE DATA (LIST) ================= */
+    
     Route::get('/deployment/update', [EbisManualInputController::class, 'updateList'])
         ->name('deployment.update');
 
-    /* ================= EDIT & UPDATE DEPLOYMENT ================= */
+    
     Route::get('/deployment/{id}/edit', [EbisManualInputController::class, 'edit'])
         ->name('deployment.edit');
 
     Route::put('/deployment/{id}', [EbisManualInputController::class, 'update'])
         ->name('deployment.update.process');
 
-    /* ================= UPLOAD / IMPORT / EXPORT ================= */
+    
     Route::get('/deployment/upload', [EbisPlanningController::class, 'index'])
         ->name('deployment.upload');
 
@@ -118,18 +118,18 @@ Route::middleware(['auth', 'role:optima,admin,tif,telkom_akses'])->group(functio
         ->name('ebis.export');
 
 
-    //route ebis manual store
+    
     Route::post('/ebis/manual/store', [EbisManualInputController::class, 'store'])
         ->name('ebis.manual.store');
-    //route deployment.update.list
+    
     Route::get('/deployment/update/list', [EbisManualInputController::class, 'updateList'])
         ->name('deployment.update.list');
 
-    /* ================= PROGRESS OVERVIEW DASHBOARD ================= */
+    
     Route::get('/deployment/progress-overview', [AdminController::class, 'progressOverview'])
         ->name('deployment.progress-overview');
 
-    /* ================= WORKLOAD DETAILS PAGE ================= */
+    
     Route::get('/admin/workload', [AdminController::class, 'workloadDetailsPage'])
         ->name('admin.workload');
 });
@@ -168,7 +168,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/master-input/mitra', [MasterInputController::class, 'storeMitra'])
         ->name('admin.master-input.mitra');
 
-    // Update routes
+    
     Route::put('/admin/master-input/datel/{id}', [MasterInputController::class, 'updateDatel'])
         ->name('admin.master-input.datel.update');
 
@@ -178,7 +178,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/admin/master-input/mitra/{id}', [MasterInputController::class, 'updateMitra'])
         ->name('admin.master-input.mitra.update');
 
-    // Delete routes
+    
     Route::delete('/admin/master-input/datel/{id}', [MasterInputController::class, 'destroyDatel'])
         ->name('admin.master-input.datel.destroy');
 

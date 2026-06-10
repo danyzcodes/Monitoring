@@ -14,17 +14,13 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
+    
     public function create(): View
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     */
+    
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -38,8 +34,8 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'waiting', // ✅ role default tetap waiting
-            'requested_role' => $request->role, // ✅ simpan request role
+            'role' => 'waiting', 
+            'requested_role' => $request->role, 
         ]);
 
         event(new Registered($user));

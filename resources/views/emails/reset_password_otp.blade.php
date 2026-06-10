@@ -81,7 +81,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <!-- Fallback text if logo doesn't load -->
+            
             <span style="color: white; font-weight: 800; font-size: 20px; letter-spacing: 1px;">PORTAL MONITORING KPRO</span>
         </div>
         <div class="content">

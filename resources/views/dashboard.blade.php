@@ -28,7 +28,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Safe area for Android notch */
+        
         .top-header-bar {
             padding-top: max(1.5rem, env(safe-area-inset-top));
             padding-right: max(1.5rem, env(safe-area-inset-right));
@@ -45,7 +45,7 @@
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
     </div>
 
-    <!-- Top bar logout -->
+    
     <div class="absolute top-0 right-0 z-50 flex items-center gap-4 top-header-bar">
         <div class="text-right hidden md:block">
             <p class="text-white font-semibold text-sm">{{ Auth::user()->name }}</p>
@@ -66,14 +66,11 @@
     
     <div class="relative z-10 min-h-screen w-full flex flex-col items-center justify-center p-6 mx-auto">
         <div class="text-center mb-8 mx-auto px-4">
-            <span class="inline-block py-1 px-3 rounded-full bg-red-600/20 border border-red-500/30 text-red-100 text-xs font-semibold tracking-wider uppercase mb-4 backdrop-blur-sm">
-                Project Dashboard
-            </span>
             <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 tracking-tight">
                 Selamat Datang di <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-white">Telkom Portal</span>
             </h1>
             <p class="text-slate-300 text-base max-w-2xl mx-auto">
-                Platform manajemen deployment dan evaluasi kualitas jaringan.
+                Platform manajemen deployment dan evaluasi kualitas Mitra.
             </p>
         </div>
 

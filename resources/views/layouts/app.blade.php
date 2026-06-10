@@ -12,7 +12,7 @@
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Tom Select -->
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
@@ -28,36 +28,35 @@
             z-index: 9999;
         }
 
-        /* Force sidebar display on desktop to prevent Tailwind hidden conflict */
+        
         @media (min-width: 1024px) {
             #sidebar {
                 display: flex !important;
             }
         }
 
-        /* ====== MOBILE FIXES ====== */
-        /* Override Alpine inline margin-left on mobile — inline style wins over class,
-           so we need !important here */
+        
+        
         @media (max-width: 1023px) {
             #main-content {
                 margin-left: 0 !important;
             }
             #top-navbar {
                 left: 0 !important;
-                /* Safe area for Android notch */
+                
                 padding-left: max(1.5rem, env(safe-area-inset-left));
                 padding-right: max(1.5rem, env(safe-area-inset-right));
             }
         }
 
-        /* Prevent content being hidden behind mobile bottom nav (~80px) */
+        
         @media (max-width: 1023px) {
             #main-content {
                 padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
             }
         }
 
-        /* Safe area for top navbar on all screens */
+        
         @supports (padding-top: env(safe-area-inset-top)) {
             #top-navbar {
                 padding-top: env(safe-area-inset-top);
