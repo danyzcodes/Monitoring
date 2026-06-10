@@ -1332,7 +1332,7 @@
                 <img src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" alt="Telkom" style="width: 85%; height: auto;">
             </div>
             <div class="nav-logo-text">
-                <div class="nav-logo-title">Monitoring Proyek</div>
+                <div class="nav-logo-title">MONIKA</div>
                 
             </div>
         </a>
