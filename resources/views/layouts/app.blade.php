@@ -95,7 +95,7 @@
                 <div x-show="sidebarOpen" x-transition.opacity.duration.200ms
                     class="leading-tight overflow-hidden whitespace-nowrap">
                     <div class="font-bold text-sm text-white tracking-wide">
-                        Monitoring Proyek
+                        MONIKA
                     </div>
                     <div class="text-[11px] text-slate-400">
                         Unit Optima · PT Telkom
