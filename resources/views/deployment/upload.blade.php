@@ -16,7 +16,6 @@
 
     
     <div class="bg-white rounded-3xl shadow-xl overflow-hidden border relative" style="border-color:#fde8e8; box-shadow: 0 20px 40px rgba(227,43,43,0.08);">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
         
         <div class="p-4 sm:p-8">
             <form id="importForm" action="{{ route('ebis.import') }}" method="POST" enctype="multipart/form-data" class="relative">

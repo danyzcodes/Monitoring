@@ -273,8 +273,8 @@ class AdminController extends Controller
 
             return [
                 'id'              => $item->id,
-                'star_click_id'   => $item->star_click_id,
-                'nama_customer'   => $item->nama_customer,
+                'star_click_id'   => \App\Helpers\MaskHelper::mask($item->star_click_id),
+                'nama_customer'   => \App\Helpers\MaskHelper::mask($item->nama_customer),
                 'commitment_date' => $item->data['commitment_date'],
                 'updated_by'      => $userName,
                 'days_overdue'    => (int) Carbon::parse($item->data['commitment_date'])->startOfDay()->diffInDays(now()->startOfDay()),
@@ -371,7 +371,7 @@ class AdminController extends Controller
             ->map(function ($deploy) {
                 return [
                     'time_ago' => $deploy->created_at->diffForHumans(),
-                    'star_click_id' => $deploy->star_click_id,
+                    'star_click_id' => \App\Helpers\MaskHelper::mask($deploy->star_click_id),
                     'sto' => strtoupper($deploy->sto),
                     'mitra' => $deploy->nama_mitra,
                     'status' => optional($deploy->planning)->status_order ?? 'Unknown',
@@ -509,7 +509,7 @@ class AdminController extends Controller
             ->map(function ($deploy) {
                 return [
                     'time_ago' => $deploy->created_at->diffForHumans(),
-                    'star_click_id' => $deploy->star_click_id,
+                    'star_click_id' => \App\Helpers\MaskHelper::mask($deploy->star_click_id),
                     'sto' => strtoupper($deploy->sto),
                     'mitra' => $deploy->nama_mitra,
                     'status' => optional($deploy->planning)->status_order ?? 'Unknown',
@@ -586,7 +586,7 @@ class AdminController extends Controller
                     return [
                         'user_name'     => $log->user->name ?? 'System',
                         'user_initials' => strtoupper(substr($log->user->name ?? '?', 0, 2)),
-                        'star_click_id' => $log->planning->star_click_id ?? 'N/A',
+                        'star_click_id' => \App\Helpers\MaskHelper::mask($log->planning->star_click_id ?? 'N/A'),
                         'progres'       => $log->progres,
                         'time_ago'      => $log->created_at->diffForHumans(null, true, true),
                         'commitment_date' => isset($log->data['commitment_date'])

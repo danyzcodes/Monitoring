@@ -2,6 +2,11 @@
 
 @section('title', 'Admin Dashboard')
 
+{{-- Muat Chart.js di <head> lebih awal --}}
+@push('head-scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+@endpush
+
 @section('content')
     <div class="flex flex-col gap-6">
         
@@ -159,7 +164,7 @@
                                     <p class="text-[9px]" style="color:#9ca3af;">
                                         {{ $log->created_at->diffForHumans(null, true, true) }}</p>
                                 </div>
-                                <p class="text-[10px] text-slate-500">Updated <span class="font-bold text-slate-700">#{{ $log->planning->star_click_id ?? 'N/A' }}</span></p>
+                                <p class="text-[10px] text-slate-500">Updated <span class="font-bold text-slate-700">#{{ \App\Helpers\MaskHelper::mask($log->planning->star_click_id ?? 'N/A') }}</span></p>
                                 <div class="flex items-center gap-1.5 mt-1">
                                     <span class="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200/60">
                                         {{ $log->progres }}
@@ -351,7 +356,7 @@
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
                         <div class="flex items-center gap-3">
                             <div>
-                                <h3 class="text-lg font-extrabold tracking-tight" style="color:#1a1a2e;">Workload Day</h3>
+                                <h3 class="text-sm font-bold text-slate-800 tracking-tight" style="color:#1a1a2e;">Workload Day</h3>
                                 <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:#9ca3af;">Kapasitas Global Bulanan</p>
                             </div>
                         </div>
@@ -981,16 +986,8 @@
             if (typeof Chart !== 'undefined') {
                 initDashboard();
             } else {
-                const existing = document.querySelector('script[data-chartjs]');
-                if (existing) {
-                    existing.addEventListener('load', initDashboard);
-                } else {
-                    const s = document.createElement('script');
-                    s.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-                    s.setAttribute('data-chartjs', '1');
-                    s.onload = initDashboard;
-                    document.head.appendChild(s);
-                }
+                // Fallback: Chart.js seharusnya sudah dimuat via head-scripts
+                setTimeout(loadChartJsAndInit, 100);
             }
         }
 

@@ -65,7 +65,6 @@
                 
                 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
                     
                     <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -78,25 +77,25 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Nama Pelanggan</label>
                             <div class="font-medium text-slate-800 text-base border-b border-slate-100 pb-2">
-                                {{ $data->nama_customer }}
+                                {{ \App\Helpers\MaskHelper::mask($data->nama_customer) }}
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Starclick ID</label>
                             <div class="font-mono text-slate-600 text-sm bg-slate-50 px-3 py-2 rounded-lg border border-slate-100">
-                                {{ $data->star_click_id }}
+                                {{ \App\Helpers\MaskHelper::mask($data->star_click_id) }}
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Datel</label>
-                                <div class="font-medium text-slate-700">{{ $data->datel }}</div>
+                                <div class="font-medium text-slate-700">{{ \App\Helpers\MaskHelper::mask($data->datel) }}</div>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">STO</label>
-                                <div class="font-medium text-slate-700">{{ $data->sto }}</div>
+                                <div class="font-medium text-slate-700">{{ \App\Helpers\MaskHelper::mask($data->sto) }}</div>
                             </div>
                         </div>
                     </div>
@@ -105,9 +104,7 @@
                 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                     <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                        </svg>
+                        
                         Info Teknis
                     </h3>
 
@@ -115,13 +112,13 @@
                          <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Status Order</label>
                             <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
-                                {{ optional($data->planning)->status_order ?? '-' }}
+                                {{ \App\Helpers\MaskHelper::mask(optional($data->planning)->status_order) }}
                             </span>
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tipe Desain</label>
-                            <div class="font-medium text-slate-700">{{ optional($data->planning)->tipe_desain ?? '-' }}</div>
+                            <div class="font-medium text-slate-700">{{ \App\Helpers\MaskHelper::mask(optional($data->planning)->tipe_desain) }}</div>
                         </div>
                     </div>
                 </div>
@@ -140,7 +137,7 @@
                         
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                Status Progres Terbaru <span class="text-red-500">*</span>
+                                Status Progres  <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
                                 <select name="progres" id="progres" x-model="currentProgress" @change="renderDynamicFields()"
@@ -191,9 +188,9 @@
                                class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition">
                                 Batal
                             </a>
-                            <button type="submit" 
+                            <button type="button" @click="initiateSubmit()" 
                                     class="px-8 py-2.5 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 hover:shadow-lg transition transform active:scale-95">
-                                Update Data
+                                Simpan
                             </button>
                         </div>
 
@@ -201,20 +198,73 @@
                 </div>
             </div>
         </div>
+
+        <template x-teleport="body">
+            <div x-show="confirmOpen" x-cloak
+                class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50">
+
+                <!-- Modal Box -->
+                <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">Konfirmasi Update</h3>
+                    <p class="text-sm text-slate-600 mb-6">Apakah data update sudah benar dan ingin disimpan?</p>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col gap-3">
+                        <button type="button" @click="finalSubmit()"
+                            :disabled="submitting"
+                            class="w-full py-3 px-4 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-text="submitting ? 'Menyimpan...' : 'Ya, Simpan'"></span>
+                        </button>
+
+                        <button type="button" @click="confirmOpen = false"
+                            class="w-full py-3 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold">
+                            Batalkan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
     </form>
 </div>
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function editForm() {
         return {
+            formEl: null,
+            confirmOpen: false,
+            submitting: false,
             currentProgress: "{{ old('progres', $data->progres) }}",
             existingData: @json($data->data ?? []),
 
             initForm() {
+                this.formEl = this.$el;
                 if (this.currentProgress) {
                     this.renderDynamicFields();
                 }
+            },
+
+            initiateSubmit() {
+                // Check if progress is filled because it is required (*)
+                const progresSelect = document.getElementById('progres');
+                if (progresSelect && (!progresSelect.value || progresSelect.value === '')) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Data Belum Lengkap',
+                        text: 'Mohon pilih Status Progres Terbaru (*)',
+                        confirmButtonColor: '#dc2626',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                this.confirmOpen = true;
+            },
+
+            finalSubmit() {
+                this.submitting = true;
+                setTimeout(() => this.formEl.submit(), 300);
             },
 
             renderDynamicFields() {

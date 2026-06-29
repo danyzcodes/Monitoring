@@ -9,12 +9,19 @@
 
     <link rel="icon" href="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png" type="image/png">
 
+    {{-- Preconnect untuk CDN agar DNS lookup lebih cepat --}}
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
+    {{-- Slot untuk script yang perlu dimuat di <head> (misal Chart.js per-halaman) --}}
+    @stack('head-scripts')
 
     <style>
         [x-cloak] {
@@ -28,7 +35,7 @@
             z-index: 9999;
         }
 
-        
+
         @media (min-width: 1024px) {
             #sidebar {
                 display: flex !important;
@@ -70,6 +77,7 @@
 </head>
 
 <body class="bg-slate-100 text-slate-800 antialiased overflow-y-scroll">
+
 
     <div x-data="{
         sidebarOpen: true, // Desktop sidebar state
@@ -118,9 +126,9 @@
                     <a href="{{ route('admin.dashboard') }}"
                         class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     {{ request()->routeIs('admin.dashboard')
-                        ? 'bg-red-600/20 text-red-400 border-l-[3px] border-red-500'
-                        : 'text-slate-300 hover:bg-slate-700/50 hover:text-white border-l-[3px] border-transparent' }}"
-                        :class="!sidebarOpen ? 'justify-center px-0 !border-l-0' : ''">
+                        ? 'bg-red-600/20 text-red-400'
+                        : 'text-slate-300 hover:bg-slate-700/50 hover:text-white' }}"
+                        :class="!sidebarOpen ? 'justify-center px-0' : ''">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -135,9 +143,9 @@
                     <a href="{{ route('admin.users') }}"
                         class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     {{ request()->routeIs('admin.users')
-                        ? 'bg-red-600/20 text-red-400 border-l-[3px] border-red-500'
-                        : 'text-slate-300 hover:bg-slate-700/50 hover:text-white border-l-[3px] border-transparent' }}"
-                        :class="!sidebarOpen ? 'justify-center px-0 !border-l-0' : ''">
+                        ? 'bg-red-600/20 text-red-400'
+                        : 'text-slate-300 hover:bg-slate-700/50 hover:text-white' }}"
+                        :class="!sidebarOpen ? 'justify-center px-0' : ''">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -150,9 +158,9 @@
                     <a href="{{ route('admin.master-input') }}"
                         class="group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
                     {{ request()->routeIs('admin.master-input')
-                        ? 'bg-red-600/20 text-red-400 border-l-[3px] border-red-500'
-                        : 'text-slate-300 hover:bg-slate-700/50 hover:text-white border-l-[3px] border-transparent' }}"
-                        :class="!sidebarOpen ? 'justify-center px-0 !border-l-0' : ''">
+                        ? 'bg-red-600/20 text-red-400'
+                        : 'text-slate-300 hover:bg-slate-700/50 hover:text-white' }}"
+                        :class="!sidebarOpen ? 'justify-center px-0' : ''">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -176,12 +184,12 @@
                         class="flex items-center w-full
                                 py-2.5 rounded-xl transition-all duration-200
                             {{ request()->routeIs('deployment.*') && !request()->routeIs('deployment.olo')
-                                ? 'bg-red-600/20 text-red-400 border-l-[3px] border-red-500'
-                                : 'text-slate-300 hover:bg-slate-700/50 hover:text-white border-l-[3px] border-transparent' }}"
+                                ? 'bg-red-600/20 text-red-400'
+                                : 'text-slate-300 hover:bg-slate-700/50 hover:text-white' }}"
                         :class="sidebarOpen
                             ?
                             'justify-between px-3' :
-                            'justify-center px-0 border-l-0'">
+                            'justify-center px-0'">
 
                         
                         <div class="flex items-center" :class="sidebarOpen ? 'gap-3' : 'gap-0'">
@@ -586,34 +594,6 @@
     
     <script>
         if (!window.appScriptInitialized) {
-            // Fix bounce-back: matikan Turbo cache sepenuhnya
-            document.addEventListener('turbo:before-cache', function() {
-                // Hapus semua Alpine state sebelum Turbo cache page
-                document.querySelectorAll('[x-data]').forEach(function(el) {
-                    if (el._x_dataStack) {
-                        try { window.Alpine.destroyTree(el); } catch (e) {}
-                    }
-                });
-                // Tandai semua halaman sebagai no-cache
-                const meta = document.querySelector('meta[name="turbo-cache-control"]');
-                if (!meta) {
-                    const m = document.createElement('meta');
-                    m.name = 'turbo-cache-control';
-                    m.content = 'no-cache';
-                    document.head.appendChild(m);
-                }
-            });
-
-            // Re-init Alpine.js setelah Turbo navigasi
-            document.addEventListener('turbo:load', function() {
-                if (window.Alpine) {
-                    document.querySelectorAll('[x-data]').forEach(function(el) {
-                        if (!el._x_dataStack) {
-                            window.Alpine.initTree(el);
-                        }
-                    });
-                }
-            });
 
             // Simpan posisi scroll sebelum submit atau navigasi
             window.lastScrollYPosition = 0;
@@ -632,7 +612,7 @@
                 }
             });
 
-            // Clear any stale Service Workers from other projects running on the same port (e.g. 127.0.0.1:8000)
+            // Clear any stale Service Workers from other projects running on the same port
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
                     let unregisteredAny = false;

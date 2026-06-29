@@ -15,7 +15,6 @@
 
         
         <div class="bg-white rounded-3xl shadow-xl border border-slate-100 relative">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600 rounded-t-3xl"></div>
 
             <div class="p-6 md:p-8">
                 <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">

@@ -1,0 +1,3543 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>MONIKA — Admin Dashboard · PT Telkom</title>
+  <meta name="description" content="Platform manajemen deployment B2B PT Telkom Indonesia.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <!-- Alpine.js CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- TomSelect CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- SheetJS (XLSX) CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              red: '#e32b2b',
+              'red-dark': '#c41e1e',
+              'red-light': '#fee2e2',
+            }
+          },
+          borderRadius: {
+            '3xl': '1.5rem',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Glassmorphism custom classes */
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .glass-dark {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Filter TS Overrides to match original app design */
+    .filter-ts {
+      width: 100% !important;
+    }
+
+    .filter-ts .ts-control {
+      border-radius: 0.75rem !important;
+      border-color: #e2e8f0 !important;
+      background: #f8fafc !important;
+      font-size: 0.8rem !important;
+      min-height: 40px;
+    }
+
+    .filter-ts .ts-control.focus {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 2px #fee2e2 !important;
+    }
+
+    .filter-ts .ts-dropdown {
+      border-radius: 0.75rem !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .filter-ts .ts-dropdown .option {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+    }
+
+    .filter-ts .ts-dropdown .option:hover,
+    .filter-ts .ts-dropdown .option.active {
+      background: #fef2f2 !important;
+      color: #dc2626 !important;
+    }
+
+    .filter-ts .ts-control .item {
+      background: #fee2e2 !important;
+      color: #dc2626 !important;
+      border-radius: 6px !important;
+      font-weight: 600;
+      font-size: 0.75rem !important;
+      padding: 2px 6px !important;
+    }
+
+    .filter-ts .ts-control .item .remove {
+      color: #dc2626 !important;
+      border-left-color: #fca5a5 !important;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 antialiased overflow-y-scroll" x-data="appState()" x-init="initApp()">
+
+  <!-- ═══════════════════ TABS CONTENT ═══════════════════ -->
+
+  <!-- ╔═══ TAHAP 0: PORTAL UTAMA (Tampilan Pintu Masuk / Welcome) ═══╗ -->
+  <div x-show="activeTab === 'portal'"
+    class="relative min-h-screen w-full flex flex-col items-center justify-center p-6 bg-slate-900 overflow-hidden"
+    x-cloak>
+    <!-- Background image + gradient overlay -->
+    <div class="absolute inset-0 z-0">
+      <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=1920&q=80"
+        alt="Background" class="w-full h-full object-cover opacity-30">
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+    </div>
+
+    <!-- Exit / User Info on Top Right -->
+    <div class="absolute top-0 right-0 z-50 flex items-center gap-4 p-6">
+      <div class="text-right hidden md:block">
+        <p class="text-white font-semibold text-sm" x-text="currentUser.name"></p>
+        <p class="text-slate-300 text-xs" x-text="currentUser.email"></p>
+      </div>
+      <div class="h-8 w-px bg-white/20 hidden md:block"></div>
+      <button @click="alert('Tutup tab browser Anda untuk keluar.')"
+        class="glass-dark hover:bg-white/10 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 group">
+        <span>Keluar</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-1 transition-transform"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Welcome Content -->
+    <div class="relative z-10 text-center mb-8 mx-auto px-4 max-w-2xl">
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 tracking-tight">
+        Selamat Datang di <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-white">Telkom
+          Portal</span>
+      </h1>
+      <p class="text-slate-300 text-base max-w-2xl mx-auto">
+        Platform manajemen deployment dan evaluasi kualitas Mitra.
+      </p>
+    </div>
+
+    <!-- Grid Portal Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl mx-auto relative z-10">
+      <!-- Card 1: Quality Enhancement (Dummy/Soon) -->
+      <div
+        class="group relative h-72 rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20 cursor-not-allowed opacity-75">
+        <div class="absolute inset-0 bg-gradient-to-br from-white/40 via-white/10 to-white/5 rounded-3xl z-0"></div>
+        <div
+          class="relative h-full bg-slate-900/40 backdrop-blur-xl rounded-[22px] p-8 flex flex-col justify-between border border-white/10 overflow-hidden">
+          <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
+          <div>
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg border border-white/10 mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-2 tracking-tight">Quality Enhancement</h2>
+            <p class="text-slate-400 text-sm leading-relaxed max-w-xs">Evaluasi kualitas jaringan & performa teknisi
+              lapangan dengan metrik terukur.</p>
+          </div>
+          <div class="flex justify-between items-center text-xs text-blue-400 font-bold">
+            <span>SEGERA HADIR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: B2B Deployment (Active) -->
+      <div @click="setTab('b2b-portal')"
+        class="group relative h-72 rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/20 cursor-pointer">
+        <div class="absolute inset-0 bg-gradient-to-br from-white/40 via-white/10 to-white/5 rounded-3xl z-0"></div>
+        <div
+          class="relative h-full bg-slate-900/40 backdrop-blur-xl rounded-[22px] p-8 flex flex-col justify-between border border-white/10 overflow-hidden group-hover:bg-slate-900/60 transition-colors">
+          <div
+            class="absolute -right-10 -top-10 w-40 h-40 bg-red-500/20 rounded-full blur-3xl group-hover:bg-red-500/30 transition-all">
+          </div>
+          <div>
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/30 mb-6 group-hover:scale-110 transition-transform duration-500 border border-white/10">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-2 tracking-tight group-hover:text-red-400 transition-colors">
+              Deployment System</h2>
+            <p class="text-slate-400 text-sm leading-relaxed max-w-xs">Monitoring & manajemen proyek B2B secara
+              real-time dengan data akurat.</p>
+          </div>
+          <div class="flex justify-end items-end">
+            <span
+              class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/5 group-hover:bg-brand-red group-hover:border-brand-red transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Copyright -->
+    <div class="absolute bottom-6 left-0 w-full text-center z-10">
+      <p class="text-slate-400 text-xs tracking-wide opacity-80">
+        &copy; 2026 PT. Telkom Indonesia (Persero) Tbk. All rights reserved.
+      </p>
+    </div>
+  </div>
+
+  <!-- ╔═══ SHELL LAYOUT: SIDEBAR + TOPBAR + MAIN CONTENT (Untuk Tab Aktif Lainnya) ═══╗ -->
+  <div x-show="activeTab !== 'portal'" class="min-h-screen relative" x-cloak>
+
+    <!-- ════════ SIDEBAR ════════ -->
+    <aside id="sidebar"
+      class="fixed inset-y-0 left-0 z-50 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 border-r border-slate-700/50 transition-all duration-300 ease-in-out flex flex-col overflow-hidden"
+      :class="sidebarOpen ? 'w-[260px]' : 'w-[72px]'">
+      <!-- Brand Header -->
+      <div class="h-16 flex items-center gap-3 px-5 border-b border-slate-700/50 shrink-0 relative">
+        <div
+          class="w-9 h-9 rounded-lg bg-white flex items-center justify-center shrink-0 p-1 opacity-95 hover:opacity-100 transition-opacity">
+          <img
+            src="https://www.telkom.co.id/minio/show/data/image_upload/page/1594112895830_compress_PNG%20Icon%20Telkom.png"
+            alt="Telkom Logo" class="w-full">
+        </div>
+        <div x-show="sidebarOpen" class="leading-tight overflow-hidden whitespace-nowrap">
+          <div class="font-bold text-sm text-white tracking-wide">MONIKA</div>
+          <div class="text-[11px] text-slate-400">Unit Optima · PT Telkom</div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 px-3 space-y-1 text-sm overflow-y-auto pt-4">
+        <!-- Section: Admin (Hanya jika admin) -->
+        <template x-if="currentUser.role === 'admin'">
+          <div>
+            <div class="px-5 pt-3 pb-2" x-show="sidebarOpen">
+              <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Admin</span>
+            </div>
+            <!-- Dashboard Admin -->
+            <button @click="setTab('dashboard')"
+              class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 border-l-[3px]"
+              :class="activeTab === 'dashboard' ? 'bg-red-600/20 text-red-400 border-red-500' : 'text-slate-300 hover:bg-slate-700/50 hover:text-white border-transparent'">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M4.5 10.5V21h15V10.5" />
+              </svg>
+              <span x-show="sidebarOpen" class="whitespace-nowrap">Dashboard</span>
+            </button>
+            <!-- Kelola Akun -->
+            <button @click="setTab('users')"
+              class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 border-l-[3px] mt-1"
+              :class="activeTab === 'users' ? 'bg-red-600/20 text-red-400 border-red-500' : 'text-slate-300 hover:bg-slate-700/50 hover:text-white border-transparent'">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+              </svg>
+              <span x-show="sidebarOpen" class="whitespace-nowrap">Kelola Akun</span>
+            </button>
+            <!-- Master Input -->
+            <button @click="setTab('master-input')"
+              class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 border-l-[3px] mt-1"
+              :class="activeTab === 'master-input' ? 'bg-red-600/20 text-red-400 border-red-500' : 'text-slate-300 hover:bg-slate-700/50 hover:text-white border-transparent'">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+              </svg>
+              <span x-show="sidebarOpen" class="whitespace-nowrap">Master Input</span>
+            </button>
+          </div>
+        </template>
+
+        <!-- Section: B2B Deployment -->
+        <div class="pt-1">
+          <div class="px-5 pt-3 pb-2" x-show="sidebarOpen">
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">B2B Deployment</span>
+          </div>
+          <!-- Landing / B2B Portal -->
+          <button @click="setTab('b2b-portal')"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 border-l-[3px]"
+            :class="activeTab === 'b2b-portal' ? 'bg-red-600/20 text-red-400 border-red-500' : 'text-slate-300 hover:bg-slate-700/50 hover:text-white border-transparent'">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 7a2 2 0 012-2h5l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+            </svg>
+            <span x-show="sidebarOpen" class="whitespace-nowrap">Portal Deployment</span>
+          </button>
+          <!-- Dropdown/Links sub menu deployment -->
+          <div class="pl-4 mt-1 space-y-0.5 border-l border-slate-700 ml-5" x-show="sidebarOpen">
+            <button @click="setTab('upload')"
+              :class="activeTab === 'upload' ? 'text-red-400 bg-red-600/10' : 'text-slate-400 hover:text-white'"
+              class="w-full text-left block px-3 py-2 rounded-lg text-xs transition">Upload Data</button>
+            <button @click="setTab('input')"
+              :class="activeTab === 'input' ? 'text-red-400 bg-red-600/10' : 'text-slate-400 hover:text-white'"
+              class="w-full text-left block px-3 py-2 rounded-lg text-xs transition">Input Data</button>
+            <button @click="setTab('update')"
+              :class="activeTab === 'update' ? 'text-red-400 bg-red-600/10' : 'text-slate-400 hover:text-white'"
+              class="w-full text-left block px-3 py-2 rounded-lg text-xs transition">Update Data</button>
+            <button @click="setTab('lihat')"
+              :class="activeTab === 'lihat' ? 'text-red-400 bg-red-600/10' : 'text-slate-400 hover:text-white'"
+              class="w-full text-left block px-3 py-2 rounded-lg text-xs transition">Lihat Data</button>
+            <button @click="setTab('overview')"
+              :class="activeTab === 'overview' ? 'text-red-400 bg-red-600/10' : 'text-slate-400 hover:text-white'"
+              class="w-full text-left block px-3 py-2 rounded-lg text-xs transition">Progress Overview</button>
+          </div>
+        </div>
+
+        <!-- Section: Sistem -->
+        <div class="pt-1">
+          <div class="px-5 pt-3 pb-2" x-show="sidebarOpen">
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Sistem</span>
+          </div>
+          <!-- Pengaturan -->
+          <button @click="setTab('settings')"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 border-l-[3px]"
+            :class="activeTab === 'settings' ? 'bg-red-600/20 text-red-400 border-red-500' : 'text-slate-300 hover:bg-slate-700/50 hover:text-white border-transparent'">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            </svg>
+            <span x-show="sidebarOpen" class="whitespace-nowrap">Pengaturan</span>
+          </button>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- ════════ TOPBAR / NAVIGATION HEADER ════════ -->
+    <header id="top-navbar"
+      class="fixed top-0 right-0 z-35 h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 transition-all duration-300"
+      :style="sidebarOpen ? 'left:260px' : 'left:72px'">
+      <!-- Left controls: Sidebar toggler & Clock -->
+      <div class="flex items-center gap-4">
+        <button @click="sidebarOpen = !sidebarOpen"
+          class="p-2 rounded-lg hover:bg-slate-100 transition text-slate-500 hover:text-slate-700">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <!-- Digital clock matching original project -->
+        <div class="clock">
+          <div class="text-sm font-extrabold text-slate-800 tracking-tight" id="live-clock">00:00:00</div>
+          <div class="text-[10px] text-slate-400 font-medium leading-none mt-0.5" id="live-date">Rabu, 24 Jun 2026</div>
+        </div>
+      </div>
+
+      <!-- Right controls: Notifications, Role & Profile Dropdown -->
+      <div class="flex items-center gap-3">
+        <!-- Live indicators -->
+        <div class="flex items-center gap-1.5">
+          <div class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+          <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+        </div>
+
+        <!-- Overdue notifications bell -->
+        <div class="relative">
+          <button @click="notifOpen = !notifOpen"
+            class="relative p-2.5 rounded-xl hover:bg-red-50 hover:shadow-sm focus:outline-none transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg"
+              class="w-[18px] h-[18px] text-slate-400 hover:text-slate-600 transition-colors"
+              :class="overviewStats.overdueCount > 0 ? 'text-red-500 animate-bounce' : ''" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+            </svg>
+            <!-- Badge dot -->
+            <span x-show="overviewStats.overdueCount > 0"
+              class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+          </button>
+
+          <!-- Notification Dropdown Panel -->
+          <div x-show="notifOpen" @click.outside="notifOpen = false" x-transition x-cloak
+            class="absolute right-0 mt-3 w-[360px] z-50 rounded-2xl overflow-hidden border border-slate-200 shadow-2xl bg-white">
+            <div class="relative px-4 pt-4 pb-3 bg-gradient-to-br from-red-500 to-rose-600 overflow-hidden text-white">
+              <div class="relative flex items-center justify-between">
+                <div>
+                  <h3 class="text-sm font-bold tracking-wide">Notifikasi Overdue</h3>
+                  <p class="text-[10px] text-white/80 mt-0.5"
+                    x-text="overviewStats.overdueCount + ' order melewati commitment date'"></p>
+                </div>
+                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-white/20">
+                  <span class="text-xs font-black" x-text="overviewStats.overdueCount"></span>
+                </div>
+              </div>
+            </div>
+            <!-- Notifications Item List -->
+            <div class="max-h-[320px] overflow-y-auto p-3 space-y-2">
+              <template x-for="item in (overviewStats.overdueOrders || [])" :key="item.id">
+                <div class="rounded-xl border border-red-100 bg-red-50/50 p-3 hover:shadow-sm transition">
+                  <div class="flex justify-between items-start gap-2">
+                    <div>
+                      <p class="text-xs font-bold text-slate-800" x-text="'#' + item.star_click_id"></p>
+                      <p class="text-[10px] text-slate-500 truncate mt-0.5" x-text="item.nama_customer"></p>
+                    </div>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-red-100 text-red-700">Overdue</span>
+                  </div>
+                  <div class="flex justify-between items-center mt-2 text-[9px] text-slate-400">
+                    <span x-text="item.datel"></span>
+                    <span x-text="String(item.commitment_date).slice(0, 10)"></span>
+                  </div>
+                </div>
+              </template>
+              <div x-show="!overviewStats.overdueCount" class="py-6 text-center text-slate-400 text-xs font-semibold">
+                Semua order dalam kondisi baik! ✅
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role display -->
+        <span
+          class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-100 text-brand-red"
+          x-text="currentUser.role"></span>
+
+        <!-- Profile button / User Menu -->
+        <div class="relative">
+          <button @click="userMenu = !userMenu"
+            class="flex items-center gap-2 pl-3 pr-1 py-1 rounded-full hover:bg-slate-100 transition focus:outline-none">
+            <span class="text-xs font-semibold text-slate-700 hidden sm:block" x-text="currentUser.name"></span>
+            <div
+              class="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-white text-xs font-extrabold shadow-inner"
+              x-text="currentUser.name.charAt(0)"></div>
+          </button>
+
+          <!-- Dropdown menu -->
+          <div x-show="userMenu" @click.outside="userMenu = false" x-transition x-cloak
+            class="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-50">
+            <div class="px-4 py-3 bg-slate-50 border-b border-slate-100">
+              <div class="text-xs font-bold text-slate-800" x-text="currentUser.name"></div>
+              <div class="text-[10px] text-slate-500" x-text="currentUser.email"></div>
+            </div>
+            <div class="py-1">
+              <button @click="setTab('portal')"
+                class="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l9-9 9 9M4.5 10.5V21h15V10.5" />
+                </svg>
+                Kembali ke Portal
+              </button>
+            </div>
+            <div class="border-t border-slate-100">
+              <button @click="alert('Tutup tab browser Anda untuk keluar.')"
+                class="w-full text-left px-4 py-2.5 text-xs text-brand-red hover:bg-red-50 flex items-center gap-2 font-bold">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Keluar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ════════ MAIN CONTENT WRAPPER ════════ -->
+    <main id="main-content" class="pt-16 transition-all duration-300 min-h-screen"
+      :style="sidebarOpen ? 'margin-left:260px' : 'margin-left:72px'">
+      <div class="p-6 pb-20">
+
+        <!-- ╔═══ SCREEN: DASHBOARD ADMIN STATS ═══╗ -->
+        <div x-show="activeTab === 'dashboard'" x-cloak>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+            <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+              @click="setTab('b2b-portal')">B2B Portal</span>
+            <span class="text-slate-300 font-bold">❯</span>
+            <span class="font-bold text-slate-800 uppercase tracking-wider">Admin Dashboard</span>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-2xl border p-5 flex items-center gap-4 hover:shadow-md transition">
+              <div class="p-2 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="7" height="7" rx="1" />
+                  <rect x="14" y="3" width="7" height="7" rx="1" />
+                  <rect x="3" y="14" width="7" height="7" rx="1" />
+                  <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Order</div>
+                <div class="text-2xl font-black text-slate-800" x-text="dashboardStats.total">0</div>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl border p-5 flex items-center gap-4 hover:shadow-md transition">
+              <div class="p-2 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Selesai</div>
+                <div class="text-2xl font-black text-slate-800" x-text="dashboardStats.completed">0</div>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl border p-5 flex items-center gap-4 hover:shadow-md transition">
+              <div class="p-2 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">On Progress</div>
+                <div class="text-2xl font-black text-slate-800" x-text="dashboardStats.onProgress">0</div>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl border p-5 flex items-center gap-4 hover:shadow-md transition">
+              <div class="p-2 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Overdue</div>
+                <div class="text-2xl font-black text-slate-800 text-brand-red" x-text="dashboardStats.overdueCount">0
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Top Widgets Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <!-- Confirm Users Widget -->
+            <div class="bg-white rounded-2xl border p-6 flex flex-col min-h-[300px] hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-4 pb-2 border-b">
+                <div class="flex items-center gap-3">
+                  <div class="p-2 rounded-xl bg-blue-50 text-blue-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-800">Confirm Users</h3>
+                    <span class="text-[9px] text-slate-400">Persetujuan Akun Baru</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex-1 overflow-y-auto space-y-2.5 max-h-[220px]">
+                <template x-for="user in (dashboardStats.waitingUsers || [])" :key="user.id">
+                  <div
+                    class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border hover:bg-slate-100 transition">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-7 h-7 rounded-full bg-white flex items-center justify-center font-bold text-xs shadow-sm"
+                        x-text="user.name.charAt(0)"></div>
+                      <div>
+                        <p class="text-xs font-bold text-slate-700" x-text="user.name"></p>
+                        <p class="text-[9px] text-slate-400" x-text="user.email"></p>
+                      </div>
+                    </div>
+                    <button @click="approveUser(user.id)"
+                      class="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 shadow-sm transition">Approve</button>
+                  </div>
+                </template>
+                <div x-show="!dashboardStats.waitingUsers?.length"
+                  class="flex flex-col items-center justify-center h-full text-slate-400 text-xs">
+                  Tidak ada user menunggu persetujuan
+                </div>
+              </div>
+            </div>
+
+            <!-- Overdue Commitments List -->
+            <div class="bg-white rounded-2xl border p-6 flex flex-col min-h-[300px] hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-4 pb-2 border-b">
+                <div class="flex items-center gap-3">
+                  <div class="p-2 rounded-xl bg-red-50 text-brand-red">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-800">Overdue Commitments</h3>
+                    <span class="text-[9px] text-slate-400">Komitmen terlewati</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold bg-red-100 text-brand-red px-2 py-0.5 rounded-full"
+                  x-text="dashboardStats.overdueCount + ' item'"></span>
+              </div>
+              <div class="flex-1 overflow-y-auto space-y-2 max-h-[220px]">
+                <template x-for="item in (dashboardStats.overdueItems || [])" :key="item.id">
+                  <div
+                    class="p-2.5 rounded-xl bg-slate-50 border hover:bg-slate-100 transition flex justify-between items-start">
+                    <div>
+                      <p class="text-xs font-bold text-slate-800" x-text="'#' + item.star_click_id"></p>
+                      <p class="text-[9px] text-slate-400 truncate max-w-[120px]" x-text="item.nama_customer"></p>
+                    </div>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700"
+                      x-text="'+' + item.days_overdue + ' hr'"></span>
+                  </div>
+                </template>
+                <div x-show="!dashboardStats.overdueCount"
+                  class="flex flex-col items-center justify-center h-full text-slate-400 text-xs">
+                  Semua on track!
+                </div>
+              </div>
+            </div>
+
+            <!-- Live Progress Tracking -->
+            <div class="bg-white rounded-2xl border p-6 flex flex-col min-h-[300px] hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-4 pb-2 border-b">
+                <div class="flex items-center gap-3">
+                  <div class="p-2 rounded-xl bg-amber-50 text-amber-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-800">Live Tracking</h3>
+                    <span class="text-[9px] text-slate-400">Aktivitas update data</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex-1 overflow-y-auto space-y-2.5 max-h-[220px]">
+                <template x-for="log in liveLogs" :key="log.id">
+                  <div class="flex items-start gap-2.5 p-2 rounded-lg hover:bg-slate-50 transition">
+                    <div
+                      class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[9px] font-bold shrink-0"
+                      x-text="log.user_name?.charAt(0)"></div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex justify-between text-[10px]">
+                        <span class="font-bold text-slate-700" x-text="log.user_name"></span>
+                        <span class="text-slate-400" x-text="timeAgo(log.created_at)"></span>
+                      </div>
+                      <p class="text-[9px] text-slate-500">Updated <span class="font-bold"
+                          x-text="'#' + log.star_click_id"></span></p>
+                      <span
+                        class="inline-block text-[8px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-100 mt-1"
+                        x-text="log.progres"></span>
+                    </div>
+                  </div>
+                </template>
+                <div x-show="!liveLogs.length"
+                  class="flex flex-col items-center justify-center h-full text-slate-400 text-xs">
+                  Belum ada aktivitas
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trend Chart Widget -->
+          <div class="bg-white rounded-3xl border p-6 mb-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <div>
+                <h3 class="text-base font-bold text-slate-800">Deployment Trend</h3>
+                <p class="text-xs text-slate-400">Grafik volume pengerjaan berdasarkan filter</p>
+              </div>
+              <!-- Swapper filter period -->
+              <div class="flex bg-slate-100 p-1 rounded-xl gap-1">
+                <button @click="setTrendPeriod('daily')"
+                  :class="trendPeriod === 'daily' ? 'bg-white shadow-sm text-brand-red' : 'text-slate-400'"
+                  class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all">Daily</button>
+                <button @click="setTrendPeriod('weekly')"
+                  :class="trendPeriod === 'weekly' ? 'bg-white shadow-sm text-brand-red' : 'text-slate-400'"
+                  class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all">Weekly</button>
+                <button @click="setTrendPeriod('monthly')"
+                  :class="trendPeriod === 'monthly' ? 'bg-white shadow-sm text-brand-red' : 'text-slate-400'"
+                  class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all">Monthly</button>
+              </div>
+            </div>
+
+            <!-- Filters bar -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-50 border mb-6">
+              <div>
+                <label class="block text-[9px] font-bold uppercase text-slate-400 tracking-wider mb-1">Datel</label>
+                <select id="trendFilterDatel" @change="loadTrend()"
+                  class="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-3 text-xs focus:ring-1 focus:ring-red-500 outline-none">
+                  <option value="">Semua Datel</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold uppercase text-slate-400 tracking-wider mb-1">STO</label>
+                <select id="trendFilterSto" @change="loadTrend()"
+                  class="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-3 text-xs focus:ring-1 focus:ring-red-500 outline-none">
+                  <option value="">Semua STO</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold uppercase text-slate-400 tracking-wider mb-1">Mitra</label>
+                <select id="trendFilterMitra" @change="loadTrend()"
+                  class="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-3 text-xs focus:ring-1 focus:ring-red-500 outline-none">
+                  <option value="">Semua Mitra</option>
+                </select>
+              </div>
+              <div class="flex items-end">
+                <button @click="resetTrendFilters()"
+                  class="w-full py-1.5 border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-semibold transition">Reset
+                  Filter</button>
+              </div>
+            </div>
+
+            <div class="relative w-full h-[280px]">
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Workload Day & Top Mitra Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+            <!-- Workload Day Calendar -->
+            <div class="lg:col-span-8 bg-white rounded-3xl p-6 border overflow-x-auto shadow-sm" x-data="{
+                     loading: false,
+                     dates: [],
+                     global_cap: 10,
+                     selectedDay: null,
+                     showModal: false,
+                     currentYear: new Date().getFullYear(),
+                     currentMonth: new Date().getMonth() + 1,
+                     months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+                     init() {
+                         this.fetchWorkload();
+                         this.$watch('$parent.activeTab', v => {
+                             if (v === 'dashboard') this.fetchWorkload();
+                         });
+                     },
+                     openDetails(day) {
+                         if (day.count > 0) {
+                             this.selectedDay = day;
+                             this.showModal = true;
+                         }
+                     },
+                     prevMonth() {
+                         if (this.currentMonth === 1) {
+                             this.currentMonth = 12;
+                             this.currentYear--;
+                         } else {
+                             this.currentMonth--;
+                         }
+                         this.fetchWorkload();
+                     },
+                     nextMonth() {
+                         if (this.currentMonth === 12) {
+                             this.currentMonth = 1;
+                             this.currentYear++;
+                         } else {
+                             this.currentMonth++;
+                         }
+                         this.fetchWorkload();
+                     },
+                     resetToCurrent() {
+                         this.currentMonth = new Date().getMonth() + 1;
+                         this.currentYear = new Date().getFullYear();
+                         this.fetchWorkload();
+                     },
+                     fetchWorkload() {
+                         this.loading = true;
+                         var app = getAlpineApp();
+                         app.api({
+                             action: 'getWorkloadDay',
+                             year: this.currentYear,
+                             month: this.currentMonth
+                         }, (data) => {
+                             this.dates = data.week_headers || [];
+                             this.global_cap = data.global_cap || 10;
+                             this.loading = false;
+                         });
+                     },
+                     getMitraColor(mitra) {
+                         if (!mitra || mitra === 'Tanpa Mitra') return '#94a3b8';
+                         const colors = [
+                             '#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6',
+                             '#ec4899', '#06b6d4', '#f97316', '#14b8a6', '#84cc16'
+                         ];
+                         let hash = 0;
+                         for (let i = 0; i < mitra.length; i++) {
+                             hash = ((hash << 5) - hash) + mitra.charCodeAt(i);
+                             hash |= 0;
+                         }
+                         const index = Math.abs(hash) % colors.length;
+                         return colors[index];
+                     }
+                 }">
+
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-800 tracking-tight">Workload Day</h3>
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-0.5">Kapasitas Global
+                    Bulanan</p>
+                </div>
+                <div class="flex items-center gap-1.5 flex-wrap justify-end">
+                  <button @click="resetToCurrent()"
+                    x-show="currentMonth !== (new Date().getMonth() + 1) || currentYear !== new Date().getFullYear()"
+                    x-cloak
+                    class="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-extrabold text-[10px] uppercase tracking-wider rounded-lg transition border border-blue-200 shadow-sm mr-1">
+                    Bulan Ini
+                  </button>
+
+                  <div class="flex items-center bg-slate-50 p-1 rounded-xl border border-slate-200 shadow-sm">
+                    <button @click="prevMonth()"
+                      class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-white hover:shadow-sm rounded-lg transition focus:outline-none">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7">
+                        </path>
+                      </svg>
+                    </button>
+                    <div
+                      class="flex items-center font-extrabold text-xs text-slate-700 px-1 justify-center tracking-tight">
+                      <select x-model.number="currentMonth" @change="fetchWorkload()"
+                        class="bg-transparent border-none py-0 pl-2 pr-6 text-xs font-extrabold text-slate-700 focus:ring-0 cursor-pointer hover:text-blue-600 transition"
+                        style="background-position: right 0.2rem center;">
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                      </select>
+                      <select x-model.number="currentYear" @change="fetchWorkload()"
+                        class="bg-transparent border-none py-0 pl-1 pr-6 text-xs font-extrabold text-slate-700 focus:ring-0 cursor-pointer hover:text-blue-600 transition -ml-2"
+                        style="background-position: right 0.2rem center;">
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                      </select>
+                    </div>
+                    <button @click="nextMonth()"
+                      class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-white hover:shadow-sm rounded-lg transition focus:outline-none">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Calendar Grid Headers -->
+              <div class="grid grid-cols-7 gap-1 md:gap-2 mb-2">
+                <template x-for="d in ['SEN','SEL','RAB','KAM','JUM','SAB','MIN']">
+                  <div class="text-center text-[9px] font-black uppercase tracking-widest text-slate-400" x-text="d">
+                  </div>
+                </template>
+              </div>
+
+              <!-- Calendar Grid Cells -->
+              <div class="grid grid-cols-7 gap-1 md:gap-2 relative">
+                <template x-for="(day, index) in dates" :key="index">
+                  <div @click="openDetails(day)"
+                    class="flex flex-col h-[70px] md:h-[85px] rounded-xl relative overflow-hidden transition-all group border p-2 justify-between"
+                    :class="{
+                           'ring-2 ring-blue-500/50 border-transparent shadow-sm z-10': day.is_today,
+                           'cursor-pointer hover:border-slate-350 hover:bg-slate-50/80': day.count > 0,
+                           'cursor-default': day.count === 0,
+                           'bg-white border-slate-200': day.in_month && day.count === 0,
+                           'bg-slate-50/40 border-slate-100 opacity-55 grayscale': !day.in_month,
+                           'bg-blue-50/50 border-blue-200/60': day.in_month && day.count > 0 && !(day.details && day.details.some(d => d.count > 3)),
+                           'bg-red-50/60 border-red-200/60': day.in_month && day.count > 0 && (day.details && day.details.some(d => d.count > 3))
+                       }">
+
+                    <!-- Background fills representing workloads -->
+                    <div x-show="day.count > 0"
+                      class="absolute inset-0 flex flex-col justify-end pointer-events-none z-0">
+                      <template x-for="detail in (day.details || [])">
+                        <div class="w-full transition-all duration-500"
+                          :style="'height: ' + Math.min(((detail.count / global_cap) * 100), 100) + '%; background-color: ' + getMitraColor(detail.mitra) + '33; border-top: 1px solid ' + getMitraColor(detail.mitra) + '55;'">
+                        </div>
+                      </template>
+                    </div>
+
+                    <div class="flex justify-between items-start w-full relative z-10">
+                      <div class="text-left">
+                        <span class="block text-[8px] font-bold uppercase tracking-wider text-slate-400"
+                          x-text="day.day_label"></span>
+                        <span class="block text-xs font-bold text-slate-700 mt-0.5"
+                          x-text="day.num_label.split(' ')[0]"></span>
+                      </div>
+                      <template x-if="day.count > 0">
+                        <span
+                          class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white border border-slate-200/40 text-slate-700 shadow-sm"
+                          x-text="day.count"></span>
+                      </template>
+                    </div>
+
+                    <!-- Miniature dots -->
+                    <div class="flex gap-1 flex-wrap max-w-full relative z-10">
+                      <template x-for="detail in day.details">
+                        <span class="w-3.5 h-1 rounded-full border border-white/60 shadow-sm"
+                          :style="'background-color: ' + getMitraColor(detail.mitra)"></span>
+                      </template>
+                    </div>
+                  </div>
+                </template>
+                <div x-show="loading"
+                  class="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-25">
+                  <svg class="animate-spin h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Workload Day Calendar Details Modal -->
+              <div x-show="showModal"
+                class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+                x-transition style="display: none;" x-cloak>
+                <div @click.outside="showModal = false"
+                  class="bg-white rounded-2xl shadow-xl border p-6 w-full max-w-sm max-h-[85vh] flex flex-col relative"
+                  x-transition:enter="transition ease-out duration-300"
+                  x-transition:enter-start="opacity-0 translate-y-8 scale-95"
+                  x-transition:enter-end="opacity-100 translate-y-0 scale-100">
+
+                  <button @click="showModal = false"
+                    class="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition focus:outline-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12">
+                      </path>
+                    </svg>
+                  </button>
+
+                  <div class="mb-6 pr-6">
+                    <h3 class="text-xl font-extrabold tracking-tight text-slate-800">Rincian Workload</h3>
+                    <div class="flex items-center gap-2 mt-1.5">
+                      <span class="text-sm font-black text-blue-600"
+                        x-text="selectedDay ? selectedDay.num_label : ''"></span>
+                      <span
+                        class="text-[9px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full"
+                        x-text="selectedDay ? selectedDay.day_label : ''"></span>
+                    </div>
+                  </div>
+
+                  <div class="flex-1 overflow-y-auto no-scrollbar space-y-3">
+                    <template x-if="selectedDay && selectedDay.details && selectedDay.details.length > 0">
+                      <template x-for="(detail, i) in selectedDay.details" :key="i">
+                        <div @click="showModal = false; $parent.filterLihatFromWorkload(selectedDay.date, detail.mitra)"
+                          class="flex items-center justify-between p-3.5 rounded-2xl border transition-all cursor-pointer group hover:-translate-y-0.5 hover:shadow-md"
+                          :class="detail.count > 3 ? 'bg-red-50 border-red-200 hover:border-red-400' : 'bg-slate-50 border-slate-100 hover:border-blue-300 hover:bg-blue-50/40'">
+                          <div class="flex items-center gap-3">
+                            <div class="flex flex-col">
+                              <span class="text-sm font-bold" :style="'color: ' + getMitraColor(detail.mitra)"
+                                x-text="detail.mitra"></span>
+                              <div class="flex flex-wrap gap-1 mt-1">
+                                <template x-for="stage in (detail.stages || [])">
+                                  <span class="text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md"
+                                    style="background:rgba(59,130,246,0.1); color:#3b82f6;" x-text="stage"></span>
+                                </template>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="text-right flex flex-col items-end">
+                            <div class="flex items-center gap-1.5">
+                              <svg x-show="detail.count > 3" class="w-4 h-4 text-red-500 animate-pulse" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                </path>
+                              </svg>
+                              <span class="text-lg font-black"
+                                :class="detail.count > 3 ? 'text-red-600' : 'text-slate-800'"
+                                x-text="detail.count"></span>
+                            </div>
+                            <span class="text-[7px] font-bold uppercase tracking-widest block -mt-1"
+                              :class="detail.count > 3 ? 'text-red-400' : 'text-slate-400'">Order</span>
+                            <span
+                              class="text-[8px] font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity mt-1 flex items-center gap-0.5">
+                              Lihat Data
+                              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                  d="M9 5l7 7-7 7"></path>
+                              </svg>
+                            </span>
+                          </div>
+                        </div>
+                      </template>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Top Mitra Workload Widget -->
+            <div class="lg:col-span-4 bg-white rounded-3xl p-6 border flex flex-col h-fit shadow-sm" x-data="{
+                     period: 'daily',
+                     dateFilter: new Date().toISOString().slice(0, 10),
+                     loading: false,
+                     mitras: [],
+                     init() {
+                         this.fetchMitras();
+                         this.$watch('$parent.activeTab', v => {
+                             if (v === 'dashboard') this.fetchMitras();
+                         });
+                     },
+                     fetchMitras() {
+                         this.loading = true;
+                         var app = getAlpineApp();
+                         app.api({
+                             action: 'getTopMitras',
+                             date: this.dateFilter
+                         }, (data) => {
+                             this.mitras = data || [];
+                             this.loading = false;
+                         });
+                     },
+                     getMitraColor(mitra) {
+                         if (!mitra || mitra === 'Tanpa Mitra') return '#94a3b8';
+                         const colors = [
+                             '#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6',
+                             '#ec4899', '#06b6d4', '#f97316', '#14b8a6', '#84cc16'
+                         ];
+                         let hash = 0;
+                         for (let i = 0; i < mitra.length; i++) {
+                             hash = ((hash << 5) - hash) + mitra.charCodeAt(i);
+                             hash |= 0;
+                         }
+                         const index = Math.abs(hash) % colors.length;
+                         return colors[index];
+                     }
+                 }">
+              <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-800 tracking-tight">Top Mitra</h3>
+                  <span class="text-[10px] text-slate-400 block mt-0.5">Analisis Beban Kerja</span>
+                </div>
+                <div class="flex p-1 rounded-xl bg-slate-100 border">
+                  <button @click="period = 'daily'"
+                    :class="period === 'daily' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-400'"
+                    class="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider rounded-lg transition-all">Daily</button>
+                  <button @click="period = 'weekly'"
+                    :class="period === 'weekly' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-400'"
+                    class="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider rounded-lg transition-all">Weekly</button>
+                  <button @click="period = 'monthly'"
+                    :class="period === 'monthly' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-400'"
+                    class="px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider rounded-lg transition-all">Monthly</button>
+                </div>
+              </div>
+
+              <div class="space-y-4 relative">
+                <template x-for="(mitra, index) in mitras" :key="index">
+                  <div
+                    class="group relative bg-slate-50 p-4 rounded-xl border border-slate-100 transition duration-300 hover:border-slate-350 hover:bg-slate-100/30">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs bg-white text-slate-500 border shadow-sm"
+                          :style="index === 0 ? 'background:#f0f7ff; color:#3b82f6; border-color:#dbeafe;' : ''">
+                          <span class="text-xs" x-text="'#' + (index + 1)"></span>
+                        </div>
+                        <div>
+                          <h4 class="text-xs font-bold text-slate-700 truncate w-32" x-text="mitra.name"></h4>
+                          <div class="flex items-center gap-1 mt-0.5 text-[9px] text-slate-400">
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span x-text="mitra.avg_time + ' Rata-rata'"></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                        <span class="text-[8px] font-bold block uppercase tracking-wider text-slate-400">Total
+                          Vol</span>
+                        <span class="text-xs font-bold text-slate-700" x-text="mitra.total"></span>
+                      </div>
+                    </div>
+
+                    <div class="relative w-full h-5 bg-slate-200/50 rounded-lg overflow-hidden flex items-center border"
+                      style="transform: translateZ(0);">
+                      <div
+                        class="absolute inset-x-0 w-full flex justify-between px-2.5 z-20 text-[8px] font-bold text-slate-600 uppercase tracking-wider pointer-events-none">
+                        <span
+                          x-text="(period === 'daily' ? mitra.daily : (period === 'weekly' ? mitra.weekly : mitra.monthly)) + ' ORDs'"></span>
+                        <span
+                          x-text="'Cap: ' + (period === 'daily' ? mitra.daily_cap : (period === 'weekly' ? mitra.weekly_cap : mitra.monthly_cap))"></span>
+                      </div>
+                      <div class="h-full rounded-l-lg transition-all duration-500 ease-out"
+                        :class="(((period === 'daily' ? mitra.daily : (period === 'weekly' ? mitra.weekly : mitra.monthly)) / (period === 'daily' ? mitra.daily_cap : (period === 'weekly' ? mitra.weekly_cap : mitra.monthly_cap))) >= 1 ? 'bg-red-500' : 'bg-blue-500')"
+                        :style="'width: ' + Math.min(((period === 'daily' ? mitra.daily : (period === 'weekly' ? mitra.weekly : mitra.monthly)) / (period === 'daily' ? mitra.daily_cap : (period === 'weekly' ? mitra.weekly_cap : mitra.monthly_cap))) * 100, 100) + '%'">
+                      </div>
+                    </div>
+
+                    <div
+                      x-show="((period === 'daily' ? mitra.daily : (period === 'weekly' ? mitra.weekly : mitra.monthly)) / (period === 'daily' ? mitra.daily_cap : (period === 'weekly' ? mitra.weekly_cap : mitra.monthly_cap))) > 1"
+                      class="absolute -top-1.5 right-3.5 z-30" x-transition>
+                      <span
+                        class="bg-red-50 text-red-650 border border-red-100 text-[8px] font-bold px-2 py-0.5 rounded shadow-sm tracking-wider">⚠️
+                        Overload</span>
+                    </div>
+                  </div>
+                </template>
+
+                <div x-show="mitras.length === 0" class="flex flex-col items-center justify-center py-10 opacity-50">
+                  <svg class="w-10 h-10 mb-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                    </path>
+                  </svg>
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Belum Ada Data</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ╔═══ SCREEN: B2B DEPLOYMENT PORTAL LANDING ═══╗ -->
+        <div x-show="activeTab === 'b2b-portal'" x-cloak>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+            <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+              @click="setTab('portal')">Portal Utama</span>
+            <span class="text-slate-300 font-bold">❯</span>
+            <span class="font-bold text-slate-800 uppercase tracking-wider">B2B Deployment Portal</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Input Data -->
+            <button @click="setTab('input')"
+              class="group relative overflow-hidden rounded-3xl p-8 h-64 bg-gradient-to-br from-red-600 via-red-500 to-red-700 text-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left">
+              <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+              <div
+                class="w-14 h-14 flex items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm shadow-inner group-hover:scale-110 transition z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </div>
+              <div class="z-10">
+                <h3 class="text-2xl font-bold">Input Data</h3>
+                <p class="text-red-100 mt-1 text-sm font-medium opacity-90">Tambah data deployment baru secara manual
+                </p>
+              </div>
+              <div class="absolute top-6 right-6 px-3 py-1 rounded-full bg-white/20 text-xs font-bold backdrop-blur-md">
+                Utama</div>
+            </button>
+
+            <!-- Update Progres -->
+            <button @click="setTab('update')"
+              class="group relative overflow-hidden rounded-3xl p-8 h-64 bg-white border border-slate-200 hover:border-red-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left">
+              <div
+                class="w-14 h-14 flex items-center justify-center rounded-2xl bg-red-50 text-brand-red group-hover:scale-110 transition z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+              </div>
+              <div class="z-10">
+                <h3 class="text-xl font-bold text-slate-800 group-hover:text-brand-red transition">Update Progres</h3>
+                <p class="text-slate-500 mt-1 text-sm">Perbarui status progress deployment berjalan</p>
+              </div>
+            </button>
+
+            <!-- Lihat Data -->
+            <button @click="setTab('lihat')"
+              class="group relative overflow-hidden rounded-3xl p-8 h-64 bg-white border border-slate-200 hover:border-red-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left">
+              <div
+                class="w-14 h-14 flex items-center justify-center rounded-2xl bg-red-50 text-brand-red group-hover:scale-110 transition z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              </div>
+              <div class="z-10">
+                <h3 class="text-xl font-bold text-slate-800 group-hover:text-brand-red transition">Lihat Data</h3>
+                <p class="text-slate-500 mt-1 text-sm">Monitoring dan rekap data deployment lengkap</p>
+              </div>
+            </button>
+
+            <!-- Upload Excel -->
+            <button @click="setTab('upload')"
+              class="group relative overflow-hidden rounded-3xl p-8 h-64 bg-white border border-slate-200 hover:border-red-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left">
+              <div
+                class="w-14 h-14 flex items-center justify-center rounded-2xl bg-red-50 text-brand-red group-hover:scale-110 transition z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                </svg>
+              </div>
+              <div class="z-10">
+                <h3 class="text-xl font-bold text-slate-800 group-hover:text-brand-red transition">Upload Excel</h3>
+                <p class="text-slate-500 mt-1 text-sm">Import data massal via file Excel/CSV</p>
+              </div>
+            </button>
+
+            <!-- Progress Overview (Only Optima/Admin) -->
+            <button @click="setTab('overview')"
+              class="group relative overflow-hidden rounded-3xl p-8 h-64 bg-white border border-slate-200 hover:border-red-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-left">
+              <div
+                class="w-14 h-14 flex items-center justify-center rounded-2xl bg-red-50 text-brand-red group-hover:scale-110 transition z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div class="z-10">
+                <h3 class="text-xl font-bold text-slate-800 group-hover:text-brand-red transition">Progress Overview
+                </h3>
+                <p class="text-slate-500 mt-1 text-sm">Monitoring grafik dan statistik deployment</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- ╔═══ SCREEN: UPLOAD DATA ═══╗ -->
+        <div x-show="activeTab === 'upload'" x-cloak>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+            <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+              @click="setTab('b2b-portal')">B2B Portal</span>
+            <span class="text-slate-300 font-bold">❯</span>
+            <span class="font-bold text-slate-800 uppercase tracking-wider">Upload Data</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Drop Zone Card -->
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 flex flex-col justify-between">
+              <div>
+                <h3 class="text-base font-bold text-slate-850 mb-4">Upload File Excel / CSV</h3>
+                <!-- Drag and Drop Zone exactly like Laravel -->
+                <div id="gasDropZone"
+                  class="group relative w-full rounded-2xl border-2 border-dashed border-red-300 bg-red-50/30 flex flex-col items-center justify-center text-center cursor-pointer hover:border-red-400 hover:bg-red-50/50 transition-all duration-300"
+                  style="min-height: 180px; padding: 2rem 1rem;"
+                  @dragover.prevent="$el.classList.add('border-red-500', 'bg-red-50')"
+                  @dragleave.prevent="$el.classList.remove('border-red-500', 'bg-red-50')"
+                  @drop.prevent="$el.classList.remove('border-red-500', 'bg-red-50'); handleGasDrop($event)"
+                  @click="document.getElementById('gasFileInput').click()">
+
+                  <div
+                    class="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition duration-300 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-brand-red" fill="none"
+                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                    </svg>
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-sm font-semibold text-slate-700" id="gasDropText">Klik atau Drag File Excel / CSV ke
+                      Sini</p>
+                    <p class="text-xs text-slate-400">Mendukung format Laravel (.xlsx, .xls) & template CSV</p>
+                  </div>
+                  <input type="file" id="gasFileInput" class="hidden" accept=".xlsx,.xls,.csv"
+                    @change="handleGasFileSelect($el)">
+                </div>
+
+                <!-- Template Table -->
+                <div class="mt-8">
+                  <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold text-slate-650 uppercase">Format Template Kolom</span>
+                    <div class="flex items-center gap-2">
+                      <button @click="downloadExcelTemplate()"
+                        class="px-3 py-1.5 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 rounded-xl text-xs font-bold flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Template.xlsx
+                      </button>
+                      <button @click="downloadCsvTemplate()"
+                        class="px-3 py-1.5 border hover:bg-slate-100 rounded-xl text-xs font-bold flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Template.csv
+                      </button>
+                    </div>
+                  </div>
+                  <div class="overflow-x-auto border rounded-xl max-h-[220px]">
+                    <table class="w-full text-xs text-left">
+                      <thead class="bg-slate-50 border-b">
+                        <tr>
+                          <th class="px-4 py-2">Kolom</th>
+                          <th class="px-4 py-2">Contoh</th>
+                          <th class="px-4 py-2">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y text-slate-600">
+                        <tr>
+                          <td class="px-4 py-1.5 font-bold">StarClickID</td>
+                          <td class="px-4 py-1.5">SCK-2025-0001</td>
+                          <td class="px-4 py-1.5"><span
+                              class="px-1.5 py-0.5 text-[9px] bg-red-100 text-brand-red rounded font-bold">Wajib</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-4 py-1.5 font-bold">NamaCustomer</td>
+                          <td class="px-4 py-1.5">PT ABC Indonesia</td>
+                          <td class="px-4 py-1.5"><span
+                              class="px-1.5 py-0.5 text-[9px] bg-red-100 text-brand-red rounded font-bold">Wajib</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-4 py-1.5 font-bold">Datel</td>
+                          <td class="px-4 py-1.5">DATEL JAKARTA PUSAT</td>
+                          <td class="px-4 py-1.5"><span
+                              class="px-1.5 py-0.5 text-[9px] bg-red-100 text-brand-red rounded font-bold">Wajib</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-4 py-1.5 font-bold">STO</td>
+                          <td class="px-4 py-1.5">JKT001</td>
+                          <td class="px-4 py-1.5"><span
+                              class="px-1.5 py-0.5 text-[9px] bg-slate-100 text-slate-500 rounded">Opsional</span></td>
+                        </tr>
+                        <tr>
+                          <td class="px-4 py-1.5 font-bold">StatusOrder</td>
+                          <td class="px-4 py-1.5">OPEN</td>
+                          <td class="px-4 py-1.5"><span
+                              class="px-1.5 py-0.5 text-[9px] bg-slate-100 text-slate-500 rounded">Opsional</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Loading bar -->
+              <div id="gasUploadLoading" class="mt-4 hidden">
+                <div class="flex justify-between items-center text-xs font-semibold mb-1">
+                  <span id="gasUploadMsg" class="text-slate-600">Memproses...</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div id="gasUploadBar" class="bg-brand-red h-full" style="width:0%; transition: width 0.3s ease;">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preview & Import Card -->
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 flex flex-col">
+              <div class="flex justify-between items-center mb-4">
+                <div>
+                  <h3 class="text-base font-bold text-slate-850">Preview Data</h3>
+                  <p class="text-xs text-slate-400" id="gasPrevCount">Belum ada file dipilih</p>
+                </div>
+                <button id="gasBtnImport" @click="submitGasImport()"
+                  class="hidden items-center gap-1 bg-brand-red text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-brand-red-dark transition shadow-md">
+                  Import ke Spreadsheet
+                </button>
+              </div>
+              <div class="flex-1 overflow-auto max-h-[360px] border rounded-2xl" id="gasPrevTable">
+                <div class="flex flex-col items-center justify-center py-20 text-slate-400 text-xs">
+                  <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>Upload file untuk preview</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ╔═══ SCREEN: INPUT DATA (3 Sections, Nominatim Suggest, Confirmation Modal) ═══╗ -->
+        <div x-show="activeTab === 'input'" x-cloak>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+            <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+              @click="setTab('b2b-portal')">B2B Portal</span>
+            <span class="text-slate-300 font-bold">❯</span>
+            <span class="font-bold text-slate-800 uppercase tracking-wider">Input Data</span>
+          </div>
+
+          <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 max-w-4xl mx-auto">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b">
+              <div>
+                <h3 class="text-lg font-black text-slate-800">Form Input Data Deployment</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Tambahkan data order baru secara manual</p>
+              </div>
+              <button @click="resetFormInput()"
+                class="px-4 py-2 border rounded-xl hover:bg-slate-100 text-xs font-bold transition">Reset Form</button>
+            </div>
+
+            <!-- Section 1: Identitas Order -->
+            <div class="bg-slate-50 rounded-2xl border p-5 mb-6">
+              <span class="text-[10px] font-black uppercase text-brand-red tracking-wider block mb-4">A. Identitas
+                Order</span>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">StarClick ID /
+                    NCX *</label>
+                  <input type="text" id="inSCK" placeholder="Contoh: SCK-2025-0001"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-red focus:ring-1 focus:ring-red-100 outline-none transition">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Nama
+                    Proyek</label>
+                  <input type="text" id="inProyek" placeholder="Contoh: PROYEK-XYZ"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-red focus:ring-1 focus:ring-red-100 outline-none transition">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Datel
+                    *</label>
+                  <select id="inDatel"
+                    class="w-full rounded-xl border border-slate-300 bg-white py-2.5 px-3 text-sm focus:border-brand-red outline-none">
+                    <option value="">Pilih Datel</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">STO</label>
+                  <select id="inSto"
+                    class="w-full rounded-xl border border-slate-300 bg-white py-2.5 px-3 text-sm focus:border-brand-red outline-none">
+                    <option value="">Pilih STO</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Nomor
+                    Batch</label>
+                  <input type="text" id="inBatch" placeholder="Contoh: BATCH-01"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-red focus:ring-1 focus:ring-red-100 outline-none transition">
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Kemitraan -->
+            <div class="bg-slate-50 rounded-2xl border p-5 mb-6">
+              <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider block mb-4">B. Kemitraan</span>
+              <div class="max-w-md">
+                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Mitra Pelaksana
+                  *</label>
+                <select id="inMitra"
+                  class="w-full rounded-xl border border-slate-300 bg-white py-2.5 px-3 text-sm focus:border-brand-red outline-none">
+                  <option value="">Pilih Mitra</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Section 3: Data Pelanggan & Nominatim Map Suggest -->
+            <div class="bg-slate-50 rounded-2xl border p-5 mb-6">
+              <span class="text-[10px] font-black uppercase text-amber-500 tracking-wider block mb-4">C. Data
+                Pelanggan</span>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Nama Pelanggan
+                    *</label>
+                  <input type="text" id="inCust" placeholder="Nama Customer"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-red focus:ring-1 focus:ring-red-100 outline-none transition">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Telepon
+                    Pelanggan</label>
+                  <input type="text" id="inTelp" placeholder="08xxxxxxxxxx"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-red focus:ring-1 focus:ring-red-100 outline-none transition">
+                </div>
+              </div>
+
+              <!-- Address Suggestion -->
+              <div class="mt-4 relative" x-data="addressSuggest()">
+                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Alamat Pelanggan
+                  *</label>
+                <div class="relative">
+                  <input type="text" id="inAlamat" x-model="searchQuery" @input="fetchAddress()" @focus="open = true"
+                    @click.outside="open = false" placeholder="Ketik alamat pelanggan..."
+                    class="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 py-2.5 text-sm focus:border-brand-red outline-none transition">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5 text-slate-400 absolute left-3 top-3 pointer-events-none" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <!-- Spinner -->
+                  <div x-show="loading" class="absolute right-4 top-3">
+                    <div class="w-4 h-4 border-2 border-slate-300 border-t-red-500 rounded-full animate-spin"></div>
+                  </div>
+                </div>
+                <!-- Suggestions Dropdown -->
+                <div x-show="open && list.length > 0"
+                  class="absolute z-50 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-52 overflow-y-auto"
+                  x-cloak>
+                  <template x-for="item in list" :key="item.place_id">
+                    <div @click="selectAddress(item)"
+                      class="px-4 py-2.5 text-xs text-slate-700 hover:bg-red-50 hover:text-brand-red cursor-pointer transition border-b border-slate-50 last:border-none"
+                      x-text="item.display_name"></div>
+                  </template>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Titik
+                    Koordinat *</label>
+                  <input type="text" id="inTikor" placeholder="-6.xxxxx, 108.xxxxx"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-mono focus:border-brand-red outline-none transition">
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit action buttons -->
+            <div class="flex justify-end gap-3 pt-4 border-t">
+              <button @click="setTab('b2b-portal')"
+                class="px-6 py-2.5 border rounded-xl hover:bg-slate-100 text-xs font-bold transition">Batal</button>
+              <button @click="triggerSubmitConfirmation()"
+                class="px-8 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl text-xs font-bold hover:shadow-lg hover:-translate-y-0.5 transition duration-300">Simpan
+                Data</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ╔═══ SCREEN: UPDATE DATA (Cards & Edit Modal Popup) ═══╗ -->
+        <div x-show="activeTab === 'update'" x-cloak>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+            <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+              @click="setTab('b2b-portal')">B2B Portal</span>
+            <span class="text-slate-300 font-bold">❯</span>
+            <span class="font-bold text-slate-800 uppercase tracking-wider">Update Data</span>
+          </div>
+
+          <!-- Tag Search & Advanced Filters -->
+          <div class="bg-white rounded-2xl shadow-sm border p-5 mb-6"
+            style="border-color:#fde8e8; box-shadow: 0 4px 20px rgba(227,43,43,0.06);" x-data="tagSearch('update')">
+            <div class="flex flex-col md:flex-row gap-4 items-center">
+              <div class="flex-1 w-full relative">
+                <div
+                  class="flex items-center gap-2 flex-wrap w-full rounded-xl border bg-slate-50 px-3 py-2 focus-within:ring-2 focus-within:ring-red-100 transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400 shrink-0" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <template x-for="(tag, index) in tags" :key="index">
+                    <span
+                      class="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-semibold bg-red-100 text-brand-red">
+                      <span x-text="tag"></span>
+                      <button @click.stop="removeTag(index)"
+                        class="ml-1 text-red-400 hover:text-red-600 focus:outline-none">✕</button>
+                    </span>
+                  </template>
+                  <input type="text" x-model="input" @keydown.enter.prevent="addTag()"
+                    placeholder="Cari Starclick, Nama..."
+                    class="flex-1 bg-transparent border-none text-sm outline-none placeholder-slate-400 focus:ring-0">
+                </div>
+              </div>
+              <button @click="doSearch()"
+                class="px-5 py-2 rounded-xl bg-brand-red text-white text-xs font-bold hover:bg-brand-red-dark transition shadow-md">Cari</button>
+              <button @click="showAdvanced = !showAdvanced"
+                class="px-4 py-2 border rounded-xl hover:bg-slate-50 text-xs font-bold flex items-center gap-1.5 transition">
+                <span>Filter Lanjutan</span>
+                <svg class="w-4 h-4 transition-transform duration-200" :class="showAdvanced ? 'rotate-180' : ''"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Advanced filters collapse panel -->
+            <div x-show="showAdvanced" x-transition
+              class="pt-4 mt-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-4" x-cloak>
+              <div><label
+                  class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Datel</label><select
+                  id="updDatel" class="w-full text-xs bg-slate-50 border rounded-xl p-2.5 outline-none"></select></div>
+              <div><label
+                  class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">STO</label><select
+                  id="updSto" class="w-full text-xs bg-slate-50 border rounded-xl p-2.5 outline-none"></select></div>
+              <div class="flex items-end"><button @click="doSearch(); showAdvanced = false"
+                  class="w-full py-2.5 bg-brand-red text-white rounded-xl text-xs font-bold transition">Terapkan
+                  Filter</button></div>
+            </div>
+          </div>
+
+          <!-- Open Orders List -->
+          <div class="bg-white rounded-2xl border overflow-hidden hover:shadow-md transition">
+            <div class="p-4 border-b bg-slate-50 flex justify-between items-center text-xs font-bold text-slate-700">
+              <span id="gasUpdCount">0 data</span>
+              <span id="gasUpdInfo">Menampilkan 0 data</span>
+            </div>
+            <div class="divide-y" id="gasUpdCards">
+              <!-- Cards rendered via JS -->
+            </div>
+            <!-- Pagination -->
+            <div class="p-4 bg-slate-50 border-t flex justify-end" id="gasUpdPgn"></div>
+          </div>
+        </div>
+
+        <!-- ╔═══ SCREEN: LIHAT DATA (Advanced Filters Table) ═══╗ -->
+        <div x-show="activeTab === 'lihat'" x-cloak>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+            <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+              @click="setTab('b2b-portal')">B2B Portal</span>
+            <span class="text-slate-300 font-bold">❯</span>
+            <span class="font-bold text-slate-800 uppercase tracking-wider">Lihat Data</span>
+          </div>
+
+          <!-- Search filter grid -->
+          <div class="bg-white rounded-2xl shadow-sm border p-5 mb-6"
+            style="border-color:#fde8e8; box-shadow: 0 4px 20px rgba(227,43,43,0.06);" x-data="tagSearch('lihat')">
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+              <div class="flex-1 w-full relative">
+                <div
+                  class="flex items-center gap-2 flex-wrap w-full rounded-xl border bg-slate-50 px-3 py-2 focus-within:ring-2 focus-within:ring-red-100 transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400 shrink-0" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <template x-for="(tag, index) in tags" :key="index">
+                    <span
+                      class="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-semibold bg-red-100 text-brand-red">
+                      <span x-text="tag"></span>
+                      <button @click.stop="removeTag(index)"
+                        class="ml-1 text-red-400 hover:text-red-600 focus:outline-none">✕</button>
+                    </span>
+                  </template>
+                  <input type="text" x-model="input" @keydown.enter.prevent="addTag()"
+                    placeholder="Cari NDE, Starclick, Nama..."
+                    class="flex-1 bg-transparent border-none text-sm outline-none placeholder-slate-400 focus:ring-0">
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button @click="doSearch()"
+                  class="px-5 py-2.5 rounded-xl bg-brand-red text-white text-xs font-bold hover:bg-brand-red-dark transition shadow-md">Cari</button>
+                <button @click="showAdvanced = !showAdvanced"
+                  class="px-4 py-2.5 border rounded-xl hover:bg-slate-50 text-xs font-bold flex items-center gap-1.5 transition">
+                  <span>Filter Lanjutan</span>
+                  <svg class="w-4 h-4 transition-transform duration-200" :class="showAdvanced ? 'rotate-180' : ''"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <button @click="exportCSV()"
+                  class="px-4 py-2.5 bg-red-650 hover:bg-brand-red text-white text-xs font-bold rounded-xl flex items-center gap-1 transition shadow-md">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+
+            <!-- Advanced multi-select options -->
+            <div x-show="showAdvanced" x-transition
+              class="pt-4 mt-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-4 gap-4" x-cloak>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Dari
+                  Tanggal</label>
+                <input type="date" id="liStartDate"
+                  class="w-full text-xs bg-slate-50 border rounded-xl p-2.5 outline-none focus:ring-1 focus:ring-red-500 transition">
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Sampai
+                  Tanggal</label>
+                <input type="date" id="liEndDate"
+                  class="w-full text-xs bg-slate-50 border rounded-xl p-2.5 outline-none focus:ring-1 focus:ring-red-500 transition">
+              </div>
+              <div><label class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Status
+                  Order</label><select id="liStatus" class="w-full" multiple></select></div>
+              <div><label
+                  class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Datel</label><select
+                  id="liDatel" class="w-full" multiple></select></div>
+              <div><label
+                  class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">STO</label><select
+                  id="liSto" class="w-full" multiple></select></div>
+              <div><label
+                  class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Mitra</label><select
+                  id="liMitra" class="w-full" multiple></select></div>
+              <div><label
+                  class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Progress</label><select
+                  id="liProgres" class="w-full" multiple></select></div>
+              <div><label class="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nomor
+                  Batch</label><select id="liBatch" class="w-full" multiple></select></div>
+              <div class="col-span-2 flex items-end gap-2">
+                <button @click="resetLihatFilters()"
+                  class="w-1/3 py-2.5 border rounded-xl text-xs font-bold hover:bg-slate-100 transition">Reset</button>
+                <button @click="doSearch(); showAdvanced = false"
+                  class="w-2/3 py-2.5 bg-brand-red text-white rounded-xl text-xs font-bold transition shadow-sm">Terapkan
+                  Filter</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Grid Table -->
+          <div class="bg-white rounded-2xl shadow-sm border overflow-hidden hover:shadow-md transition">
+            <div class="p-4 border-b bg-slate-50 text-xs font-bold text-slate-700 flex justify-between items-center">
+              <span id="gasLihatInfo">Menampilkan 0 data</span>
+            </div>
+            <div class="overflow-x-auto relative" id="gasLihatTableContainer">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase border-b">
+                  <tr>
+                    <th class="px-5 py-3">StarClick ID</th>
+                    <th class="px-5 py-3">Customer</th>
+                    <th class="px-5 py-3">Alamat</th>
+                    <th class="px-5 py-3">Telepon</th>
+                    <th class="px-5 py-3">Tikor</th>
+                    <th class="px-5 py-3">Datel</th>
+                    <th class="px-5 py-3">STO</th>
+                    <th class="px-5 py-3">Status</th>
+                    <th class="px-5 py-3">Progres</th>
+                    <th class="px-5 py-3">Commit Date</th>
+                    <th class="px-5 py-3">Mitra</th>
+                    <th class="px-5 py-3">Tipe</th>
+                    <th class="px-5 py-3">Batch</th>
+                    <th class="px-5 py-3">Terakhir Update</th>
+                  </tr>
+                </thead>
+                <tbody id="gasLihatTableBody" class="divide-y text-slate-650">
+                  <!-- JS Render -->
+                </tbody>
+              </table>
+            </div>
+            <div class="p-4 bg-slate-50 border-t flex justify-end" id="gasLihatPgn"></div>
+          </div>
+        </div>
+
+        <!-- ╔═══ SCREEN: PROGRESS OVERVIEW (Charts & Mitra Timelines) ═══╗ -->
+        <div x-show="activeTab === 'overview'" x-cloak>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+            <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+              @click="setTab('b2b-portal')">B2B Portal</span>
+            <span class="text-slate-300 font-bold">❯</span>
+            <span class="font-bold text-slate-800 uppercase tracking-wider">Progress Overview</span>
+          </div>
+
+          <!-- KPI Summary Cards -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div
+              class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden flex flex-col justify-between"
+              style="border-color:#fde8e8;">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="p-2 rounded-xl bg-red-50 text-brand-red"><svg class="w-4 h-4" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg></div>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Total</span>
+              </div>
+              <p class="text-2xl font-black text-slate-800" x-text="overviewStats.totalAll || 0"></p>
+              <p class="text-[9px] text-slate-400 mt-1">Seluruh Deployment</p>
+            </div>
+            <div
+              class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden flex flex-col justify-between"
+              style="border-color:#d1fae5;">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="p-2 rounded-xl bg-emerald-50 text-emerald-600"><svg class="w-4 h-4" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg></div>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">On Track</span>
+              </div>
+              <p class="text-2xl font-black text-emerald-800" x-text="overviewStats.totalOnTrack || 0"></p>
+              <p class="text-[9px] text-slate-400 mt-1">Berjalan Normal</p>
+            </div>
+            <div
+              class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden flex flex-col justify-between"
+              style="border-color:#dbeafe;">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="p-2 rounded-xl bg-blue-50 text-blue-600"><svg class="w-4 h-4" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M5 13l4 4L19 7" />
+                  </svg></div>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Finish</span>
+              </div>
+              <p class="text-2xl font-black text-blue-800" x-text="overviewStats.totalSelesai || 0"></p>
+              <p class="text-[9px] text-slate-400 mt-1">Tahap Akhir & Done</p>
+            </div>
+            <div
+              class="bg-white rounded-2xl p-5 shadow-sm border relative overflow-hidden flex flex-col justify-between"
+              style="border-color:#fee2e2;">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="p-2 rounded-xl bg-rose-50 text-brand-red"><svg class="w-4 h-4" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg></div>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Overdue</span>
+              </div>
+              <p class="text-2xl font-black text-brand-red" x-text="overviewStats.totalOverdue || 0"></p>
+              <p class="text-[9px] text-slate-400 mt-1">Melewati Komitmen</p>
+            </div>
+          </div>
+
+          <!-- Overview Timeline Comparison -->
+          <div class="bg-white rounded-[2rem] shadow-xl border p-8 mb-6" style="border-color:#fde8e8;">
+            <div class="flex justify-between items-start mb-6">
+              <div>
+                <h3 class="text-lg font-black text-slate-800">Visualisasi Timeline Progres</h3>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Rata-rata durasi transisi
+                  pengerjaan antar-tahap per Mitra pelaksana</p>
+              </div>
+            </div>
+
+            <!-- Filters Area -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-slate-50 border rounded-xl mb-6">
+              <div><label
+                  class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Tahun</label><select
+                  id="ovYear" @change="loadOverview()"
+                  class="w-full rounded-lg bg-white border py-1.5 px-3 text-xs outline-none focus:ring-1 focus:ring-red-500">
+                  <option>2026</option>
+                  <option>2025</option>
+                </select></div>
+              <div><label
+                  class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bulan</label><select
+                  id="ovMonth" @change="loadOverview()"
+                  class="w-full rounded-lg bg-white border py-1.5 px-3 text-xs outline-none focus:ring-1 focus:ring-red-500">
+                  <option value="all">Semua Bulan</option>
+                  <option value="1">Jan</option>
+                  <option value="2">Feb</option>
+                  <option value="3">Mar</option>
+                  <option value="4">Apr</option>
+                  <option value="5">Mei</option>
+                  <option value="6">Jun</option>
+                  <option value="7">Jul</option>
+                  <option value="8">Agu</option>
+                  <option value="9">Sep</option>
+                  <option value="10">Okt</option>
+                  <option value="11">Nov</option>
+                  <option value="12">Des</option>
+                </select></div>
+              <div><label class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bandingkan
+                  Mitra</label><select id="ovMitra" class="w-full" multiple></select></div>
+              <div class="flex items-end"><button @click="loadOverview()"
+                  class="w-full py-1.5 bg-brand-red text-white text-xs font-bold rounded-lg transition hover:bg-brand-red-dark">Terapkan
+                  Filter</button></div>
+            </div>
+
+            <!-- Timeline Nodes List -->
+            <div class="space-y-8" id="gasTimelineContainer">
+              <!-- Timeline nodes parsed dynamically in JS -->
+            </div>
+          </div>
+
+          <!-- Charts Panel -->
+          <div class="bg-white rounded-[2rem] p-8 border mb-6 shadow-xl" style="border-color:#fde8e8;">
+            <div class="flex justify-between items-center mb-6">
+              <div>
+                <h3 class="text-lg font-black text-slate-800" id="gasOverviewChartTitle">Datel & Progress Distribution
+                </h3>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest" id="gasOverviewChartSub">
+                  Komposisi tahapan progress per Datel</p>
+              </div>
+              <div class="flex bg-slate-100 p-1 rounded-xl gap-1.5 border">
+                <button @click="switchOverviewChart('progress')" id="gasBtnShowProgress"
+                  class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all bg-white text-brand-red shadow-sm">Progress
+                  Dist.</button>
+                <button @click="switchOverviewChart('ihld')" id="gasBtnShowIhld"
+                  class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all text-slate-400 hover:text-slate-600">iHLD
+                  Status</button>
+              </div>
+            </div>
+
+            <div class="relative w-full h-[320px]" id="gasOverviewChartProgressContainer">
+              <canvas id="gasOverviewStackedChart"></canvas>
+            </div>
+            <div class="relative w-full h-[320px] hidden" id="gasOverviewChartIhldContainer">
+              <canvas id="gasOverviewIhldChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Average Duration per Mitra Chart -->
+          <div class="bg-white rounded-[2rem] p-8 border shadow-xl">
+            <h3 class="text-lg font-black text-slate-850 mb-1">Rata-rata Durasi Selesai per Mitra</h3>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-6">Lama waktu dari input hingga
+              Order Selesai</p>
+            <div class="relative w-full h-[360px]">
+              <canvas id="gasOverviewMitraAvgChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ╔═══ SCREEN: KELOLA AKUN ═══╗ -->
+        <div x-show="activeTab === 'users'" x-cloak>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+            <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+              @click="setTab('b2b-portal')">B2B Portal</span>
+            <span class="text-slate-300 font-bold">❯</span>
+            <span class="font-bold text-slate-800 uppercase tracking-wider">Kelola Akun</span>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+            <div class="p-5 border-b flex justify-between items-center bg-slate-50">
+              <h3 class="font-bold text-slate-850">Daftar Pengguna Sistem</h3>
+              <button @click="openAddUserModal()"
+                class="px-4 py-2 bg-brand-red text-white text-xs font-bold rounded-xl hover:bg-brand-red-dark transition shadow-sm">+
+                Tambah Pengguna</button>
+            </div>
+            <div id="gasUsersTable">
+              <!-- JS render users table -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ╔═══ SCREEN: MASTER DATA INPUT (Datel, STO, Mitra) ═══╗ -->
+      <div x-show="activeTab === 'master-input'" x-cloak>
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+          <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+            @click="setTab('dashboard')">Dashboard</span>
+          <span class="text-slate-300 font-bold">❯</span>
+          <span class="font-bold text-slate-800 uppercase tracking-wider">Master Input</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- 1. Column Datel -->
+          <div
+            class="bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col h-full overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <span class="w-2.5 h-6 bg-blue-500 rounded-full"></span>
+                Datel
+              </h3>
+              <span class="text-[10px] font-bold px-2 py-1 bg-blue-100 text-blue-700 rounded-lg"
+                x-text="masterData.datels ? masterData.datels.length : 0"></span>
+            </div>
+
+            <div class="p-6 flex-1 flex flex-col gap-5">
+              <!-- Add Form -->
+              <div>
+                <div class="flex gap-2">
+                  <input id="newDatelInput"
+                    class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition uppercase"
+                    placeholder="Tambah Datel Baru..." @keyup.enter="addMasterItem('datels', 'newDatelInput')">
+                  <button @click="addMasterItem('datels', 'newDatelInput')"
+                    class="p-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-sm shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- List Items -->
+              <div class="overflow-y-auto max-h-[400px] pr-1 space-y-2 no-scrollbar">
+                <template x-for="item in masterData.datels" :key="item.ID">
+                  <div
+                    class="group flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-blue-200 transition">
+                    <span class="text-xs font-semibold text-slate-700" x-text="item.NamaDatel"></span>
+                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button @click="editMasterItem('datels', item.ID, item.NamaDatel)"
+                        class="p-1 text-blue-600 hover:bg-blue-100 rounded-lg transition">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                      <button @click="deleteMasterItem('datels', item.ID, item.NamaDatel)"
+                        class="p-1 text-red-600 hover:bg-red-100 rounded-lg transition">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </template>
+                <template x-if="!masterData.datels || masterData.datels.length === 0">
+                  <p class="text-center text-slate-400 text-xs py-6">Belum ada data Datel</p>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Column STO -->
+          <div
+            class="bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col h-full overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <span class="w-2.5 h-6 bg-amber-500 rounded-full"></span>
+                STO
+              </h3>
+              <span class="text-[10px] font-bold px-2 py-1 bg-amber-100 text-amber-700 rounded-lg"
+                x-text="masterData.stos ? masterData.stos.length : 0"></span>
+            </div>
+
+            <div class="p-6 flex-1 flex flex-col gap-5">
+              <!-- Add Form -->
+              <div>
+                <div class="flex gap-2">
+                  <input id="newStoInput"
+                    class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-xs focus:border-amber-500 focus:ring-2 focus:ring-amber-100 outline-none transition uppercase"
+                    placeholder="Tambah STO Baru..." @keyup.enter="addMasterItem('stos', 'newStoInput')">
+                  <button @click="addMasterItem('stos', 'newStoInput')"
+                    class="p-2.5 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition shadow-sm shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- List Items -->
+              <div class="overflow-y-auto max-h-[400px] pr-1 space-y-2 no-scrollbar">
+                <template x-for="item in masterData.stos" :key="item.ID">
+                  <div
+                    class="group flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-amber-200 transition">
+                    <span class="text-xs font-semibold text-slate-700" x-text="item.NamaSto"></span>
+                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button @click="editMasterItem('stos', item.ID, item.NamaSto)"
+                        class="p-1 text-blue-600 hover:bg-blue-100 rounded-lg transition">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                      <button @click="deleteMasterItem('stos', item.ID, item.NamaSto)"
+                        class="p-1 text-red-600 hover:bg-red-100 rounded-lg transition">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </template>
+                <template x-if="!masterData.stos || masterData.stos.length === 0">
+                  <p class="text-center text-slate-400 text-xs py-6">Belum ada data STO</p>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Column Mitra -->
+          <div
+            class="bg-white rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col h-full overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <span class="w-2.5 h-6 bg-emerald-500 rounded-full"></span>
+                Mitra
+              </h3>
+              <span class="text-[10px] font-bold px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg"
+                x-text="masterData.mitras ? masterData.mitras.length : 0"></span>
+            </div>
+
+            <div class="p-6 flex-1 flex flex-col gap-5">
+              <!-- Add Form -->
+              <div>
+                <div class="flex gap-2">
+                  <input id="newMitraInput"
+                    class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-xs focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition uppercase"
+                    placeholder="Tambah Mitra Baru..." @keyup.enter="addMasterItem('mitras', 'newMitraInput')">
+                  <button @click="addMasterItem('mitras', 'newMitraInput')"
+                    class="p-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition shadow-sm shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- List Items -->
+              <div class="overflow-y-auto max-h-[400px] pr-1 space-y-2 no-scrollbar">
+                <template x-for="item in masterData.mitras" :key="item.ID">
+                  <div
+                    class="group flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-200 transition">
+                    <span class="text-xs font-semibold text-slate-700" x-text="item.NamaMitra"></span>
+                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button @click="editMasterItem('mitras', item.ID, item.NamaMitra)"
+                        class="p-1 text-blue-600 hover:bg-blue-100 rounded-lg transition">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                      <button @click="deleteMasterItem('mitras', item.ID, item.NamaMitra)"
+                        class="p-1 text-red-600 hover:bg-red-100 rounded-lg transition">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </template>
+                <template x-if="!masterData.mitras || masterData.mitras.length === 0">
+                  <p class="text-center text-slate-400 text-xs py-6">Belum ada data Mitra</p>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ╔═══ SCREEN: PENGATURAN SISTEM ═══╗ -->
+      <div x-show="activeTab === 'settings'" x-cloak>
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-6">
+          <span class="font-bold text-slate-800 uppercase tracking-wider cursor-pointer"
+            @click="setTab('b2b-portal')">B2B Portal</span>
+          <span class="text-slate-300 font-bold">❯</span>
+          <span class="font-bold text-slate-800 uppercase tracking-wider">Pengaturan</span>
+        </div>
+
+        <div class="bg-white rounded-3xl border p-8 max-w-2xl mx-auto hover:shadow-md transition">
+          <h3 class="text-base font-bold text-slate-800 mb-4">Pengaturan Global Sistem</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Nama Aplikasi</label>
+              <input type="text" id="setAppName"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-red outline-none transition">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Unit Kerja</label>
+              <input type="text" id="setUnit"
+                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-red outline-none transition">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Kapasitas Harian (Workload
+                  Cap)</label>
+                <input type="number" id="setCap"
+                  class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-red outline-none transition">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Ambik Overdue (Hari)</label>
+                <input type="number" id="setOvd"
+                  class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-red outline-none transition">
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center pt-6 mt-8 border-t">
+            <button @click="doReseedData()"
+              class="px-4 py-2.5 rounded-xl border hover:bg-slate-100 text-xs font-bold text-slate-650 transition">Reseed
+              Data Contoh</button>
+            <button @click="submitSaveSettings()"
+              class="px-6 py-2.5 bg-brand-red hover:bg-brand-red-dark text-white rounded-xl text-xs font-bold transition shadow-sm">Simpan
+              Pengaturan</button>
+          </div>
+        </div>
+      </div>
+
+  </div>
+  </main>
+
+  </div>
+
+  <!-- ════════ TOAST NOTIFICATION CONTAINER ════════ -->
+  <div id="tc" class="fixed bottom-6 right-6 z-[300] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ════════ MODAL: UPDATE PROGRESS DI TAMPILAN UPDATE DATA ════════ -->
+  <div id="gasModUpdate"
+    class="mo fixed inset-0 z-[200] bg-black/45 backdrop-blur-sm flex items-center justify-center p-4 hidden" x-cloak>
+    <div
+      class="mb bg-white rounded-[1.5rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col transition-all transform scale-100"
+      @click.outside="closeGasUpdateModal()">
+      <div class="mh px-6 py-4 border-b flex justify-between items-center bg-slate-50">
+        <h3 class="text-sm font-bold text-slate-800" id="gasModUpdateTitle">Update Order Progres</h3>
+        <button @click="closeGasUpdateModal()"
+          class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition">✕</button>
+      </div>
+      <div class="mbody p-6 space-y-4">
+        <input type="hidden" id="gasModUpdateId">
+        <div>
+          <div class="text-xs font-bold text-slate-800" id="gasModUpdateSCK">#Starclick</div>
+          <div class="text-[10px] text-slate-500 font-semibold" id="gasModUpdateCust">Nama Customer</div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Progress Tahap
+            *</label>
+          <select id="gasModUpdateProgres"
+            class="w-full rounded-xl border border-slate-300 py-2.5 px-3 text-sm focus:border-brand-red outline-none">
+            <option>ON DESK</option>
+            <option>SURVEY</option>
+            <option>PERIJINAN</option>
+            <option>DRM</option>
+            <option>APPROVED BY EBIS</option>
+            <option>MATDEV</option>
+            <option>INSTALASI</option>
+            <option>SELESAI FISIK</option>
+            <option>GOLIVE</option>
+            <option>PS</option>
+            <option>UJI TERIMA</option>
+            <option>REKON</option>
+            <option>KENDALA</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Commitment
+              Date</label>
+            <input type="date" id="gasModUpdateCommit"
+              class="w-full rounded-xl border border-slate-300 py-2 px-3 text-sm focus:border-brand-red outline-none">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Mitra
+              Pelaksana</label>
+            <select id="gasModUpdateMitra"
+              class="w-full rounded-xl border border-slate-300 py-2.5 px-3 text-sm focus:border-brand-red outline-none"></select>
+          </div>
+        </div>
+      </div>
+      <div class="mf px-6 py-4 bg-slate-50 border-t flex justify-end gap-2">
+        <button @click="closeGasUpdateModal()"
+          class="px-4 py-2 border rounded-xl hover:bg-slate-100 text-xs font-bold transition">Batal</button>
+        <button @click="submitGasUpdate()"
+          class="px-6 py-2 bg-brand-red text-white text-xs font-bold rounded-xl hover:bg-brand-red-dark transition shadow-md">Simpan
+          Perubahan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ MODAL: TAMBAH USER DI KELOLA AKUN ════════ -->
+  <div id="gasModUser"
+    class="mo fixed inset-0 z-[200] bg-black/45 backdrop-blur-sm flex items-center justify-center p-4 hidden" x-cloak>
+    <div class="mb bg-white rounded-[1.5rem] shadow-2xl w-full max-w-md overflow-hidden flex flex-col"
+      @click.outside="closeGasUserModal()">
+      <div class="mh px-6 py-4 border-b flex justify-between items-center bg-slate-50">
+        <h3 class="text-sm font-bold text-slate-800">Tambah Pengguna Baru</h3>
+        <button @click="closeGasUserModal()"
+          class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition">✕</button>
+      </div>
+      <div class="mbody p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Nama Lengkap *</label>
+          <input type="text" id="usNama"
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-brand-red outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Email *</label>
+          <input type="email" id="usEmail"
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-brand-red outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Role</label>
+            <select id="usRole"
+              class="w-full rounded-xl border border-slate-300 py-2.5 px-3 text-sm focus:border-brand-red outline-none">
+              <option value="optima">Optima</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">NIK</label>
+            <input type="text" id="usNIK"
+              class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-brand-red outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Datel Asal</label>
+          <input type="text" id="usDatel"
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-brand-red outline-none">
+        </div>
+      </div>
+      <div class="mf px-6 py-4 bg-slate-50 border-t flex justify-end gap-2">
+        <button @click="closeGasUserModal()"
+          class="px-4 py-2 border rounded-xl hover:bg-slate-100 text-xs font-bold transition">Batal</button>
+        <button @click="submitGasUser()"
+          class="px-6 py-2 bg-brand-red text-white text-xs font-bold rounded-xl hover:bg-brand-red-dark transition shadow-md">Tambah
+          User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ GLOBAL FORM SUBMISSION PREVIEW MODAL ════════ -->
+  <div id="gasModConfirm"
+    class="mo fixed inset-0 z-[250] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 hidden" x-cloak>
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col p-6">
+      <h3 class="text-base font-black text-slate-800 mb-2">Konfirmasi Simpan Data</h3>
+      <p class="text-xs text-slate-500 mb-4">Pastikan data berikut sudah benar sebelum disimpan ke database spreadsheet.
+      </p>
+
+      <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 space-y-2 mb-6">
+        <div><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wide block">Nama Pelanggan</span><span
+            class="text-xs font-bold text-slate-700" id="prev_nama">—</span></div>
+        <div><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wide block">StarClick ID</span><span
+            class="text-xs font-bold text-slate-700" id="prev_starclick">—</span></div>
+        <div><span class="text-[9px] font-bold text-slate-400 uppercase tracking-wide block">Lokasi (Datel /
+            STO)</span><span class="text-xs font-bold text-slate-700" id="prev_lokasi">—</span></div>
+      </div>
+
+      <div class="flex flex-col gap-2.5">
+        <button @click="finalSubmitForm()"
+          class="w-full py-2.5 bg-brand-red hover:bg-brand-red-dark text-white rounded-xl text-xs font-bold shadow-md transition duration-200">Ya,
+          Simpan Data</button>
+        <button @click="closeSubmitConfirmation()"
+          class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">Batalkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ JS SCRIPTS ════════ -->
+  <script>
+    // Global references for charts
+    var gasCharts = { trend: null, stacked: null, ihld: null, mitraAvg: null };
+    var filterCache = { loaded: false, datels: [], stos: [], mitras: [], progresses: [], batches: [] };
+    var tomSelectInstances = {};
+
+    function getAlpineApp() {
+      var el = document.querySelector('[x-data]');
+      if (!el) return null;
+      if (window.Alpine && typeof window.Alpine.$data === 'function') {
+        var data = window.Alpine.$data(el);
+        return window.Alpine.raw ? window.Alpine.raw(data) : data;
+      }
+      if (el.__x) {
+        return el.__x.$data;
+      }
+      return null;
+    }
+
+    // Initial state matching Laravel app variables
+    function appState() {
+      return {
+        activeTab: 'portal', // default tab welcome screen
+        sidebarOpen: true,
+        userMenu: false,
+        notifOpen: false,
+        currentUser: { name: 'Admin Telkom', email: 'admin@telkom.co.id', role: 'admin' },
+
+        dashboardStats: { total: 0, completed: 0, onProgress: 0, overdueCount: 0, waitingUsers: [], overdueItems: [] },
+        overviewStats: { totalAll: 0, totalOverdue: 0, totalSelesai: 0, totalOnTrack: 0, overdueOrders: [] },
+        liveLogs: [],
+        trendPeriod: 'daily',
+        masterData: { datels: [], stos: [], mitras: [] },
+
+        loadTrend() { loadTrend(); },
+        loadUpdateList(page, search) { loadUpdateList(page, search); },
+        loadLihatList(page, search) { loadLihatList(page, search); },
+        loadOverview() { loadOverview(); },
+        loadUsers() { loadUsers(); },
+        loadSettings() { loadSettings(); },
+
+        initApp() {
+          // Fetch current user from GAS backend template injection
+          try {
+            var emailStr = '<?= currentUser ?>';
+            if (emailStr && !emailStr.startsWith('<' + '?=')) {
+              this.currentUser.email = emailStr;
+              this.currentUser.name = emailStr.split('@')[0].toUpperCase().replace('.', ' ');
+            }
+          } catch (e) { }
+
+          this.loadFilters();
+          this.loadDashboard();
+
+          // Live clock ticking
+          this.updateClock();
+          setInterval(() => this.updateClock(), 1000);
+
+          // Poll live updates periodically (like Laravel live sync)
+          setInterval(() => {
+            if (this.activeTab === 'dashboard') {
+              this.loadLiveLogs();
+            }
+          }, 30000);
+        },
+
+        updateClock() {
+          var now = new Date();
+          var timeEl = document.getElementById('live-clock');
+          var dateEl = document.getElementById('live-date');
+          if (!timeEl || !dateEl) return;
+
+          var hours = String(now.getHours()).padStart(2, '0');
+          var minutes = String(now.getMinutes()).padStart(2, '0');
+          var seconds = String(now.getSeconds()).padStart(2, '0');
+          timeEl.textContent = hours + ':' + minutes + ':' + seconds;
+
+          var days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+          var months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+          dateEl.textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+        },
+
+        filterLihatFromWorkload(date, mitra) {
+          this.setTab('lihat');
+          setTimeout(() => {
+            if (document.getElementById('liStartDate')) document.getElementById('liStartDate').value = date;
+            if (document.getElementById('liEndDate')) document.getElementById('liEndDate').value = date;
+
+            if (tomSelectInstances['liMitra']) {
+              tomSelectInstances['liMitra'].setValue(mitra);
+            }
+            this.loadLihatList(1);
+          }, 200);
+        },
+
+        setTab(tab) {
+          this.activeTab = tab;
+          this.userMenu = false;
+          this.notifOpen = false;
+
+          // Re-render chart / init views based on tab selection
+          if (tab === 'dashboard') {
+            setTimeout(() => { this.loadTrend(); this.loadLiveLogs(); }, 100);
+          } else if (tab === 'update') {
+            setTimeout(() => this.loadUpdateList(1), 100);
+          } else if (tab === 'lihat') {
+            setTimeout(() => this.loadLihatList(1), 100);
+          } else if (tab === 'overview') {
+            setTimeout(() => this.loadOverview(), 100);
+          } else if (tab === 'users') {
+            setTimeout(() => this.loadUsers(), 100);
+          } else if (tab === 'settings') {
+            setTimeout(() => this.loadSettings(), 100);
+          } else if (tab === 'master-input') {
+            setTimeout(() => this.loadMasterData(), 100);
+          }
+        },
+
+        loadMasterData() {
+          this.toast('Memuat master data...');
+          this.api({ action: 'getMasterData' }, (r) => {
+            if (r.success) {
+              this.masterData = r;
+            } else {
+              this.toast(r.message || 'Gagal memuat master data', 'err');
+            }
+          });
+        },
+
+        addMasterItem(type, inputId) {
+          var inputEl = document.getElementById(inputId);
+          if (!inputEl) return;
+          var value = inputEl.value.trim();
+          if (!value) {
+            this.toast('Nama item tidak boleh kosong', 'err');
+            return;
+          }
+          this.toast('Menambahkan item...');
+          this.api({ action: 'addMasterItem', type: type, name: value }, (r) => {
+            if (r.success) {
+              this.toast(r.message);
+              inputEl.value = '';
+              this.loadMasterData();
+              this.loadFilters(true);
+            } else {
+              this.toast(r.message, 'err');
+            }
+          });
+        },
+
+        editMasterItem(type, id, currentName) {
+          Swal.fire({
+            title: 'Ubah Nama Master Data',
+            input: 'text',
+            inputValue: currentName,
+            showCancelButton: true,
+            confirmButtonText: 'Simpan',
+            cancelButtonText: 'Batal',
+            inputValidator: (value) => {
+              if (!value || !value.trim()) {
+                return 'Nama tidak boleh kosong!';
+              }
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              var newName = result.value.trim();
+              this.toast('Memperbarui item...');
+              this.api({ action: 'updateMasterItem', type: type, id: id, name: newName }, (r) => {
+                if (r.success) {
+                  this.toast(r.message);
+                  this.loadMasterData();
+                  this.loadFilters(true);
+                } else {
+                  this.toast(r.message, 'err');
+                }
+              });
+            }
+          });
+        },
+
+        deleteMasterItem(type, id, name) {
+          Swal.fire({
+            title: 'Hapus Item',
+            text: "Apakah Anda yakin ingin menghapus '" + name + "'? Data deployment yang berhubungan tidak akan terhapus namun pilihan filter akan disesuaikan.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.toast('Menghapus item...');
+              this.api({ action: 'deleteMasterItem', type: type, id: id }, (r) => {
+                if (r.success) {
+                  this.toast(r.message);
+                  this.loadMasterData();
+                  this.loadFilters(true);
+                } else {
+                  this.toast(r.message, 'err');
+                }
+              });
+            }
+          });
+        },
+
+        // API Caller Wrapper
+        api(params, cb) {
+          var t0 = performance.now();
+          console.log('[GAS API Request]', params.action, params);
+          google.script.run
+            .withSuccessHandler((r) => {
+              var t1 = performance.now();
+              var serverTime = (r && r._debug) ? r._debug.executionTimeMs : 'N/A';
+              var perfStats = (r && r._debug) ? r._debug.perf : null;
+              console.log(
+                '[GAS API Success] ' + params.action + ' took ' + Math.round(t1 - t0) + 'ms (GAS Server Time: ' + serverTime + 'ms)',
+                '\nPerformance Stats:', perfStats,
+                '\nFull Response:', r
+              );
+              if (cb && r) cb(r);
+            })
+            .withFailureHandler((e) => {
+              var t1 = performance.now();
+              console.error('[GAS API Failure] ' + params.action + ' took ' + Math.round(t1 - t0) + 'ms', '\nError:', e);
+              this.toast('Server error: ' + (e.message || e), 'err');
+            })
+            .clientCall(params);
+        },
+
+        toast(msg, type) {
+          type = type || 'ok';
+          var container = document.getElementById('tc');
+          if (!container) return;
+          var t = document.createElement('div');
+          t.className = 'flex items-center gap-3 bg-white border border-slate-200 shadow-xl rounded-xl p-4 w-72 pointer-events-auto transition duration-300';
+          if (type === 'ok') t.classList.add('border-l-4', 'border-emerald-500');
+          else t.classList.add('border-l-4', 'border-brand-red');
+
+          var icon = type === 'ok'
+            ? '<svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
+            : '<svg class="w-5 h-5 text-brand-red shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+
+          t.innerHTML = icon + '<div class="flex-1"><p class="text-xs font-bold text-slate-800">' + (type === 'ok' ? 'Berhasil' : 'Peringatan') + '</p><p class="text-[10px] text-slate-500 mt-0.5">' + msg + '</p></div>';
+          container.appendChild(t);
+          setTimeout(() => t.remove(), 4000);
+        },
+
+        loadFilters(force) {
+          if (force) filterCache.loaded = false;
+          if (filterCache.loaded) return;
+          this.api({ action: 'getFilterOptions' }, (d) => {
+            if (!d.success) return;
+            filterCache = d;
+            filterCache.loaded = true;
+            this.fillSelectOptions('inDatel', d.datels, 'Pilih Datel');
+            this.fillSelectOptions('inSto', d.stos, 'Pilih STO');
+            this.fillSelectOptions('inMitra', d.mitras, 'Pilih Mitra');
+            this.fillSelectOptions('updDatel', d.datels, 'Semua Datel');
+            this.fillSelectOptions('updSto', d.stos, 'Semua STO');
+            this.fillSelectOptions('gasModUpdateMitra', d.mitras, 'Pilih Mitra');
+
+            // Populate charts / selectors
+            this.fillSelectOptions('trendFilterDatel', d.datels, 'Semua Datel');
+            this.fillSelectOptions('trendFilterSto', d.stos, 'Semua STO');
+            this.fillSelectOptions('trendFilterMitra', d.mitras, 'Semua Mitra');
+
+            // Initialize Multi selects for Lihat Data & Overview
+            this.initMultiSelect('liStatus', d.progresses || ['OPEN', 'CLOSED', 'CANCEL']);
+            this.initMultiSelect('liDatel', d.datels);
+            this.initMultiSelect('liSto', d.stos);
+            this.initMultiSelect('liMitra', d.mitras);
+            this.initMultiSelect('liProgres', d.progresses || ['Survey', 'Desain', 'Material', 'Pemasangan', 'Testing', 'Rekon']);
+            this.initMultiSelect('liBatch', d.batches);
+
+            this.initMultiSelect('ovMitra', d.mitras);
+          });
+        },
+
+        fillSelectOptions(id, list, ph) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.innerHTML = '<option value="">' + ph + '</option>';
+          (list || []).forEach(v => {
+            var opt = document.createElement('option');
+            opt.value = v;
+            opt.textContent = v;
+            el.appendChild(opt);
+          });
+        },
+
+        initMultiSelect(id, items) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.innerHTML = '';
+          (items || []).forEach(v => {
+            var opt = document.createElement('option');
+            opt.value = v;
+            opt.textContent = v;
+            el.appendChild(opt);
+          });
+
+          if (tomSelectInstances[id]) tomSelectInstances[id].destroy();
+          tomSelectInstances[id] = new TomSelect('#' + id, {
+            plugins: ['remove_button'],
+            maxOptions: 300,
+            create: false,
+            wrapperClass: 'ts-wrapper filter-ts',
+            placeholder: '— Semua —',
+            dropdownParent: 'body'
+          });
+        },
+
+        loadDashboard() {
+          this.api({ action: 'getDashboardStats' }, (d) => {
+            if (!d.success) return;
+            this.dashboardStats = d;
+            // Sync notification overhead stats too
+            this.overviewStats.overdueCount = d.overdueCount;
+            this.overviewStats.overdueOrders = d.overdueItems;
+          });
+        },
+
+        approveUser(id) {
+          this.api({ action: 'approveUser', ID: id, role: 'optima' }, (r) => {
+            if (r.success) {
+              this.toast(r.message);
+              this.loadDashboard();
+              if (this.activeTab === 'users') this.loadUsers();
+            } else {
+              this.toast(r.message, 'err');
+            }
+          });
+        },
+
+        loadLiveLogs() {
+          this.api({ action: 'getLiveTracking' }, (d) => {
+            if (d.success) this.liveLogs = d.data || [];
+          });
+        }
+      }
+    }
+
+    // Helper functions for Nominatim Address Autocomplete
+    function addressSuggest() {
+      return {
+        open: false,
+        loading: false,
+        searchQuery: '',
+        list: [],
+
+        fetchAddress() {
+          if (this.searchQuery.trim().length < 4) {
+            this.list = [];
+            this.open = false;
+            return;
+          }
+          this.loading = true;
+          this.open = true;
+
+          clearTimeout(this.timeout);
+          this.timeout = setTimeout(() => {
+            var query = this.searchQuery.trim();
+            if (!query.toLowerCase().includes('jawa barat')) {
+              query += ', Jawa Barat';
+            }
+            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query) + '&countrycodes=id&limit=5')
+              .then(res => res.json())
+              .then(data => {
+                this.list = data || [];
+                this.loading = false;
+              })
+              .catch(() => { this.loading = false; });
+          }, 600);
+        },
+
+        selectAddress(item) {
+          this.searchQuery = item.display_name;
+          document.getElementById('inAlamat').value = item.display_name;
+          this.open = false;
+          // Fill titikor
+          var coord = item.lat + ', ' + item.lon;
+          document.getElementById('inTikor').value = coord;
+        }
+      }
+    }
+
+    // Tag Search UI Logic for Lihat & Update Pages
+    function tagSearch(pageType) {
+      return {
+        input: '',
+        tags: [],
+        showAdvanced: false,
+
+        addTag() {
+          var val = this.input.trim();
+          if (val && !this.tags.includes(val)) {
+            this.tags.push(val);
+            this.input = '';
+          }
+        },
+
+        removeTag(index) {
+          this.tags.splice(index, 1);
+          this.doSearch();
+        },
+
+        doSearch() {
+          var query = this.tags.join(',');
+          if (pageType === 'update') {
+            loadUpdateList(1, query);
+          } else {
+            loadLihatList(1, query);
+          }
+        }
+      }
+    }
+
+    // --- CHART TRIGGERS ---
+
+    // Trend chart builder
+    function setTrendPeriod(p) {
+      var app = getAlpineApp();
+      app.trendPeriod = p;
+      loadTrend();
+    }
+
+    function resetTrendFilters() {
+      ['trendFilterDatel', 'trendFilterSto', 'trendFilterMitra'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      loadTrend();
+    }
+
+    function loadTrend() {
+      var app = getAlpineApp();
+      app.api({
+        action: 'getTrendData',
+        filter: app.trendPeriod,
+        datel: document.getElementById('trendFilterDatel')?.value || '',
+        sto: document.getElementById('trendFilterSto')?.value || '',
+        mitra: document.getElementById('trendFilterMitra')?.value || ''
+      }, (d) => {
+        if (!d.success) return;
+        renderTrendChart(d.labels, d.values);
+      });
+    }
+
+    function renderTrendChart(labels, values) {
+      var canvas = document.getElementById('trendChart');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      if (gasCharts.trend) gasCharts.trend.destroy();
+
+      var gradient = ctx.createLinearGradient(0, 0, 0, 280);
+      gradient.addColorStop(0, 'rgba(227, 43, 43, 0.25)');
+      gradient.addColorStop(1, 'rgba(227, 43, 43, 0.01)');
+
+      gasCharts.trend = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Volume',
+            data: values,
+            borderColor: '#e32b2b',
+            borderWidth: 3,
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#e32b2b',
+            pointBorderWidth: 3,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(226,232,240,0.6)' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // --- B2B TABS OPERATIONS ---
+
+    // File upload Excel/CSV operations
+    var csvParsedData = null;
+    function handleGasFileSelect(el) {
+      if (el.files.length > 0) processGasFile(el.files[0]);
+    }
+
+    function handleGasDrop(e) {
+      var files = e.dataTransfer.files;
+      if (files.length > 0) processGasFile(files[0]);
+    }
+
+    function processGasFile(file) {
+      document.getElementById('gasDropText').textContent = '📄 ' + file.name;
+      var loading = document.getElementById('gasUploadLoading');
+      loading.classList.remove('hidden');
+      document.getElementById('gasUploadMsg').textContent = 'Membaca file...';
+      document.getElementById('gasUploadBar').style.width = '30%';
+
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          var data = new Uint8Array(e.target.result);
+          var workbook = XLSX.read(data, { type: 'array' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+
+          // Parse using SheetJS with formatted strings to preserve dates
+          var rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: "", raw: false });
+          if (!rawRows || rawRows.length === 0) {
+            throw new Error("File Excel/CSV kosong atau tidak dapat dibaca");
+          }
+
+          // Normalize column headers to support both Laravel database format and custom CSV template
+          var normalizedRows = rawRows.map(row => {
+            function getVal(aliases) {
+              for (var key in row) {
+                var cleanKey = key.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+                for (var i = 0; i < aliases.length; i++) {
+                  var alias = aliases[i].toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+                  if (cleanKey === alias) return row[key];
+                }
+              }
+              return '';
+            }
+
+            return {
+              StarClickID: getVal(['star_click_id', 'starclickid', 'starclick']),
+              NamaCustomer: getVal(['nama_customer', 'namacustomer', 'customer']),
+              Datel: getVal(['datel']),
+              STO: getVal(['sto']),
+              StatusOrder: getVal(['status_order', 'statusorder']) || 'OPEN',
+              TipeDesain: getVal(['tipe_desain', 'tipedesain']),
+              JenisProgram: getVal(['jenis_program', 'jenisprogram']),
+              Progres: getVal(['progres', 'progress']) || '-',
+              CommitmentDate: getVal(['commitment_date', 'commitmentdate', 'estimasi_go_live', 'real_go_live', 'tanggal_go_live_tomps']),
+              Mitra: getVal(['nama_mitra', 'namamitra', 'mitra']),
+              NamaProyek: getVal(['nama_proyek', 'namaproyek']),
+              Batch: getVal(['batch_program', 'batchprogram', 'batch']),
+              CFU: getVal(['cfu', 'nama_cfu', 'namacfu']),
+              StatusProyek: getVal(['status_proyek', 'statusproyek']),
+              StatusEProposal: getVal(['status_eproposal', 'statuseproposal']),
+              StatusTomps: getVal(['status_tomps', 'statustomps']),
+              StatusSAP: getVal(['status_sap', 'statussap']),
+              Regional: getVal(['regional']),
+              Witel: getVal(['witel']),
+              WOK: getVal(['wok']),
+              Segment: getVal(['segment']),
+              TanggalUpdateProgres: getVal(['tanggal_update_progres', 'tanggalupdateprogres']),
+              TeleponPelanggan: getVal(['telepon_pelanggan', 'teleponpelanggan', 'telepon', 'telp']),
+              AlamatPelanggan: getVal(['alamat_pelanggan', 'alamatpelanggan', 'alamat']),
+              TikorPelanggan: getVal(['tikor_pelanggan', 'tikorpelanggan', 'tikor', 'koordinat', 'koordinat_pelanggan'])
+            };
+          });
+
+          // Filter out completely blank rows (at least one field must have data)
+          normalizedRows = normalizedRows.filter(r => {
+            return Object.values(r).some(val => val && String(val).trim() !== '');
+          });
+
+          if (normalizedRows.length === 0) {
+            throw new Error("Tidak ditemukan baris data yang valid di dalam file");
+          }
+
+          csvParsedData = normalizedRows;
+          document.getElementById('gasUploadBar').style.width = '100%';
+          document.getElementById('gasUploadMsg').textContent = 'Membaca ' + normalizedRows.length + ' baris data selesai!';
+          document.getElementById('gasPrevCount').textContent = normalizedRows.length + ' baris siap diimport';
+          document.getElementById('gasBtnImport').classList.replace('hidden', 'inline-flex');
+
+          // Render preview table (first 8 rows)
+          var displayKeys = ['StarClickID', 'NamaCustomer', 'Datel', 'STO', 'StatusOrder', 'TipeDesain', 'Mitra', 'Progres'];
+          var html = '<table class="w-full text-xs text-left"><thead class="bg-slate-50 border-b"><tr>' + displayKeys.map(k => '<th class="px-4 py-2">' + k + '</th>').join('') + '</tr></thead><tbody>';
+          normalizedRows.slice(0, 8).forEach(r => {
+            html += '<tr class="border-b">' + displayKeys.map(k => '<td class="px-4 py-2 text-slate-600">' + (r[k] || '-') + '</td>').join('') + '</tr>';
+          });
+          html += '</tbody></table>';
+          document.getElementById('gasPrevTable').innerHTML = html;
+
+        } catch (err) {
+          document.getElementById('gasUploadMsg').textContent = 'Error: ' + err.message;
+          document.getElementById('gasUploadBar').style.width = '0%';
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal Membaca File',
+            text: err.message
+          });
+        } finally {
+          loading.classList.add('hidden');
+        }
+      };
+      reader.onerror = function () {
+        document.getElementById('gasUploadMsg').textContent = 'Gagal membaca file.';
+        loading.classList.add('hidden');
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function submitGasImport() {
+      if (!csvParsedData || csvParsedData.length === 0) return;
+      var app = getAlpineApp();
+      app.toast('Mengimport data ke spreadsheet...');
+      app.api({ action: 'importDeployments', data: JSON.stringify(csvParsedData) }, (r) => {
+        if (r.success) {
+          app.toast(r.message);
+          csvParsedData = null;
+          document.getElementById('gasBtnImport').classList.add('hidden');
+          document.getElementById('gasPrevTable').innerHTML = '<div class="py-20 text-center text-slate-400 text-xs">Preview Kosong</div>';
+          document.getElementById('gasDropText').textContent = 'Klik atau Drag File Excel / CSV ke Sini';
+          document.getElementById('gasUploadMsg').textContent = '';
+          document.getElementById('gasUploadBar').style.width = '0%';
+        } else {
+          app.toast(r.message, 'err');
+        }
+      });
+    }
+
+    function downloadExcelTemplate() {
+      var headers = [
+        ['star_click_id', 'nama_customer', 'datel', 'sto', 'status_order', 'tipe_desain', 'jenis_program', 'nama_mitra', 'nama_proyek', 'batch_program', 'cfu', 'status_proyek', 'status_eproposal', 'status_tomps', 'status_sap', 'regional', 'witel', 'wok', 'segment', 'estimasi_go_live', 'telepon_pelanggan', 'alamat_pelanggan', 'tikor_pelanggan']
+      ];
+      var sample = [
+        ['SCK-2026-0100', 'PT Telkom Indonesia', 'DATEL BANDUNG', 'BDG001', 'OPEN', 'FTTH', 'REGULER', 'PT Infranet', 'PROYEK-01', 'BATCH-1', 'B2B', 'OPEN', 'APPROVED', 'IN-PROGRESS', 'PAID', 'REG-3', 'WITEL-JABAR', 'WOK-BDG', 'ENTERPRISE', '2026-07-30', '081234567890', 'Jalan Merdeka No 1', '-6.9147, 107.6098']
+      ];
+      var ws_data = headers.concat(sample);
+      var wb = XLSX.utils.book_new();
+      var ws = XLSX.utils.aoa_to_sheet(ws_data);
+      XLSX.utils.book_append_sheet(wb, ws, "Template");
+      XLSX.writeFile(wb, "template_deployment.xlsx");
+    }
+
+    function downloadCsvTemplate() {
+      var header = 'StarClickID,NamaCustomer,Datel,STO,StatusOrder,TipeDesain,JenisProgram,Progres,CommitmentDate,Mitra,NamaProyek,Batch,TeleponPelanggan,AlamatPelanggan,TikorPelanggan';
+      var sample = 'SCK-2026-0100,PT Telkom Akses,DATEL BANDUNG,BDG001,OPEN,FTTH,REGULER,Survey,2026-07-30,PT Infranet,PROYEK-01,BATCH-1,081234567890,Jalan Merdeka No 1,-6.9147 107.6098';
+      var csv = header + '\n' + sample;
+      var a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      a.download = 'template_deployment.csv';
+      a.click();
+    }
+
+    function resetFormInput() {
+      ['inSCK', 'inProyek', 'inBatch', 'inCust', 'inTelp', 'inAlamat', 'inTikor'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      ['inDatel', 'inSto', 'inMitra'].forEach(id => {
+        var el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+    }
+
+    // Save Form - initiate confirmation popup
+    function triggerSubmitConfirmation() {
+      var name = document.getElementById('inCust').value;
+      var sck = document.getElementById('inSCK').value;
+      var datel = document.getElementById('inDatel').value;
+      var sto = document.getElementById('inSto').value;
+
+      if (!sck || !name || !datel) {
+        Swal.fire({ icon: 'warning', title: 'Data belum lengkap', text: 'Mohon isi semua field wajib (*)', confirmButtonColor: '#e32b2b' });
+        return;
+      }
+
+      document.getElementById('prev_nama').textContent = name;
+      document.getElementById('prev_starclick').textContent = sck;
+      document.getElementById('prev_lokasi').textContent = datel + ' / ' + (sto || '—');
+
+      document.getElementById('gasModConfirm').classList.remove('hidden');
+    }
+
+    function closeSubmitConfirmation() {
+      document.getElementById('gasModConfirm').classList.add('hidden');
+    }
+
+    function finalSubmitForm() {
+      closeSubmitConfirmation();
+      var app = getAlpineApp();
+      app.api({
+        action: 'addDeployment',
+        StarClickID: document.getElementById('inSCK').value,
+        NamaCustomer: document.getElementById('inCust').value,
+        Datel: document.getElementById('inDatel').value,
+        STO: document.getElementById('inSto').value,
+        NamaProyek: document.getElementById('inProyek').value,
+        Batch: document.getElementById('inBatch').value,
+        TipeDesain: '',
+        JenisProgram: '',
+        Mitra: document.getElementById('inMitra').value,
+        TeleponPelanggan: document.getElementById('inTelp').value,
+        AlamatPelanggan: document.getElementById('inAlamat').value,
+        TikorPelanggan: document.getElementById('inTikor').value,
+        CommitmentDate: '',
+        StatusOrder: 'OPEN',
+        Progres: 'ON DESK'
+      }, (r) => {
+        if (r.success) {
+          app.toast(r.message + '! ID: ' + r.id);
+          resetFormInput();
+        } else {
+          app.toast(r.message, 'err');
+        }
+      });
+    }
+
+    // --- UPDATE PROGRES LIST & EDIT MODAL ---
+    var updPageCurrent = 1;
+    function loadUpdateList(page, search) {
+      updPageCurrent = page || 1;
+      var container = document.getElementById('gasUpdCards');
+      container.innerHTML = '<div class="py-12 text-center"><div class="w-6 h-6 border-2 border-slate-350 border-t-red-500 rounded-full animate-spin inline-block"></div></div>';
+
+      var app = getAlpineApp();
+      app.api({
+        action: 'getUpdateList',
+        page: updPageCurrent,
+        limit: 10,
+        search: search || '',
+        datel: document.getElementById('updDatel')?.value || '',
+        sto: document.getElementById('updSto')?.value || ''
+      }, (d) => {
+        if (!d.success) { container.innerHTML = '<p class="py-6 text-center text-xs text-slate-400">Gagal memuat data</p>'; return; }
+
+        document.getElementById('gasUpdCount').textContent = d.total + ' data OPEN';
+        document.getElementById('gasUpdInfo').textContent = 'Menampilkan ' + d.data.length + ' dari ' + d.total + ' data';
+
+        // Paginate buttons
+        document.getElementById('gasUpdPgn').innerHTML = paginate(updPageCurrent, d.totalPages, 'loadUpdateList');
+
+        if (d.data.length === 0) {
+          container.innerHTML = '<div class="py-16 text-center text-slate-400 text-xs">Semua data progres sudah up-to-date! ✅</div>';
+          return;
+        }
+
+        var today = new Date();
+        container.innerHTML = d.data.map(r => {
+          var cd = String(r.CommitmentDate || '').slice(0, 10);
+          var isOverdue = cd && new Date(cd) < today;
+          var borderClass = isOverdue ? 'border-rose-100 bg-rose-50/20' : 'border-slate-100';
+
+          return '<div class="p-4 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 ' + borderClass + '">' +
+            '<div>' +
+            '<div class="text-xs font-bold text-slate-800">#' + r.StarClickID + ' · <span class="text-slate-500 font-semibold">' + r.NamaCustomer + '</span></div>' +
+            '<div class="flex items-center gap-2 mt-1.5">' +
+            '<span class="px-2 py-0.5 text-[9px] bg-red-100 text-brand-red rounded font-bold">' + r.StatusOrder + '</span>' +
+            '<span class="px-2 py-0.5 text-[9px] bg-blue-100 text-blue-700 rounded font-bold">' + r.Progres + '</span>' +
+            '<span class="px-2 py-0.5 text-[9px] bg-slate-150 rounded text-slate-650 font-medium">Datel: ' + r.Datel + '</span>' +
+            '</div>' +
+            '</div>' +
+            '<div class="flex items-center gap-2 w-full sm:w-auto justify-end">' +
+            '<span class="text-[10px] font-bold ' + (isOverdue ? 'text-brand-red' : 'text-slate-500') + '">' + (cd || '—') + '</span>' +
+            '<button onclick="openGasUpdateModal(\'' + encodeURIComponent(JSON.stringify(r)) + '\')" class="px-3.5 py-1.5 bg-brand-red hover:bg-brand-red-dark text-white rounded-xl text-xs font-bold transition">Update</button>' +
+            '</div>' +
+            '</div>';
+        }).join('');
+      });
+    }
+
+    function openGasUpdateModal(enc) {
+      var r = JSON.parse(decodeURIComponent(enc));
+      document.getElementById('gasModUpdateId').value = r.ID;
+      document.getElementById('gasModUpdateSCK').textContent = '#' + r.StarClickID + ' · ' + r.Datel + ' · ' + r.STO;
+      document.getElementById('gasModUpdateCust').textContent = r.NamaCustomer;
+      document.getElementById('gasModUpdateProgres').value = r.Progres || 'ON DESK';
+      document.getElementById('gasModUpdateCommit').value = String(r.CommitmentDate || '').slice(0, 10);
+      document.getElementById('gasModUpdateMitra').value = r.Mitra || '';
+
+      document.getElementById('gasModUpdate').classList.remove('hidden');
+    }
+
+    function closeGasUpdateModal() {
+      document.getElementById('gasModUpdate').classList.add('hidden');
+    }
+
+    function submitGasUpdate() {
+      var app = getAlpineApp();
+      app.api({
+        action: 'updateProgres',
+        ID: document.getElementById('gasModUpdateId').value,
+        Progres: document.getElementById('gasModUpdateProgres').value,
+        CommitmentDate: document.getElementById('gasModUpdateCommit').value,
+        Mitra: document.getElementById('gasModUpdateMitra').value
+      }, (r) => {
+        if (r.success) {
+          app.toast(r.message);
+          closeGasUpdateModal();
+          loadUpdateList(updPageCurrent);
+        } else {
+          app.toast(r.message, 'err');
+        }
+      });
+    }
+
+    // --- LIHAT DATA GRID TABLE ---
+    var lihatPageCurrent = 1;
+    function loadLihatList(page, search) {
+      lihatPageCurrent = page || 1;
+      var tbody = document.getElementById('gasLihatTableBody');
+      tbody.innerHTML = '<tr><td colspan="14" class="py-12 text-center"><div class="w-6 h-6 border-2 border-slate-350 border-t-red-500 rounded-full animate-spin inline-block"></div></td></tr>';
+
+      var app = getAlpineApp();
+      app.api({
+        action: 'getLihatData',
+        page: lihatPageCurrent,
+        limit: 15,
+        search: search || '',
+        startDate: document.getElementById('liStartDate')?.value || '',
+        endDate: document.getElementById('liEndDate')?.value || '',
+        status: document.getElementById('liStatus')?.value || '',
+        datel: document.getElementById('liDatel')?.value || '',
+        sto: document.getElementById('liSto')?.value || '',
+        mitra: document.getElementById('liMitra')?.value || '',
+        progres: document.getElementById('liProgres')?.value || '',
+        batch: document.getElementById('liBatch')?.value || ''
+      }, (d) => {
+        if (!d.success) { tbody.innerHTML = '<tr><td colspan="14" class="py-6 text-center text-slate-400">Gagal memuat data</td></tr>'; return; }
+
+        document.getElementById('gasLihatInfo').textContent = 'Menampilkan ' + d.data.length + ' dari ' + d.total + ' data';
+        document.getElementById('gasLihatPgn').innerHTML = paginate(lihatPageCurrent, d.totalPages, 'loadLihatList');
+
+        if (d.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="14" class="py-12 text-center text-slate-400">Data kosong</td></tr>';
+          return;
+        }
+
+        var now = new Date();
+        tbody.innerHTML = d.data.map(r => {
+          var cd = String(r.CommitmentDate || '').slice(0, 10);
+          var up = String(r.TanggalUpdateProgres || '').slice(0, 10);
+          var isOverdue = cd && new Date(cd) < now && r.StatusOrder === 'OPEN';
+
+          return '<tr class="border-b hover:bg-slate-50 transition">' +
+            '<td class="px-5 py-3 font-bold text-slate-800">' + r.StarClickID + '</td>' +
+            '<td class="px-5 py-3 truncate max-w-[150px]">' + r.NamaCustomer + '</td>' +
+            '<td class="px-5 py-3 truncate max-w-[150px]">' + (r.AlamatPelanggan || '—') + '</td>' +
+            '<td class="px-5 py-3">' + (r.TeleponPelanggan || '—') + '</td>' +
+            '<td class="px-5 py-3 font-mono">' + (r.TikorPelanggan || '—') + '</td>' +
+            '<td class="px-5 py-3">' + r.Datel + '</td>' +
+            '<td class="px-5 py-3">' + r.STO + '</td>' +
+            '<td class="px-5 py-3"><span class="px-2 py-0.5 rounded text-[9px] font-bold ' + (r.StatusOrder === 'OPEN' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600') + '">' + r.StatusOrder + '</span></td>' +
+            '<td class="px-5 py-3"><span class="px-2 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100">' + r.Progres + '</span></td>' +
+            '<td class="px-5 py-3 font-mono ' + (isOverdue ? 'text-brand-red font-bold animate-pulse' : '') + '">' + cd + '</td>' +
+            '<td class="px-5 py-3">' + r.Mitra + '</td>' +
+            '<td class="px-5 py-3">' + r.TipeDesain + '</td>' +
+            '<td class="px-5 py-3">' + r.Batch + '</td>' +
+            '<td class="px-5 py-3 font-mono text-slate-400">' + (up || '—') + '</td>' +
+            '</tr>';
+        }).join('');
+      });
+    }
+
+    function resetLihatFilters() {
+      ['liStatus', 'liDatel', 'liSto', 'liMitra', 'liProgres', 'liBatch'].forEach(id => {
+        if (tomSelectInstances[id]) tomSelectInstances[id].clear();
+      });
+      if (document.getElementById('liStartDate')) document.getElementById('liStartDate').value = '';
+      if (document.getElementById('liEndDate')) document.getElementById('liEndDate').value = '';
+      loadLihatList(1);
+    }
+
+    function exportCSV() {
+      var app = getAlpineApp();
+      app.toast('Menyiapkan file ekspor...');
+      app.api({
+        action: 'getLihatData',
+        page: 1,
+        limit: 1000,
+        startDate: document.getElementById('liStartDate')?.value || '',
+        endDate: document.getElementById('liEndDate')?.value || '',
+        status: document.getElementById('liStatus')?.value || '',
+        datel: document.getElementById('liDatel')?.value || '',
+        sto: document.getElementById('liSto')?.value || '',
+        mitra: document.getElementById('liMitra')?.value || '',
+        progres: document.getElementById('liProgres')?.value || '',
+        batch: document.getElementById('liBatch')?.value || ''
+      }, (d) => {
+        if (!d.success || d.data.length === 0) { app.toast('Tidak ada data untuk diekspor', 'err'); return; }
+        var keys = Object.keys(d.data[0]);
+        var csv = keys.join(',') + '\n' + d.data.map(r => keys.map(k => '"' + String(r[k] || '').replace(/"/g, '""') + '"').join(',')).join('\n');
+        var a = document.createElement('a');
+        a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+        a.download = 'deployment_monika_export.csv';
+        a.click();
+        app.toast('Export file berhasil!');
+      });
+    }
+
+    // --- PROGRESS OVERVIEW GRAPHS & TIMELINES ---
+    function loadOverview() {
+      var app = getAlpineApp();
+      app.api({
+        action: 'getProgressOverview',
+        year: document.getElementById('ovYear')?.value || '2026',
+        month: document.getElementById('ovMonth')?.value || 'all',
+        mitra: document.getElementById('ovMitra')?.value || ''
+      }, (d) => {
+        if (!d.success) return;
+        app.overviewStats = d;
+
+        // Render stacked bar chart & ihld chart
+        renderOverviewCharts(d);
+
+        // Render timeline comparison nodes
+        renderTimelineData(d.timelineData);
+      });
+    }
+
+    function switchOverviewChart(type) {
+      var prog = document.getElementById('gasOverviewChartProgressContainer');
+      var ihld = document.getElementById('gasOverviewChartIhldContainer');
+      var title = document.getElementById('gasOverviewChartTitle');
+      var sub = document.getElementById('gasOverviewChartSub');
+
+      var btnProg = document.getElementById('gasBtnShowProgress');
+      var btnIhld = document.getElementById('gasBtnShowIhld');
+
+      if (type === 'progress') {
+        prog.classList.remove('hidden');
+        ihld.classList.add('hidden');
+        title.textContent = 'Datel & Progress Distribution';
+        sub.textContent = 'Komposisi tahapan progress per Datel';
+        btnProg.className = "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all bg-white text-brand-red shadow-sm";
+        btnIhld.className = "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all text-slate-400 hover:text-slate-600";
+      } else {
+        ihld.classList.remove('hidden');
+        prog.classList.add('hidden');
+        title.textContent = 'iHLD Status Order';
+        sub.textContent = 'Distribusi order berdasarkan status iHLD';
+        btnIhld.className = "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all bg-white text-brand-red shadow-sm";
+        btnProg.className = "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all text-slate-400 hover:text-slate-600";
+      }
+    }
+
+    function renderOverviewCharts(d) {
+      // 1. Stacked Bar Chart Progress
+      var ctxS = document.getElementById('gasOverviewStackedChart');
+      if (ctxS && d.datelLabels.length > 0) {
+        if (gasCharts.stacked) gasCharts.stacked.destroy();
+        var datasets = [];
+        var colors = ['#e32b2b', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316', '#14b8a6', '#84cc16'];
+
+        Object.keys(d.stackedData).forEach((stage, idx) => {
+          datasets.push({
+            label: stage,
+            data: d.stackedData[stage],
+            backgroundColor: colors[idx % colors.length]
+          });
+        });
+
+        gasCharts.stacked = new Chart(ctxS.getContext('2d'), {
+          type: 'bar',
+          data: { labels: d.datelLabels, datasets: datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+          }
+        });
+      }
+
+      // 2. iHLD Status Distribution
+      var ctxI = document.getElementById('gasOverviewIhldChart');
+      if (ctxI && d.datelLabels.length > 0) {
+        if (gasCharts.ihld) gasCharts.ihld.destroy();
+        var ihldDatasets = [];
+        var statusColors = { 'OPEN': '#3b82f6', 'CLOSED': '#10b981', 'CANCEL': '#ef4444' };
+
+        Object.keys(d.ihldStackedData).forEach((status) => {
+          ihldDatasets.push({
+            label: status,
+            data: d.ihldStackedData[status],
+            backgroundColor: statusColors[status] || '#cbd5e1'
+          });
+        });
+
+        gasCharts.ihld = new Chart(ctxI.getContext('2d'), {
+          type: 'bar',
+          data: { labels: d.datelLabels, datasets: ihldDatasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+          }
+        });
+      }
+
+      // 3. Average Completion Duration
+      var ctxA = document.getElementById('gasOverviewMitraAvgChart');
+      if (ctxA && d.mitraAvgLabels.length > 0) {
+        if (gasCharts.mitraAvg) gasCharts.mitraAvg.destroy();
+        gasCharts.mitraAvg = new Chart(ctxA.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: d.mitraAvgLabels,
+            datasets: [{
+              label: 'Hari',
+              data: d.mitraAvgValues,
+              backgroundColor: '#e32b2b',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'x',
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      }
+    }
+
+    function renderTimelineData(timelineList) {
+      var container = document.getElementById('gasTimelineContainer');
+      if (!container) return;
+      if (!timelineList || timelineList.length === 0) {
+        container.innerHTML = '<div class="py-12 text-center text-slate-400 text-xs">Pilih Mitra di filter pembanding untuk melihat visualisasi timeline.</div>';
+        return;
+      }
+
+      var stageColors = {
+        'ON DESK': '#6366f1', 'SURVEY': '#3b82f6', 'PERIJINAN': '#0ea5e9', 'DRM': '#14b8a6',
+        'APPROVED BY EBIS': '#10b981', 'MATDEV': '#22c55e', 'INSTALASI': '#84cc16',
+        'SELESAI FISIK': '#eab308', 'GOLIVE': '#f59e0b', 'PS': '#f97316', 'UJI TERIMA': '#a855f7', 'REKON': '#ec4899'
+      };
+
+      container.innerHTML = timelineList.map(mitra => {
+        var stepsHtml = mitra.steps.map((s, idx) => {
+          var isTop = (idx % 2 === 0);
+          var col = stageColors[s.stage] || '#94a3b8';
+
+          return '<div class="relative flex flex-col items-center shrink-0" style="width: 220px; z-index: 10;">' +
+            // Label atas
+            '<div style="height:112px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;">' +
+            (isTop ? '<div class="text-center"><span style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase; block">' + s.stage + '</span><span style="font-size:8px; font-weight:700; color:#94a3b8; block mt-1">' + s.time + '</span></div>' : '') +
+            (isTop ? '<div style="width:1px; height:28px; border-left:2px dotted ' + col + '; margin-top:6px; opacity:0.5;"></div>' : '') +
+            '</div>' +
+            // Circle Node
+            '<div style="height:56px; display:flex; align-items:center; justify-content:center; position:relative; z-index:20;">' +
+            '<div style="width:18px; height:18px; border-radius:50%; background:' + col + '; border:3px solid white; box-shadow:0 0 0 3px ' + col + '44, 0 2px 8px rgba(0,0,0,0.12);"></div>' +
+            '</div>' +
+            // Label bawah
+            '<div style="height:112px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;">' +
+            (!isTop ? '<div style="width:1px; height:28px; border-left:2px dotted ' + col + '; margin-bottom:6px; opacity:0.5;"></div>' : '') +
+            (!isTop ? '<div class="text-center"><span style="font-size:10px; font-weight:800; color:#64748b; text-transform:uppercase; block">' + s.stage + '</span><span style="font-size:8px; font-weight:700; color:#94a3b8; block mt-1">' + s.time + '</span></div>' : '') +
+            '</div>' +
+            '</div>';
+        }).join('');
+
+        // Inter-stage duration text overlay
+        var durLabelsHtml = mitra.steps.map((s, idx) => {
+          if (idx === 0) return '';
+          var leftPos = 24 + idx * 220;
+          return '<div style="position:absolute; top:82px; left:' + leftPos + 'px; transform:translateX(-50%); z-index:15; white-space:nowrap; display:flex; flex-direction:column; align-items:center; gap:2px;">' +
+            '<span style="font-size:8px; font-weight:850; color:#6366f1; background:#eef2ff; border:1px solid #c7d2fe; border-radius:999px; padding:2px 8px; text-transform:uppercase; box-shadow:0 1px 4px rgba(99,102,241,0.12);">' +
+            mitra.steps[idx - 1].stage + ' &#8594; ' + s.stage +
+            '</span>' +
+            (s.duration !== 'N/A' ? '<span style="font-size:9px; font-weight:900; color:#4f46e5; text-transform:uppercase;">' + s.duration + '</span>' : '') +
+            '</div>';
+        }).join('');
+
+        return '<div class="space-y-4 border-b pb-6 last:border-none">' +
+          '<div class="flex items-center gap-3">' +
+          '<span class="px-4 py-1.5 rounded-full text-xs font-black uppercase bg-brand-red text-white tracking-widest shadow-md">Mitra: ' + mitra.mitra + '</span>' +
+          '<div class="flex-1 h-px bg-slate-100"></div>' +
+          '<span class="text-xs font-bold text-slate-400">' + mitra.total_orders + ' Total Order</span>' +
+          '</div>' +
+          '<div class="border rounded-3xl p-6 bg-white overflow-x-auto pb-4" style="scrollbar-width: thin;">' +
+          '<div class="relative flex min-w-max" style="padding: 0 24px;">' +
+          '<div class="absolute left-0 right-0" style="top: 140px; height: 2px; border-top: 2px dotted #cbd5e1; z-index: 0;"></div>' +
+          durLabelsHtml +
+          stepsHtml +
+          '</div>' +
+          '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    // --- USERS MANAGEMENT SCREEN ---
+    function loadUsers() {
+      var tbody = document.getElementById('gasUsersTable');
+      tbody.innerHTML = '<div class="py-12 text-center"><div class="w-6 h-6 border-2 border-slate-350 border-t-red-500 rounded-full animate-spin inline-block"></div></div>';
+
+      var app = getAlpineApp();
+      app.api({ action: 'getUsers' }, (d) => {
+        if (!d.success) { tbody.innerHTML = '<p class="py-6 text-center text-slate-400">Gagal memuat data</p>'; return; }
+
+        var tableHtml = '<table class="w-full text-xs text-left"><thead class="bg-slate-50 border-b"><tr>' +
+          '<th class="px-5 py-3">Nama</th><th class="px-5 py-3">Email</th><th class="px-5 py-3">Role</th><th class="px-5 py-3">Status</th><th class="px-5 py-3">Datel</th><th class="px-5 py-3">Aksi</th>' +
+          '</tr></thead><tbody class="divide-y text-slate-650">';
+
+        tableHtml += d.data.map(u => {
+          var statusClass = u.Status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600';
+          return '<tr class="hover:bg-slate-50 transition">' +
+            '<td class="px-5 py-3 font-bold">' + u.Nama + '</td>' +
+            '<td class="px-5 py-3 text-slate-500">' + u.Email + '</td>' +
+            '<td class="px-5 py-3 uppercase font-semibold">' + u.Role + '</td>' +
+            '<td class="px-5 py-3"><span class="px-2 py-0.5 rounded text-[9px] font-bold ' + statusClass + '">' + u.Status + '</span></td>' +
+            '<td class="px-5 py-3">' + (u.Datel || '—') + '</td>' +
+            '<td class="px-5 py-3 flex gap-2">' +
+            (u.Status === 'waiting' ? '<button onclick="approveUserDirect(' + u.ID + ')" class="px-2 py-1 bg-emerald-500 text-white rounded font-bold hover:bg-emerald-600 transition shadow-sm">Approve</button>' : '') +
+            '<button onclick="deleteUserDirect(' + u.ID + ')" class="px-2 py-1 bg-rose-500 text-white rounded font-bold hover:bg-rose-600 transition shadow-sm">Hapus</button>' +
+            '</td>' +
+            '</tr>';
+        }).join('');
+
+        tableHtml += '</tbody></table>';
+        tbody.innerHTML = tableHtml;
+      });
+    }
+
+    function approveUserDirect(id) {
+      var app = getAlpineApp();
+      app.approveUser(id);
+    }
+
+    function deleteUserDirect(id) {
+      if (!confirm('Apakah Anda yakin ingin menghapus user ini?')) return;
+      var app = getAlpineApp();
+      app.api({ action: 'deleteUser', ID: id }, (r) => {
+        if (r.success) {
+          app.toast(r.message);
+          loadUsers();
+        } else {
+          app.toast(r.message, 'err');
+        }
+      });
+    }
+
+    function openAddUserModal() {
+      ['usNama', 'usEmail', 'usNIK', 'usDatel'].forEach(id => { document.getElementById(id).value = ''; });
+      document.getElementById('usRole').value = 'optima';
+      document.getElementById('gasModUser').classList.remove('hidden');
+    }
+    function closeGasUserModal() {
+      document.getElementById('gasModUser').classList.add('hidden');
+    }
+    function submitGasUser() {
+      var app = getAlpineApp();
+      app.api({
+        action: 'addUser',
+        Nama: document.getElementById('usNama').value,
+        Email: document.getElementById('usEmail').value,
+        Role: document.getElementById('usRole').value,
+        NIK: document.getElementById('usNIK').value,
+        Datel: document.getElementById('usDatel').value
+      }, (r) => {
+        if (r.success) {
+          app.toast(r.message);
+          closeGasUserModal();
+          loadUsers();
+        } else {
+          app.toast(r.message, 'err');
+        }
+      });
+    }
+
+    // --- SETTINGS OPERATIONS ---
+    function loadSettings() {
+      var app = getAlpineApp();
+      app.api({ action: 'getSettings' }, (d) => {
+        if (!d.success) return;
+        document.getElementById('setAppName').value = d.data.app_name || '';
+        document.getElementById('setUnit').value = d.data.unit || '';
+        document.getElementById('setCap').value = d.data.global_cap || '';
+        document.getElementById('setOvd').value = d.data.overdue_threshold_days || '';
+      });
+    }
+
+    function submitSaveSettings() {
+      var app = getAlpineApp();
+      app.api({
+        action: 'saveSettings',
+        app_name: document.getElementById('setAppName').value,
+        unit: document.getElementById('setUnit').value,
+        global_cap: document.getElementById('setCap').value,
+        overdue_threshold_days: document.getElementById('setOvd').value
+      }, (r) => {
+        if (r.success) app.toast(r.message);
+        else app.toast(r.message, 'err');
+      });
+    }
+
+    function doReseedData() {
+      if (!confirm('Data deployment saat ini akan diganti dengan 50 data contoh baru. Lanjutkan?')) return;
+      var app = getAlpineApp();
+      app.toast('Sedang memuat data seed...');
+      app.api({ action: 'reseedData' }, (r) => {
+        if (r.success) {
+          app.toast(r.message);
+          app.loadDashboard();
+        } else {
+          app.toast(r.message, 'err');
+        }
+      });
+    }
+
+    // UTILITY: Paginate markup renderer
+    function paginate(page, total, cb) {
+      if (total <= 1) return '';
+      var h = '<button class="px-2.5 py-1 text-xs border rounded-lg hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition" onclick="' + cb + '(' + (page - 1) + ')" ' + (page <= 1 ? 'disabled' : '') + '>‹</button>';
+      var s = Math.max(1, page - 2), e = Math.min(total, page + 2);
+      for (var i = s; i <= e; i++) {
+        var activeClass = i === page ? 'bg-brand-red text-white border-brand-red' : 'bg-white hover:bg-slate-150';
+        h += '<button class="px-3 py-1 text-xs border rounded-lg transition ml-1 ' + activeClass + '" onclick="' + cb + '(' + i + ')">' + i + '</button>';
+      }
+      h += '<button class="px-2.5 py-1 text-xs border rounded-lg hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition ml-1" onclick="' + cb + '(' + (page + 1) + ')" ' + (page >= total ? 'disabled' : '') + '>›</button>';
+      return h;
+    }
+
+    // UTILITY: Time Difference Helper
+    function timeAgo(dateStr) {
+      if (!dateStr) return '';
+      var d = Math.round((Date.now() - new Date(dateStr).getTime()) / 1000);
+      if (d < 60) return d + 'd';
+      if (d < 3600) return Math.floor(d / 60) + 'm';
+      if (d < 86400) return Math.floor(d / 3600) + 'j';
+      return Math.floor(d / 86400) + 'hr';
+    }
+  </script>
+</body>
+
+</html>

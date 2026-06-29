@@ -82,11 +82,11 @@
     <div class="container">
         <div class="header">
             
-            <span style="color: white; font-weight: 800; font-size: 20px; letter-spacing: 1px;">PORTAL MONITORING KPRO</span>
+            <span style="color: white; font-weight: 800; font-size: 20px; letter-spacing: 1px;">PORTAL MONITORING</span>
         </div>
         <div class="content">
             <h1>Halo,</h1>
-            <p>Kami menerima permintaan untuk menyetel ulang kata sandi akun Anda di Portal Monitoring KPRO. Silakan gunakan kode verifikasi (OTP) di bawah ini untuk melanjutkan proses reset password:</p>
+            <p>Kami menerima permintaan untuk menyetel ulang kata sandi akun Anda di Portal Monitoring. Silakan gunakan kode verifikasi (OTP) di bawah ini untuk melanjutkan proses reset password:</p>
             
             <div class="otp-container">
                 <div class="otp-code">{{ $code }}</div>
@@ -95,7 +95,7 @@
             <p>Kode verifikasi ini hanya berlaku selama <strong>15 menit</strong>. Untuk keamanan akun Anda, mohon jangan bagikan kode ini kepada siapapun.</p>
             <p>Jika Anda tidak meminta perubahan kata sandi ini, silakan abaikan email ini secara aman.</p>
             
-            <p>Terima kasih,<br><strong>Tim Admin Unit Optima</strong></p>
+            <p>Terima kasih,<br><strong>Tim Admin</strong></p>
         </div>
         <div class="footer">
             <p>&copy; {{ date('Y') }} PT Telkom Indonesia Tbk. All rights reserved.</p>

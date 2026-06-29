@@ -47,11 +47,11 @@
 
                     
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <x-status-badge :value="$row->star_click_status" />
+                        <x-status-badge :value="$row->raw_star_click_status ?? $row->star_click_status" mask />
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <x-status-badge :value="$row->status_alokasi_alpro" />
+                        <x-status-badge :value="$row->raw_status_alokasi_alpro ?? $row->status_alokasi_alpro" mask />
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->id_odp_alokasi_alpro }}</td>
@@ -85,7 +85,7 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->telkomsel_branch }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->telkomsel_cluster }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <x-status-badge :value="$row->status_order" />
+                        <x-status-badge :value="$row->raw_status_order ?? $row->status_order" mask />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->validasi_planning }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->ihld_lop_id }}</td>
@@ -100,20 +100,20 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->total_port }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->batch_program }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <x-status-badge :value="$row->status_eproposal" />
+                        <x-status-badge :value="$row->raw_status_eproposal ?? $row->status_eproposal" mask />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <x-status-badge :value="$row->status_tomps" />
+                        <x-status-badge :value="$row->raw_status_tomps ?? $row->status_tomps" mask />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->status_tomps_last_activity }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <x-status-badge :value="$row->status_sap" />
+                        <x-status-badge :value="$row->raw_status_sap ?? $row->status_sap" mask />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <x-status-badge :value="$row->status_proyek" />
+                        <x-status-badge :value="$row->raw_status_proyek ?? $row->status_proyek" mask />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <x-status-badge :value="$row->jenis_program" />
+                        <x-status-badge :value="$row->raw_jenis_program ?? $row->jenis_program" mask />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->odp_go_live }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->tanggal_waiting_caring }}</td>
@@ -127,7 +127,7 @@
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->nama_mitra }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->revenue_plan }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <x-status-badge :value="$row->nama_cfu" />
+                        <x-status-badge :value="$row->raw_nama_cfu ?? $row->nama_cfu" mask />
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->tahun }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $row->kategori }}</td>

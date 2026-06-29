@@ -26,7 +26,7 @@ class ResetPasswordOtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Kode Verifikasi Reset Password - KPRO',
+            subject: 'Kode Verifikasi Reset Password - PORTAL MONITORING',
         );
     }
 

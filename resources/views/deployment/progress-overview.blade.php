@@ -2,6 +2,12 @@
 
 @section('title', 'Progress Overview')
 
+{{-- Muat Chart.js di <head> agar tersedia saat halaman dirender (menghilangkan dynamic inject delay) --}}
+@push('head-scripts')
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+@endpush
+
 @section('content')
     <div class="flex flex-col gap-6">
 
@@ -107,13 +113,6 @@
             
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 sm:px-8 pt-6 sm:pt-8 pb-0">
                 <div class="flex items-center gap-3">
-                    <div class="p-3 rounded-2xl" style="background:#fef2f2; color:#e32b2b;">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                            </path>
-                        </svg>
-                    </div>
                     <div>
                         <h3 class="text-xl font-extrabold tracking-tight" style="color:#1a1a2e;">Visualisasi Timeline Progres</h3>
                         <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:#9ca3af;">Perbandingan durasi pengerjaan antar-tahap progres secara visual</p>
@@ -323,54 +322,54 @@
 
         
         <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-xl border mt-6"
-            style="border-color:#fde8e8; box-shadow: 0 20px 40px rgba(227,43,43,0.06);">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 rounded-2xl" style="background:#fef2f2; color:#e32b2b;">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                            </path>
-                        </svg>
+            id="combinedChartCard"
+            style="border-color:#fde8e8; box-shadow: 0 20px 40px rgba(227,43,43,0.06); transition: all 0.3s ease;">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4">
+                <div class="flex-1">
+                    <!-- Progress Distribution Title -->
+                    <div id="progressChartHeader" class="flex items-center gap-4">
+                        
+                        <div>
+                            <h3 class="text-xl font-extrabold tracking-tight" style="color:#1a1a2e;">Datel & Progress Distribution</h3>
+                            <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:#9ca3af;">Komposisi tahapan progress per Datel</p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-xl font-extrabold tracking-tight" style="color:#1a1a2e;">Datel & Progress
-                            Distribution</h3>
-                        <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:#9ca3af;">Komposisi
-                            tahapan progress per Datel</p>
+                    
+                    <!-- iHLD Status Title -->
+                    <div id="ihldChartHeader" class="flex items-center gap-4 hidden">
+                        <div>
+                            <h3 class="text-xl font-extrabold tracking-tight" style="color:#1a1a2e;">iHLD Status Order</h3>
+                            <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:#9ca3af;">Distribusi order berdasarkan status iHLD</p>
+                        </div>
                     </div>
                 </div>
-                <div class="text-[10px] font-bold px-3 py-1.5 rounded-xl" style="color:#e32b2b; background:#fef2f2;">
-                    {{ $totalAll }} Total Deployment
+                
+                <!-- Swapper Controls & Badge -->
+                <div class="flex items-center gap-3 self-stretch sm:self-auto justify-between sm:justify-end">
+                    <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 gap-1.5">
+                        <button type="button" onclick="switchOverviewChart('progress')" id="btnShowProgress"
+                            class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all bg-white text-red-600 shadow-sm border border-transparent">
+                            Progress Dist.
+                        </button>
+                        <button type="button" onclick="switchOverviewChart('ihld')" id="btnShowIhld"
+                            class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all text-slate-400 hover:text-slate-600 border border-transparent">
+                            iHLD Status
+                        </button>
+                    </div>
+                    
+                    <div id="deploymentBadge" class="text-[10px] font-bold px-3 py-1.5 rounded-xl transition-all duration-300" style="color:#e32b2b; background:#fef2f2;">
+                        {{ $totalAll }} Total Deployment
+                    </div>
                 </div>
             </div>
 
-            <div class="relative w-full" style="height: 280px;">
+            <!-- Progress Distribution Chart -->
+            <div id="progressChartContainer" class="relative w-full" style="height: 280px;">
                 <canvas id="stackedChart"></canvas>
             </div>
-        </div>
 
-        
-        <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-xl border mt-6"
-            style="border-color:#e0e7ff; box-shadow: 0 20px 40px rgba(79,70,229,0.06);">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 rounded-2xl" style="background:#eef2ff; color:#4f46e5;">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-extrabold tracking-tight" style="color:#1a1a2e;">iHLD Status Order</h3>
-                        <p class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:#9ca3af;">
-                            Distribusi order berdasarkan status iHLD</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="relative w-full" style="height: 280px;">
+            <!-- iHLD Status Chart -->
+            <div id="ihldChartContainer" class="relative w-full hidden" style="height: 280px;">
                 <canvas id="ihldChart"></canvas>
             </div>
         </div>
@@ -383,12 +382,6 @@
 
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4 relative z-10">
                 <div class="flex items-center gap-4">
-                    <div class="p-3.5 rounded-2xl shadow-lg" style="background: linear-gradient(135deg, #fef2f2, #fee2e2); color:#e32b2b;">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                        </svg>
-                    </div>
                     <div>
                         <h3 class="text-xl font-extrabold tracking-tight" style="color:#1a1a2e;">Rata-rata Durasi Selesai
                             per Mitra</h3>
@@ -405,16 +398,64 @@
         </div>
 
     <script>
+        window.switchOverviewChart = function(type) {
+            const combinedCard = document.getElementById('combinedChartCard');
+            const progressHeader = document.getElementById('progressChartHeader');
+            const ihldHeader = document.getElementById('ihldChartHeader');
+            const progressContainer = document.getElementById('progressChartContainer');
+            const ihldContainer = document.getElementById('ihldChartContainer');
+            const btnProgress = document.getElementById('btnShowProgress');
+            const btnIhld = document.getElementById('btnShowIhld');
+            const badge = document.getElementById('deploymentBadge');
+
+            if (!combinedCard || !progressHeader || !ihldHeader || !progressContainer || !ihldContainer || !btnProgress || !btnIhld || !badge) return;
+
+            if (type === 'progress') {
+                progressHeader.classList.remove('hidden');
+                progressContainer.classList.remove('hidden');
+                ihldHeader.classList.add('hidden');
+                ihldContainer.classList.add('hidden');
+
+                btnProgress.className = "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all bg-white text-red-600 shadow-sm border border-transparent";
+                btnIhld.className = "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all text-slate-400 hover:text-slate-600 border border-transparent";
+
+                combinedCard.style.borderColor = '#fde8e8';
+                combinedCard.style.boxShadow = '0 20px 40px rgba(227, 43, 43, 0.06)';
+                badge.style.color = '#e32b2b';
+                badge.style.background = '#fef2f2';
+
+                if (window._stackedChart) {
+                    window._stackedChart.resize();
+                    window._stackedChart.update();
+                }
+            } else {
+                ihldHeader.classList.remove('hidden');
+                ihldContainer.classList.remove('hidden');
+                progressHeader.classList.add('hidden');
+                progressContainer.classList.add('hidden');
+
+                btnProgress.className = "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all text-slate-400 hover:text-slate-600 border border-transparent";
+                btnIhld.className = "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all bg-white text-indigo-600 shadow-sm border border-transparent";
+
+                combinedCard.style.borderColor = '#e0e7ff';
+                combinedCard.style.boxShadow = '0 20px 40px rgba(79, 70, 229, 0.06)';
+                badge.style.color = '#4f46e5';
+                badge.style.background = '#eef2ff';
+
+                if (window._ihldChart) {
+                    window._ihldChart.resize();
+                    window._ihldChart.update();
+                }
+            }
+        };
+
         function initProgressChart() {
             if (typeof Chart === 'undefined') {
-                const s = document.createElement('script');
-                s.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-                s.setAttribute('data-chartjs', '1');
-                s.onload = buildChart;
-                document.head.appendChild(s);
-            } else {
-                buildChart();
+                // Fallback jika Chart.js belum dimuat (seharusnya tidak terjadi karena sudah di head)
+                setTimeout(initProgressChart, 100);
+                return;
             }
+            buildChart();
         }
 
         function buildChart() {

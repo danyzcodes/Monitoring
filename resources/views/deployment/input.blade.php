@@ -15,7 +15,6 @@
 
         
         <div class="bg-white rounded-3xl shadow-xl border border-slate-100 relative">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-red-600 rounded-t-3xl"></div>
 
             <div class="p-8">
                 <form x-data="ebisForm()" x-init="formEl = $el" method="POST"
@@ -25,8 +24,6 @@
                     
                     <div>
                         <h3 class="flex items-center gap-2 text-lg font-bold text-slate-800 mb-6">
-                            <span
-                                class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-sm">1</span>
                             Identitas Order
                         </h3>
 
@@ -36,10 +33,10 @@
                                 <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                                     Nomor NDE JT
                                 </label>
-                                <input name="nde_jt" type="text" value="{{ 'NDE-' . date('ymd-His') }}"
-                                    class="w-full rounded-xl border border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white text-slate-600
+                                <input name="nde_jt" type="text" value="{{ old('nde_jt') }}"
+                                    class="w-full rounded-xl border border-slate-400 bg-slate-100 px-4 py-3 text-sm focus:bg-white
                                        focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition"
-                                    placeholder="Contoh: NDE-123/456" readonly>
+                                    placeholder="Contoh: NDE-123/456">
                             </div>
 
                             
@@ -81,8 +78,6 @@
                     
                     <div>
                         <h3 class="flex items-center gap-2 text-lg font-bold text-slate-800 mb-6">
-                            <span
-                                class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-sm">2</span>
                             Data Pelanggan
                         </h3>
 
@@ -244,8 +239,6 @@
                     
                     <div>
                         <h3 class="flex items-center gap-2 text-lg font-bold text-slate-800 mb-6">
-                            <span
-                                class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-sm">3</span>
                             Lokasi & Teknis
                         </h3>
 

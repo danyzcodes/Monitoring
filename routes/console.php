@@ -17,4 +17,4 @@ Schedule::call(function () {
     } catch (\Exception $e) {
         \Log::error('Failed to send Daily Telegram Report: ' . $e->getMessage());
     }
-})->dailyAt('17:00')->name('telegram:daily-report');
+})->dailyAt('15:30')->name('telegram:daily-report');

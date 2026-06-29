@@ -32,7 +32,8 @@ class TelegramService
         
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $artisan = base_path('artisan');
-            pclose(popen("start /B php \"$artisan\" queue:work --once > NUL 2>&1", "r"));
+            $phpBinary = PHP_BINARY;
+            pclose(popen("start /B \"\" \"$phpBinary\" \"$artisan\" queue:work --once > NUL 2>&1", "r"));
         }
 
         return true;
@@ -186,13 +187,7 @@ class TelegramService
                 foreach ($filteredOrders as $order) {
                     
                     $daysSinceCreated = round($order->created_at->diffInDays(now()));
-                    if ($daysSinceCreated <= 6) {
-                        $ageCategory = '≤6HR';
-                    } elseif ($daysSinceCreated <= 14) {
-                        $ageCategory = '>6HR ≤14HR';
-                    } else {
-                        $ageCategory = '>14HR';
-                    }
+                    $ageCategory = $daysSinceCreated . 'HR';
 
                     $nde = $order->nde_jt ?? '-';
                     $starclick = $order->star_click_id ?? '-';
@@ -210,7 +205,19 @@ class TelegramService
                     }
 
                     
-                    $text .= "{$ageCategory} | {$datel} | {$nde} | {$starclick} | {$customer} | {$mitra} | {$statusOrder} | {$tompsStatus} | {$alproStatus}\n\n";
+                    $isOverdue = false;
+                    $overdueSuffix = '';
+                    if (!empty($order->data['commitment_date'])) {
+                        $commitmentDate = \Carbon\Carbon::parse($order->data['commitment_date'])->startOfDay();
+                        $today = now()->startOfDay();
+                        if ($commitmentDate->lt($today)) {
+                            $isOverdue = true;
+                            $overdueSuffix = ' (⚠️ Overdue: ' . $commitmentDate->format('d M') . ')';
+                        }
+                    }
+                    $linePrefix = $isOverdue ? '⚠️ ' : '';
+
+                    $text .= "{$linePrefix}{$ageCategory} | {$datel} | {$nde} | {$starclick} | {$customer} | {$mitra} | {$statusOrder} | {$tompsStatus} | {$alproStatus}{$overdueSuffix}\n\n";
                 }
             }
         }

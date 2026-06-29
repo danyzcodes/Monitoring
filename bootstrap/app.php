@@ -13,11 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
-        $middleware->web(append: [
-            \App\Http\Middleware\PreventBackHistory::class,
-        ]);
+        // PreventBackHistory dipindah ke route guest saja,
+        // agar Turbo Drive dapat meng-cache halaman aplikasi
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'role'              => \App\Http\Middleware\RoleMiddleware::class,
+            'no-cache-response' => \App\Http\Middleware\PreventBackHistory::class,
         ]);
     })
 

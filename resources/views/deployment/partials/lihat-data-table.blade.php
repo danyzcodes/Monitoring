@@ -17,42 +17,42 @@
             <tr class="hover:bg-red-50/30 transition group">
                 
                 <td class="px-6 py-4 font-medium text-slate-900 sticky left-0 bg-white group-hover:bg-red-50 z-10 border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
-                    {{ $row->nde_jt ?? '-' }}
+                    {{ \App\Helpers\MaskHelper::mask($row->nde_jt) }}
                 </td>
 
-                <td class="px-6 py-4 whitespace-nowrap">{{ $row->star_click_id ?? '-' }}</td>
-                <td class="px-6 py-4 min-w-[200px]">{{ $row->nama_customer ?? '-' }}</td>
-                <td class="px-6 py-4 min-w-[150px]">{{ $row->nama_mitra ?? '-' }}</td>
-                <td class="px-6 py-4 min-w-[250px] truncate max-w-xs" title="">{{ $row->alamat_pelanggan ?? '-' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ $row->telepon_pelanggan ?? '-' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap font-mono text-xs">{{ $row->tikor_pelanggan ?? '-' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ $row->datel ?? '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ \App\Helpers\MaskHelper::mask($row->star_click_id) }}</td>
+                <td class="px-6 py-4 min-w-[200px]">{{ \App\Helpers\MaskHelper::mask($row->nama_customer) }}</td>
+                <td class="px-6 py-4 min-w-[150px]">{{ \App\Helpers\MaskHelper::mask($row->nama_mitra) }}</td>
+                <td class="px-6 py-4 min-w-[250px] truncate max-w-xs" title="">{{ \App\Helpers\MaskHelper::mask($row->alamat_pelanggan) }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ \App\Helpers\MaskHelper::mask($row->telepon_pelanggan) }}</td>
+                <td class="px-6 py-4 whitespace-nowrap font-mono text-xs">{{ \App\Helpers\MaskHelper::mask($row->tikor_pelanggan) }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ \App\Helpers\MaskHelper::mask($row->datel) }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $row->sto ?? '-' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $row->nomor_batch ?? '-' }}</td>
 
                 
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <x-status-badge :value="optional($row->planning)->status_alokasi_alpro" />
+                    <x-status-badge :value="optional($row->planning)->status_alokasi_alpro" mask />
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <x-status-badge :value="optional($row->planning)->status_order" />
+                    <x-status-badge :value="optional($row->planning)->status_order" mask />
                 </td>
 
-                <td class="px-6 py-4 whitespace-nowrap">{{ optional($row->planning)->ihld_lop_id ?? '-' }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ optional($row->planning)->tipe_desain ?? '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ \App\Helpers\MaskHelper::mask(optional($row->planning)->ihld_lop_id) }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ \App\Helpers\MaskHelper::mask(optional($row->planning)->tipe_desain) }}</td>
                 <td class="px-6 py-4 whitespace-nowrap font-mono">
-                    {{ optional($row->planning)->total_boq ? number_format(optional($row->planning)->total_boq, 0, ',', '.') : '-' }}
+                    {{ optional($row->planning)->total_boq ? \App\Helpers\MaskHelper::mask(number_format(optional($row->planning)->total_boq, 0, ',', '.')) : '-' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <x-status-badge :value="optional($row->planning)->jenis_program" />
+                    <x-status-badge :value="optional($row->planning)->jenis_program" mask />
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <x-status-badge :value="optional($row->planning)->nama_cfu" />
+                    <x-status-badge :value="optional($row->planning)->nama_cfu" mask />
                 </td>
 
                 
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <x-status-badge :value="optional($row->planning)->status_proyek" />
+                    <x-status-badge :value="optional($row->planning)->status_proyek" mask />
                 </td>
 
                 

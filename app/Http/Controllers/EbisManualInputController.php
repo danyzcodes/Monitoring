@@ -77,149 +77,138 @@ class EbisManualInputController extends Controller
     
     public function updateList(Request $request)
     {
-        
-        $rows = EbisManualInput::with('planning');
+        // Cache key berdasarkan semua parameter request (filter + page)
+        $cacheKey = 'update_list_' . md5(http_build_query($request->except(['_token'])));
 
-        
-        if ($request->filled('starclick')) {
-            $rows->where('star_click_id', $request->starclick);
-        }
+        $filters = DropdownHelper::getDynamicFilters();
 
-        if ($request->filled('nama_customer')) {
-            $rows->where('nama_customer', 'like', '%' . $request->nama_customer . '%');
-        }
+        $rows = \Illuminate\Support\Facades\Cache::remember($cacheKey, 90, function () use ($request) {
 
-        if ($request->filled('sto')) {
-            $stos = array_filter((array) $request->sto);
-            if (!empty($stos)) $rows->whereIn('ebis_manual_inputs.sto', $stos);
-        }
+            $query = EbisManualInput::with('planning');
 
-        if ($request->filled('datel')) {
-            $datels = array_filter((array) $request->datel);
-            if (!empty($datels)) $rows->whereIn('ebis_manual_inputs.datel', $datels);
-        }
+            if ($request->filled('starclick')) {
+                $query->where('star_click_id', $request->starclick);
+            }
 
-        if ($request->filled('progres')) {
-            $progresses = array_filter((array) $request->progres);
-            if (!empty($progresses)) $rows->whereIn('ebis_manual_inputs.progres', $progresses);
-        }
+            if ($request->filled('nama_customer')) {
+                $query->where('nama_customer', 'like', '%' . $request->nama_customer . '%');
+            }
 
-        if ($request->filled('nomor_batch')) {
-            $batches = array_filter((array) $request->nomor_batch);
-            if (!empty($batches)) $rows->whereIn('ebis_manual_inputs.nomor_batch', $batches);
-        }
+            if ($request->filled('sto')) {
+                $stos = array_filter((array) $request->sto);
+                if (!empty($stos)) $query->whereIn('ebis_manual_inputs.sto', $stos);
+            }
 
-        
-        $hasRelFilter = $request->filled('status_order') || $request->filled('tipe_desain') || $request->filled('jenis_program') || $request->filled('cfu') || $request->filled('status_proyek');
-        if ($hasRelFilter) {
-            $rows->whereHas('planning', function ($q) use ($request) {
-                if ($request->filled('status_order')) {
-                    $vals = array_filter((array) $request->status_order);
-                    if (!empty($vals)) $q->whereIn('status_order', $vals);
-                }
-                if ($request->filled('tipe_desain')) {
-                    $vals = array_filter((array) $request->tipe_desain);
-                    if (!empty($vals)) $q->whereIn('tipe_desain', $vals);
-                }
-                if ($request->filled('jenis_program')) {
-                    $vals = array_filter((array) $request->jenis_program);
-                    if (!empty($vals)) $q->whereIn('jenis_program', $vals);
-                }
-                if ($request->filled('cfu')) {
-                    $vals = array_filter((array) $request->cfu);
-                    if (!empty($vals)) $q->whereIn('cfu', $vals);
-                }
-                if ($request->filled('status_proyek')) {
-                    $vals = array_filter((array) $request->status_proyek);
-                    if (!empty($vals)) $q->whereIn('status_proyek', $vals);
-                }
-            });
-        }
+            if ($request->filled('datel')) {
+                $datels = array_filter((array) $request->datel);
+                if (!empty($datels)) $query->whereIn('ebis_manual_inputs.datel', $datels);
+            }
 
-        
-        if ($request->usia == 'overdue') {
-            $today = \Carbon\Carbon::now()->startOfDay()->format('Y-m-d');
-            
-            $rows->whereHas('planning', function($q) {
-                
-                $q->whereNotIn('status_order', ['Success', 'Gagal', 'Cancel']);
-            })
-            ->whereNotIn('ebis_manual_inputs.progres', ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON'])
-            ->whereNotNull('data')
-            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.commitment_date')) IS NOT NULL")
-            ->whereRaw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(data, '$.commitment_date')), '%Y-%m-%d') < ?", [$today]);
-        }
+            if ($request->filled('progres')) {
+                $progresses = array_filter((array) $request->progres);
+                if (!empty($progresses)) $query->whereIn('ebis_manual_inputs.progres', $progresses);
+            }
 
-        
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $rows->whereBetween('created_at', [
-                $request->start_date . ' 00:00:00',
-                $request->end_date . ' 23:59:59'
-            ]);
-        } elseif ($request->filled('start_date')) {
-            $rows->where('created_at', '>=', $request->start_date . ' 00:00:00');
-        } elseif ($request->filled('end_date')) {
-            $rows->where('created_at', '<=', $request->end_date . ' 23:59:59');
-        }
+            if ($request->filled('nomor_batch')) {
+                $batches = array_filter((array) $request->nomor_batch);
+                if (!empty($batches)) $query->whereIn('ebis_manual_inputs.nomor_batch', $batches);
+            }
 
-        
-        if ($request->filled('search')) {
-            $search = $request->search;
-            if (str_contains($search, ',')) {
-                
-                $values = array_filter(array_map('trim', explode(',', $search)));
-                $rows->where(function ($q) use ($values) {
-                    $q->whereIn('star_click_id', $values);
-                    foreach ($values as $val) {
-                        $q->orWhere('nama_customer', 'like', "%{$val}%");
+            $hasRelFilter = $request->filled('status_order') || $request->filled('tipe_desain') || $request->filled('jenis_program') || $request->filled('cfu') || $request->filled('status_proyek');
+            if ($hasRelFilter) {
+                $query->whereHas('planning', function ($q) use ($request) {
+                    if ($request->filled('status_order')) {
+                        $vals = array_filter((array) $request->status_order);
+                        if (!empty($vals)) $q->whereIn('status_order', $vals);
                     }
-                });
-            } else {
-                
-                $rows->where(function ($q) use ($search) {
-                    $q->where('ebis_manual_inputs.star_click_id', 'like', "%{$search}%")
-                      ->orWhere('ebis_manual_inputs.nde_jt', 'like', "%{$search}%")
-                      ->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$search}%")
-                      ->orWhere('ebis_manual_inputs.sto', 'like', "%{$search}%");
+                    if ($request->filled('tipe_desain')) {
+                        $vals = array_filter((array) $request->tipe_desain);
+                        if (!empty($vals)) $q->whereIn('tipe_desain', $vals);
+                    }
+                    if ($request->filled('jenis_program')) {
+                        $vals = array_filter((array) $request->jenis_program);
+                        if (!empty($vals)) $q->whereIn('jenis_program', $vals);
+                    }
+                    if ($request->filled('cfu')) {
+                        $vals = array_filter((array) $request->cfu);
+                        if (!empty($vals)) $q->whereIn('cfu', $vals);
+                    }
+                    if ($request->filled('status_proyek')) {
+                        $vals = array_filter((array) $request->status_proyek);
+                        if (!empty($vals)) $q->whereIn('status_proyek', $vals);
+                    }
                 });
             }
-        }
 
-        
-        $key = $request->filter_key;
-        $values = array_filter(array_map('trim', explode(',', $request->filter_values ?? '')));
+            if ($request->usia == 'overdue') {
+                $today = \Carbon\Carbon::now()->startOfDay()->format('Y-m-d');
+                $query->whereHas('planning', function($q) {
+                    $q->whereNotIn('status_order', ['Success', 'Gagal', 'Cancel']);
+                })
+                ->whereNotIn('ebis_manual_inputs.progres', ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON'])
+                ->whereNotNull('data')
+                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.commitment_date')) IS NOT NULL")
+                ->whereRaw("STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(data, '$.commitment_date')), '%Y-%m-%d') < ?", [$today]);
+            }
 
-        if ($key && !empty($values)) {
-            $rows->where(function ($q) use ($key, $values) {
-                foreach ($values as $val) {
-                    
-                    if ($key === 'star_click_id') {
-                        $q->orWhere('ebis_manual_inputs.star_click_id', $val); 
-                    } elseif ($key === 'sto') {
-                        $q->orWhere('ebis_manual_inputs.sto', 'like', "%{$val}%");
-                    } elseif ($key === 'nama_customer') {
-                        $q->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$val}%");
-                    }
+            if ($request->filled('start_date') && $request->filled('end_date')) {
+                $query->whereBetween('created_at', [
+                    $request->start_date . ' 00:00:00',
+                    $request->end_date . ' 23:59:59'
+                ]);
+            } elseif ($request->filled('start_date')) {
+                $query->where('created_at', '>=', $request->start_date . ' 00:00:00');
+            } elseif ($request->filled('end_date')) {
+                $query->where('created_at', '<=', $request->end_date . ' 23:59:59');
+            }
 
-                    
-                    if (in_array($key, ['ihld_lop_id', 'status_order', 'tipe_desain', 'jenis_program'])) {
-                        $q->orWhereHas('planning', function ($p) use ($key, $val) {
-                            if ($key === 'ihld_lop_id') {
-                                $p->where($key, $val);
-                            } else {
-                                $p->where($key, 'like', "%{$val}%");
-                            }
-                        });
-                    }
+            if ($request->filled('search')) {
+                $search = $request->search;
+                if (str_contains($search, ',')) {
+                    $values = array_filter(array_map('trim', explode(',', $search)));
+                    $query->where(function ($q) use ($values) {
+                        $q->whereIn('star_click_id', $values);
+                        foreach ($values as $val) {
+                            $q->orWhere('nama_customer', 'like', "%{$val}%");
+                        }
+                    });
+                } else {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('ebis_manual_inputs.star_click_id', 'like', "%{$search}%")
+                          ->orWhere('ebis_manual_inputs.nde_jt', 'like', "%{$search}%")
+                          ->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$search}%")
+                          ->orWhere('ebis_manual_inputs.sto', 'like', "%{$search}%");
+                    });
                 }
-            });
-        }
+            }
 
-        
-        $rows = $rows->paginate(10)->withQueryString();
+            $key    = $request->filter_key;
+            $values = array_filter(array_map('trim', explode(',', $request->filter_values ?? '')));
+            if ($key && !empty($values)) {
+                $query->where(function ($q) use ($key, $values) {
+                    foreach ($values as $val) {
+                        if ($key === 'star_click_id') {
+                            $q->orWhere('ebis_manual_inputs.star_click_id', $val);
+                        } elseif ($key === 'sto') {
+                            $q->orWhere('ebis_manual_inputs.sto', 'like', "%{$val}%");
+                        } elseif ($key === 'nama_customer') {
+                            $q->orWhere('ebis_manual_inputs.nama_customer', 'like', "%{$val}%");
+                        }
+                        if (in_array($key, ['ihld_lop_id', 'status_order', 'tipe_desain', 'jenis_program'])) {
+                            $q->orWhereHas('planning', function ($p) use ($key, $val) {
+                                if ($key === 'ihld_lop_id') {
+                                    $p->where($key, $val);
+                                } else {
+                                    $p->where($key, 'like', "%{$val}%");
+                                }
+                            });
+                        }
+                    }
+                });
+            }
 
-        
-        $filters = DropdownHelper::getDynamicFilters();
+            return $query->paginate(10)->withQueryString();
+        });
 
         if ($request->ajax()) {
             return view('deployment.partials.update-table', compact('rows'))->render();
@@ -254,35 +243,67 @@ class EbisManualInputController extends Controller
             'commitment_date' => 'nullable|date',
         ];
 
-        
+        $messages = [
+            'evidence_perijinan.required_without' => 'Evidence Perijinan berupa file gambar atau link dokumen harus diisi salah satu.',
+            'link_evidence_perijinan.required_without' => 'Evidence Perijinan berupa file gambar atau link dokumen harus diisi salah satu.',
+            'evidence_approved.required_without' => 'Evidence Approved berupa file gambar atau link dokumen harus diisi salah satu.',
+            'link_evidence_approved.required_without' => 'Evidence Approved berupa file gambar atau link dokumen harus diisi salah satu.',
+            'evidence_matdev.required_without' => 'Evidence Matdev berupa file gambar atau link dokumen harus diisi salah satu.',
+            'link_evidence_matdev.required_without' => 'Evidence Matdev berupa file gambar atau link dokumen harus diisi salah satu.',
+            'evidence_instalasi.required_without' => 'Evidence Instalasi berupa file gambar atau link dokumen harus diisi salah satu.',
+            'link_evidence_instalasi.required_without' => 'Evidence Instalasi berupa file gambar atau link dokumen harus diisi salah satu.',
+            'evidence_selesai_fisik.required_without' => 'Evidence Selesai Fisik berupa file gambar atau link dokumen harus diisi salah satu.',
+            'link_evidence_selesai_fisik.required_without' => 'Evidence Selesai Fisik berupa file gambar atau link dokumen harus diisi salah satu.',
+        ];
+
         if ($request->progres === 'PERIJINAN') {
-            $rules['evidence_perijinan'] = empty($existingData['evidence_perijinan'])
-                ? 'required|image|max:2048'
-                : 'nullable|image|max:2048';
-        }
-
-        if ($request->progres === 'INSTALASI') {
-            $rules['evidence_instalasi'] = empty($existingData['evidence_instalasi'])
-                ? 'required|image|max:2048'
-                : 'nullable|image|max:2048';
-        }
-
-        if ($request->progres === 'SELESAI FISIK') {
-            $rules['evidence_selesai_fisik'] = empty($existingData['evidence_selesai_fisik'])
-                ? 'required|image|max:2048'
-                : 'nullable|image|max:2048';
+            if (empty($existingData['evidence_perijinan']) && empty($existingData['link_evidence_perijinan'])) {
+                $rules['evidence_perijinan'] = 'required_without:link_evidence_perijinan|nullable|image|max:2048';
+                $rules['link_evidence_perijinan'] = 'required_without:evidence_perijinan|nullable|string';
+            } else {
+                $rules['evidence_perijinan'] = 'nullable|image|max:2048';
+                $rules['link_evidence_perijinan'] = 'nullable|string';
+            }
         }
 
         if ($request->progres === 'APPROVED BY EBIS') {
-            $rules['evidence_approved'] = empty($existingData['evidence_approved'])
-                ? 'required|image|max:2048'
-                : 'nullable|image|max:2048';
+            if (empty($existingData['evidence_approved']) && empty($existingData['link_evidence_approved'])) {
+                $rules['evidence_approved'] = 'required_without:link_evidence_approved|nullable|image|max:2048';
+                $rules['link_evidence_approved'] = 'required_without:evidence_approved|nullable|string';
+            } else {
+                $rules['evidence_approved'] = 'nullable|image|max:2048';
+                $rules['link_evidence_approved'] = 'nullable|string';
+            }
         }
 
         if ($request->progres === 'MATDEV') {
-            $rules['evidence_matdev'] = empty($existingData['evidence_matdev'])
-                ? 'required|image|max:2048'
-                : 'nullable|image|max:2048';
+            if (empty($existingData['evidence_matdev']) && empty($existingData['link_evidence_matdev'])) {
+                $rules['evidence_matdev'] = 'required_without:link_evidence_matdev|nullable|image|max:2048';
+                $rules['link_evidence_matdev'] = 'required_without:evidence_matdev|nullable|string';
+            } else {
+                $rules['evidence_matdev'] = 'nullable|image|max:2048';
+                $rules['link_evidence_matdev'] = 'nullable|string';
+            }
+        }
+
+        if ($request->progres === 'INSTALASI') {
+            if (empty($existingData['evidence_instalasi']) && empty($existingData['link_evidence_instalasi'])) {
+                $rules['evidence_instalasi'] = 'required_without:link_evidence_instalasi|nullable|image|max:2048';
+                $rules['link_evidence_instalasi'] = 'required_without:evidence_instalasi|nullable|string';
+            } else {
+                $rules['evidence_instalasi'] = 'nullable|image|max:2048';
+                $rules['link_evidence_instalasi'] = 'nullable|string';
+            }
+        }
+
+        if ($request->progres === 'SELESAI FISIK') {
+            if (empty($existingData['evidence_selesai_fisik']) && empty($existingData['link_evidence_selesai_fisik'])) {
+                $rules['evidence_selesai_fisik'] = 'required_without:link_evidence_selesai_fisik|nullable|image|max:2048';
+                $rules['link_evidence_selesai_fisik'] = 'required_without:evidence_selesai_fisik|nullable|string';
+            } else {
+                $rules['evidence_selesai_fisik'] = 'nullable|image|max:2048';
+                $rules['link_evidence_selesai_fisik'] = 'nullable|string';
+            }
         }
 
         if ($request->progres === 'GOLIVE') {
@@ -299,7 +320,7 @@ class EbisManualInputController extends Controller
             $rules['jenis_kendala'] = 'required|string|max:100';
         }
 
-        $request->validate($rules);
+        $request->validate($rules, $messages);
 
         
         
@@ -375,7 +396,35 @@ class EbisManualInputController extends Controller
         });
 
         \Illuminate\Support\Facades\Cache::forget('kpro_dynamic_filters');
+
+        // Hapus cache update list dan lihat data agar data terbaru langsung tampil setelah update
+        $this->clearUpdateListCache();
+        $this->clearLihatDataCache();
+
         return redirect()->route('deployment.update')->with('success', 'Progress deployment berhasil diperbarui');
+    }
+
+    /**
+     * Hapus cache update list untuk halaman tanpa filter (page 1-5).
+     */
+    private function clearUpdateListCache(): void
+    {
+        for ($page = 1; $page <= 5; $page++) {
+            \Illuminate\Support\Facades\Cache::forget('update_list_' . md5('page=' . $page));
+            // Default (tanpa parameter apapun, page 1)
+            \Illuminate\Support\Facades\Cache::forget('update_list_' . md5(''));
+        }
+    }
+
+    /**
+     * Hapus cache lihat data untuk page 1-5 (yang paling sering dikunjungi).
+     */
+    private function clearLihatDataCache(): void
+    {
+        for ($page = 1; $page <= 5; $page++) {
+            \Illuminate\Support\Facades\Cache::forget('lihat_data_' . md5('page=' . $page));
+            \Illuminate\Support\Facades\Cache::forget('lihat_data_' . md5(''));
+        }
     }
 
     public function searchStarclick(Request $request)
