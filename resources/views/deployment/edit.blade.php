@@ -77,25 +77,25 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Nama Pelanggan</label>
                             <div class="font-medium text-slate-800 text-base border-b border-slate-100 pb-2">
-                                {{ \App\Helpers\MaskHelper::mask($data->nama_customer) }}
+                                {{ $data->nama_customer }}
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Starclick ID</label>
                             <div class="font-mono text-slate-600 text-sm bg-slate-50 px-3 py-2 rounded-lg border border-slate-100">
-                                {{ \App\Helpers\MaskHelper::mask($data->star_click_id) }}
+                                {{ $data->star_click_id }}
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Datel</label>
-                                <div class="font-medium text-slate-700">{{ \App\Helpers\MaskHelper::mask($data->datel) }}</div>
+                                <div class="font-medium text-slate-700">{{ $data->datel }}</div>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">STO</label>
-                                <div class="font-medium text-slate-700">{{ \App\Helpers\MaskHelper::mask($data->sto) }}</div>
+                                <div class="font-medium text-slate-700">{{ $data->sto }}</div>
                             </div>
                         </div>
                     </div>
@@ -112,13 +112,13 @@
                          <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Status Order</label>
                             <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
-                                {{ \App\Helpers\MaskHelper::mask(optional($data->planning)->status_order) }}
+                                {{ optional($data->planning)->status_order }}
                             </span>
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tipe Desain</label>
-                            <div class="font-medium text-slate-700">{{ \App\Helpers\MaskHelper::mask(optional($data->planning)->tipe_desain) }}</div>
+                            <div class="font-medium text-slate-700">{{ optional($data->planning)->tipe_desain }}</div>
                         </div>
                     </div>
                 </div>

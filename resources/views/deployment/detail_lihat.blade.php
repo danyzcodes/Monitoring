@@ -52,7 +52,7 @@
         <div class="px-8 py-5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-center justify-between" x-data="{ showRiwayat: false }">
             <div>
                 <h2 class="text-lg font-bold text-slate-800">Detail Deployment</h2>
-                <p class="text-sm text-slate-500 mt-0.5">{{ \App\Helpers\MaskHelper::mask($data->nama_customer) }}</p>
+                <p class="text-sm text-slate-500 mt-0.5">{{ $data->nama_customer }}</p>
             </div>
             <div class="flex items-center gap-3">
                 <x-status-badge :value="$data->progres" />
@@ -83,7 +83,7 @@
                             <div>
                                 <h3 class="text-lg font-bold text-slate-800">Daftar Riwayat Proses Order</h3>
                                 <div class="flex items-center gap-2 mt-0.5">
-                                    <p class="text-xs text-slate-500">{{ \App\Helpers\MaskHelper::mask($data->nama_customer) }} &mdash; {{ \App\Helpers\MaskHelper::mask($data->star_click_id) }}</p>
+                                    <p class="text-xs text-slate-500">{{ $data->nama_customer }} &mdash; {{ $data->star_click_id }}</p>
                                     @if($data->created_at)
                                         @php
                                             $isSelesai = in_array(strtolower(optional($data->planning)->status_order ?? ''), ['selesai', 'closed', 'cancel', 'drop', 'completed']);
@@ -251,31 +251,31 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm">
                     <div>
                         <div class="text-slate-500 text-xs mb-1">NDE JT</div>
-                        <div class="font-medium text-slate-800">{{ \App\Helpers\MaskHelper::mask($data->nde_jt) }}</div>
+                        <div class="font-medium text-slate-800">{{ $data->nde_jt }}</div>
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Starclick ID</div>
-                        <div class="font-medium text-slate-800">{{ \App\Helpers\MaskHelper::mask($data->star_click_id) }}</div>
+                        <div class="font-medium text-slate-800">{{ $data->star_click_id }}</div>
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Nama Pelanggan</div>
-                        <div class="font-medium text-slate-800">{{ \App\Helpers\MaskHelper::mask($data->nama_customer) }}</div>
+                        <div class="font-medium text-slate-800">{{ $data->nama_customer }}</div>
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Nama Mitra</div>
-                        <div class="font-medium text-slate-800">{{ \App\Helpers\MaskHelper::mask($data->nama_mitra) }}</div>
+                        <div class="font-medium text-slate-800">{{ $data->nama_mitra }}</div>
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Telepon</div>
-                        <div class="font-medium text-slate-800">{{ \App\Helpers\MaskHelper::mask($data->telepon_pelanggan) }}</div>
+                        <div class="font-medium text-slate-800">{{ $data->telepon_pelanggan }}</div>
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Tikor</div>
-                        <div class="font-medium text-slate-800 font-mono text-xs">{{ \App\Helpers\MaskHelper::mask($data->tikor_pelanggan) }}</div>
+                        <div class="font-medium text-slate-800 font-mono text-xs">{{ $data->tikor_pelanggan }}</div>
                     </div>
                     <div class="col-span-1 md:col-span-2">
                         <div class="text-slate-500 text-xs mb-1">Alamat</div>
-                        <div class="font-medium text-slate-800">{{ \App\Helpers\MaskHelper::mask($data->alamat_pelanggan) }}</div>
+                        <div class="font-medium text-slate-800">{{ $data->alamat_pelanggan }}</div>
                     </div>
                 </div>
             </div>
@@ -286,7 +286,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm">
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Datel</div>
-                        <div class="font-medium text-slate-800">{{ \App\Helpers\MaskHelper::mask($data->datel) }}</div>
+                        <div class="font-medium text-slate-800">{{ $data->datel }}</div>
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">STO</div>
@@ -294,41 +294,41 @@
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Status Order</div>
-                        <x-status-badge :value="optional($data->planning)->status_order" mask />
+                        <x-status-badge :value="optional($data->planning)->status_order" />
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Status Alokasi</div>
-                        <x-status-badge :value="optional($data->planning)->status_alokasi_alpro" mask />
+                        <x-status-badge :value="optional($data->planning)->status_alokasi_alpro" />
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Tipe Desain</div>
-                        <div class="font-medium text-slate-800">{{ \App\Helpers\MaskHelper::mask(optional($data->planning)->tipe_desain) }}</div>
+                        <div class="font-medium text-slate-800">{{ optional($data->planning)->tipe_desain }}</div>
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Jenis Program</div>
-                        <x-status-badge :value="optional($data->planning)->jenis_program" mask />
+                        <x-status-badge :value="optional($data->planning)->jenis_program" />
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">LoP ID</div>
-                        <div class="font-medium text-slate-800">{{ \App\Helpers\MaskHelper::mask(optional($data->planning)->ihld_lop_id) }}</div>
+                        <div class="font-medium text-slate-800">{{ optional($data->planning)->ihld_lop_id }}</div>
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Total BOQ</div>
                         <div class="font-medium text-slate-800 font-mono">
-                            {{ optional($data->planning)->total_boq ? \App\Helpers\MaskHelper::mask(number_format(optional($data->planning)->total_boq, 0, ',', '.')) : '-' }}
+                            {{ optional($data->planning)->total_boq ? number_format(optional($data->planning)->total_boq, 0, ',', '.') : '-' }}
                         </div>
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">CFU</div>
-                        <x-status-badge :value="optional($data->planning)->cfu" mask />
+                        <x-status-badge :value="optional($data->planning)->cfu" />
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Nama CFU</div>
-                        <x-status-badge :value="optional($data->planning)->nama_cfu" mask />
+                        <x-status-badge :value="optional($data->planning)->nama_cfu" />
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Status Proyek</div>
-                        <x-status-badge :value="optional($data->planning)->status_proyek" mask />
+                        <x-status-badge :value="optional($data->planning)->status_proyek" />
                     </div>
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Keterangan</div>

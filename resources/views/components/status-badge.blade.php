@@ -1,4 +1,4 @@
-@props(['value', 'mask' => false])
+@props(['value'])
 
 @php
     $value = $value ?? '-';
@@ -58,10 +58,8 @@
         // DEFAULT (Slate/Gray for empty/dash)
         default => 'bg-slate-100 text-slate-600 border-slate-200'
     };
-
-    $displayValue = $mask ? \App\Helpers\MaskHelper::mask($value) : $value;
 @endphp
 
 <span {{ $attributes->merge(['class' => "inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold border $colorClass"]) }}>
-    {{ $displayValue }}
+    {{ $value }}
 </span>

@@ -164,7 +164,7 @@
                                     <p class="text-[9px]" style="color:#9ca3af;">
                                         {{ $log->created_at->diffForHumans(null, true, true) }}</p>
                                 </div>
-                                <p class="text-[10px] text-slate-500">Updated <span class="font-bold text-slate-700">#{{ \App\Helpers\MaskHelper::mask($log->planning->star_click_id ?? 'N/A') }}</span></p>
+                                <p class="text-[10px] text-slate-500">Updated <span class="font-bold text-slate-700">#{{ $log->planning->star_click_id ?? 'N/A' }}</span></p>
                                 <div class="flex items-center gap-1.5 mt-1">
                                     <span class="text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200/60">
                                         {{ $log->progres }}

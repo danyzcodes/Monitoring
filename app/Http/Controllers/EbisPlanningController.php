@@ -118,20 +118,7 @@ class EbisPlanningController extends Controller
                 ->withQueryString();
         });
 
-        $rows->through(function ($item) {
-            $newItem = new \App\Helpers\MaskedRow();
-            $attributes = $item->getAttributes();
-            foreach ($attributes as $key => $value) {
-                if ($key !== 'id' && $value !== null && $value !== '') {
-                    $newItem->{"raw_{$key}"} = $value;
-                    $newItem->{$key} = \App\Helpers\MaskHelper::mask($value);
-                } else {
-                    $newItem->{$key} = $value;
-                }
-            }
-            $newItem->id = $item->id;
-            return $newItem;
-        });
+
 
         if ($request->ajax()) {
             return view('deployment.partials.table', compact('rows'))->render();
