@@ -204,6 +204,4 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('admin.api.top-mitras');
 });
 
-
-
 require __DIR__ . '/auth.php';
