@@ -88,19 +88,9 @@
             <form method="POST" action="{{ route('logout') }}" data-turbo="false">
                 @csrf
                 <button type="submit" class="btn-primary w-full py-3.5 rounded-xl font-semibold text-white text-sm shadow-lg flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
                     Kembali ke Login
                 </button>
             </form>
-
-            
-            <div class="mt-8 pt-6 border-t border-slate-100">
-                <p class="text-xs text-slate-400">
-                    &copy; {{ date('Y') }} PT Telkom Indonesia Tbk.
-                </p>
-            </div>
 
         </div>
     </div>

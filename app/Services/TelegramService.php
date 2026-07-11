@@ -103,7 +103,7 @@ class TelegramService
 
         $text  = "📢 <b>[LAPORAN HARIAN OTOMATIS]</b>\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━\n\n";
-        $text .= "🌅 <b>SEMANGAT PAGI!</b> ☀️\n\n";
+        $text .= "🌇 <b>SELAMAT SORE!</b> 🌅\n\n";
         $text .= "Berikut kami sampaikan Progress Order Hari ini\n";
         $text .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
         $text .= "📊 <b>FORMAT DATA</b>\n\n";
