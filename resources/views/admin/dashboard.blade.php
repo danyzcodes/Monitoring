@@ -697,46 +697,45 @@
 
             if (badge) {
                 badge.textContent = users.length > 0 ? 'Action Required' : 'Clear';
-                badge.style.background = users.length > 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)';
+                if (users.length > 0) {
+                    badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-100 bg-blue-50 text-blue-700 tracking-wide';
+                } else {
+                    badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-100 bg-emerald-50 text-emerald-700 tracking-wide';
+                }
+                badge.style.background = '';
             }
 
             if (!users || users.length === 0) {
                 container.innerHTML = `
-                <div class="text-center py-10 opacity-60">
-                    <svg class="w-10 h-10 mx-auto mb-2" style="color:rgba(255,255,255,0.3);" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M5 13l4 4L19 7" stroke-width="3" stroke-linecap="round"></path>
+                <div class="flex flex-col items-center justify-center h-full py-8 text-center text-slate-400/80">
+                    <svg class="w-8 h-8 mb-2 text-slate-350" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <p class="text-xs font-bold text-white">No users waiting</p>
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-450">No users waiting</p>
                 </div>`;
                 return;
             }
 
             container.innerHTML = users.map(user => `
-                <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-white/20 transition-colors border"
-                    style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.1);">
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:bg-slate-100/50 hover:border-slate-200 transition-all">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-xs uppercase shadow-sm"
-                            style="background:white; color:#e32b2b;">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs uppercase bg-white text-slate-700 border border-slate-200 shadow-sm shrink-0">
                             ${user.initial}
                         </div>
-                        <div>
-                            <p class="text-xs font-bold leading-none text-white">${user.name}</p>
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold text-slate-700 truncate leading-none">${user.name}</p>
                             ${user.requested_role ? `
-                                    <span class="inline-block mt-1 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md"
-                                        style="background:rgba(255,255,255,0.2); color:rgba(255,255,255,0.9);">
-                                        Request: ${user.requested_role}
+                                    <span class="inline-block mt-1 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded text-blue-700 bg-blue-50 border border-blue-100/55">
+                                        Req: ${user.requested_role}
                                     </span>` : ''}
-                            <p class="text-[10px] mt-0.5" style="color:rgba(255,255,255,0.5);">
+                            <p class="text-[9px] mt-0.5 text-slate-400">
                                 ${user.time_ago}</p>
                         </div>
                     </div>
                     <a href="${user.route}"
-                        class="p-2 rounded-xl hover:scale-110 transition-transform shadow-lg"
-                        style="background:white; color:#e32b2b;">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M5 13l4 4L19 7"></path>
+                        class="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-850 hover:bg-slate-50 transition-all shadow-sm">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </a>
                 </div>
