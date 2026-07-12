@@ -37,6 +37,10 @@ class OtpPasswordResetController extends Controller
             return back()->withInput()->withErrors(['email' => 'Email tidak terdaftar dalam sistem kami.']);
         }
 
+        if ($user->role === 'waiting') {
+            return back()->withInput()->withErrors(['email' => 'Akun Anda ditangguhkan atau sedang menunggu persetujuan admin. Anda tidak dapat melakukan reset password.']);
+        }
+
         
         $otpCode = (string) rand(100000, 999999);
 
@@ -95,6 +99,11 @@ class OtpPasswordResetController extends Controller
 
         $email = session('reset_email');
 
+        $user = User::where('email', $email)->first();
+        if ($user && $user->role === 'waiting') {
+            return redirect()->route('password.request')->withErrors(['email' => 'Akun Anda ditangguhkan atau sedang menunggu persetujuan admin.']);
+        }
+
         $record = DB::table('password_reset_tokens')->where('email', $email)->first();
 
         if (!$record || $record->token !== $request->code) {
@@ -121,6 +130,12 @@ class OtpPasswordResetController extends Controller
         }
 
         $email = session('reset_email');
+
+        $user = User::where('email', $email)->first();
+        if ($user && $user->role === 'waiting') {
+            return redirect()->route('password.request')->withErrors(['email' => 'Akun Anda ditangguhkan atau sedang menunggu persetujuan admin.']);
+        }
+
         $cooldown = session('otp_resend_cooldown', 0);
 
         if (now()->timestamp < $cooldown) {
@@ -182,6 +197,10 @@ class OtpPasswordResetController extends Controller
 
         if (!$user) {
             return redirect()->route('password.request')->withErrors(['email' => 'User tidak ditemukan.']);
+        }
+
+        if ($user->role === 'waiting') {
+            return redirect()->route('password.request')->withErrors(['email' => 'Akun Anda ditangguhkan atau sedang menunggu persetujuan admin.']);
         }
 
         

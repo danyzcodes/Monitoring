@@ -32,7 +32,7 @@
 
             
             <a href="{{ route('deployment.upload') }}" class="flex flex-col items-center gap-2 group transition active:scale-95">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center text-purple-600 shadow-sm border border-purple-200/50 group-hover:bg-gradient-to-br group-hover:from-purple-100 group-hover:to-purple-200">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-600 shadow-sm border border-slate-300/50 group-hover:bg-gradient-to-br group-hover:from-slate-200 group-hover:to-slate-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
                 <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">Upload<br>Data</span>
@@ -41,7 +41,7 @@
             @if(auth()->user()->role === 'admin')
             
             <a href="{{ route('admin.users') }}" class="flex flex-col items-center gap-2 group transition active:scale-95">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center text-blue-600 shadow-sm border border-blue-200/50 group-hover:bg-gradient-to-br group-hover:from-blue-100 group-hover:to-blue-200">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-600 shadow-sm border border-slate-300/50 group-hover:bg-gradient-to-br group-hover:from-slate-200 group-hover:to-slate-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
                 </div>
                 <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">Kelola<br>Akun</span>
@@ -49,7 +49,7 @@
 
             
             <a href="{{ route('admin.master-input') }}" class="flex flex-col items-center gap-2 group transition active:scale-95">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-200/50 group-hover:bg-gradient-to-br group-hover:from-emerald-100 group-hover:to-emerald-200">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-600 shadow-sm border border-slate-300/50 group-hover:bg-gradient-to-br group-hover:from-slate-200 group-hover:to-slate-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
                 </div>
                 <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">Master<br>Input</span>
@@ -57,7 +57,7 @@
 
             
             <a href="{{ route('deployment.progress-overview') }}" class="flex flex-col items-center gap-2 group transition active:scale-95">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-orange-600 shadow-sm border border-orange-200/50 group-hover:bg-gradient-to-br group-hover:from-orange-100 group-hover:to-orange-200">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-600 shadow-sm border border-slate-300/50 group-hover:bg-gradient-to-br group-hover:from-slate-200 group-hover:to-slate-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                 </div>
                 <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">Progress<br>Overview</span>
