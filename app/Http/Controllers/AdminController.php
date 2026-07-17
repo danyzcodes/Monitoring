@@ -915,6 +915,12 @@ class AdminController extends Controller
         }
 
         
+        $linearStages = [
+            'ON DESK', 'SURVEY', 'PERIJINAN', 'DRM', 'APPROVED BY EBIS',
+            'MATDEV', 'INSTALASI', 'SELESAI FISIK', 'GOLIVE',
+            'PS', 'UJI TERIMA', 'REKON'
+        ];
+
         $timelineData = [];
         if (!empty($filterMitraArr)) {
             $mitrasToCompare = $filterMitraArr;
@@ -935,12 +941,6 @@ class AdminController extends Controller
 
             
             $groupedOrders = $compareOrders->groupBy('nama_mitra');
-
-            $linearStages = [
-                'ON DESK', 'SURVEY', 'PERIJINAN', 'DRM', 'APPROVED BY EBIS',
-                'MATDEV', 'INSTALASI', 'SELESAI FISIK', 'GOLIVE',
-                'PS', 'UJI TERIMA', 'REKON'
-            ];
 
             foreach ($mitrasToCompare as $mitraName) {
                 $orders = $groupedOrders->get($mitraName, collect());
@@ -1044,6 +1044,29 @@ class AdminController extends Controller
                     'total_orders' => $totalOrdersCount
                 ];
             }
+        } else {
+            // Populate a default empty timeline when no Mitra is selected
+            $dummySteps = [];
+            $dummySteps[] = [
+                'stage' => 'ON DESK',
+                'duration' => 'Mulai',
+                'time' => 'Referensi Awal',
+                'sample_size' => 0
+            ];
+            for ($i = 0; $i < count($linearStages) - 1; $i++) {
+                $stageB = $linearStages[$i + 1];
+                $dummySteps[] = [
+                    'stage' => $stageB,
+                    'duration' => 'N/A',
+                    'time' => 'Tidak ada data',
+                    'sample_size' => 0
+                ];
+            }
+            $timelineData[] = [
+                'mitra' => 'Belum Ada Mitra Terpilih / Data Kosong',
+                'steps' => $dummySteps,
+                'total_orders' => 0
+            ];
         }
 
         

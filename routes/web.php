@@ -27,7 +27,10 @@ Route::middleware('guest')->group(function () {
 
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    if (Auth::user()->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('deployment.b2b');
 })
 ->middleware(['auth', 'role:optima,admin,tif,telkom_akses'])
 ->name('dashboard');
