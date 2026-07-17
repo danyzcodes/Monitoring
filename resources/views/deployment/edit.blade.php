@@ -245,7 +245,7 @@
                 }
             },
 
-            initiateSubmit() {
+             initiateSubmit() {
                 // Check if progress is filled because it is required (*)
                 const progresSelect = document.getElementById('progres');
                 if (progresSelect && (!progresSelect.value || progresSelect.value === '')) {
@@ -257,6 +257,46 @@
                         confirmButtonText: 'OK'
                     });
                     return;
+                }
+
+                // Check dynamic fields
+                const progress = this.currentProgress;
+                if (progress && progressConfig[progress]) {
+                    let missingFields = [];
+                    
+                    progressConfig[progress].forEach(field => {
+                        if (field.type === 'file') {
+                            const linkName = `link_${field.name}`;
+                            const fileInput = this.formEl.querySelector(`input[name="${field.name}"]`);
+                            const linkInput = this.formEl.querySelector(`input[name="${linkName}"]`);
+                            
+                            const hasExistingFile = this.existingData && this.existingData[field.name];
+                            const hasExistingLink = this.existingData && this.existingData[linkName];
+                            
+                            const hasNewFile = fileInput && fileInput.files && fileInput.files.length > 0;
+                            const hasNewLink = linkInput && linkInput.value && linkInput.value.trim() !== '';
+
+                            if (!hasExistingFile && !hasExistingLink && !hasNewFile && !hasNewLink) {
+                                missingFields.push(`${field.label} (File Gambar atau Link Dokumen)`);
+                            }
+                        } else {
+                            const input = this.formEl.querySelector(`[name="${field.name}"]`);
+                            if (input && (!input.value || input.value.trim() === '')) {
+                                missingFields.push(field.label);
+                            }
+                        }
+                    });
+
+                    if (missingFields.length > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Data Belum Lengkap',
+                            text: 'Mohon isi field berikut: ' + missingFields.join(', '),
+                            confirmButtonColor: '#dc2626',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
                 }
 
                 this.confirmOpen = true;
@@ -298,7 +338,7 @@
 
                        html += `
                             <div class="${field.fullWidth ? 'col-span-2' : ''}">
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">${field.label}</label>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">${field.label} <span class="text-red-500">*</span></label>
                                 <input type="${inputType}" name="${field.name}" value="${displayValue}" ${extraAttr}
                                     class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition bg-white">
                             </div>
@@ -313,7 +353,7 @@
                         
                         html += `
                             <div class="${field.fullWidth ? 'col-span-2' : ''}">
-                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">${field.label}</label>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">${field.label} <span class="text-red-500">*</span></label>
                                 <div class="relative">
                                     <select name="${field.name}" class="w-full appearance-none rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none transition bg-white">
                                         <option value="">-- Pilih --</option>
@@ -332,7 +372,7 @@
 
                         html += `
                             <div class="col-span-2 p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
-                                <label class="block text-sm font-bold text-slate-700 mb-3 border-b border-slate-100 pb-2">${field.label}</label>
+                                <label class="block text-sm font-bold text-slate-700 mb-3 border-b border-slate-100 pb-2">${field.label} <span class="text-red-500">*</span></label>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-xs text-slate-400 mb-1">Upload Gambar <span class="text-slate-300">(Maks 2MB)</span></label>

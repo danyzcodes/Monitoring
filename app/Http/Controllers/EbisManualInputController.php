@@ -254,7 +254,39 @@ class EbisManualInputController extends Controller
             'link_evidence_instalasi.required_without' => 'Evidence Instalasi berupa file gambar atau link dokumen harus diisi salah satu.',
             'evidence_selesai_fisik.required_without' => 'Evidence Selesai Fisik berupa file gambar atau link dokumen harus diisi salah satu.',
             'link_evidence_selesai_fisik.required_without' => 'Evidence Selesai Fisik berupa file gambar atau link dokumen harus diisi salah satu.',
+            
+            'boq_on_desk.required' => 'BoQ On Desk tidak boleh kosong.',
+            'boq_survey.required' => 'BoQ Survey tidak boleh kosong.',
+            'boq_drm.required' => 'BoQ DRM tidak boleh kosong.',
+            'status.required' => 'Status Uji Terima tidak boleh kosong.',
+            'boq_rekon.required' => 'BoQ Rekon tidak boleh kosong.',
+            
+            'nama_odp.required' => 'Nama ODP Golive tidak boleh kosong.',
+            'id_smallworld.required' => 'ID Smallworld tidak boleh kosong.',
+            'nomor_order_ps.required' => 'Nomor Order PS tidak boleh kosong.',
+            'tanggal_ps.required' => 'Tanggal PS tidak boleh kosong.',
+            'jenis_kendala.required' => 'Jenis Kendala tidak boleh kosong.',
         ];
+
+        if ($request->progres === 'ON DESK') {
+            $rules['boq_on_desk'] = 'required|string|max:50';
+        }
+
+        if ($request->progres === 'SURVEY') {
+            $rules['boq_survey'] = 'required|string|max:50';
+        }
+
+        if ($request->progres === 'DRM') {
+            $rules['boq_drm'] = 'required|string|max:50';
+        }
+
+        if ($request->progres === 'UJI TERIMA') {
+            $rules['status'] = 'required|string|max:50';
+        }
+
+        if ($request->progres === 'REKON') {
+            $rules['boq_rekon'] = 'required|string|max:50';
+        }
 
         if ($request->progres === 'PERIJINAN') {
             if (empty($existingData['evidence_perijinan']) && empty($existingData['link_evidence_perijinan'])) {
