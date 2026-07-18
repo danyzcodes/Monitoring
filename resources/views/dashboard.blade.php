@@ -115,7 +115,7 @@
             </a>
 
             
-            <a href="{{ route('deployment.b2b') }}" class="group relative h-72 rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/20">
+            <a href="{{ route('deployment.progress-overview') }}" class="group relative h-72 rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/20">
                 
                  <div class="absolute inset-0 bg-gradient-to-br from-white/40 via-white/10 to-white/5 rounded-3xl z-0"></div>
 

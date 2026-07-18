@@ -30,7 +30,7 @@ Route::get('/dashboard', function () {
     if (Auth::user()->role === 'admin') {
         return redirect()->route('admin.dashboard');
     }
-    return redirect()->route('deployment.b2b');
+    return redirect()->route('deployment.progress-overview');
 })
 ->middleware(['auth', 'role:optima,admin,tif,telkom_akses'])
 ->name('dashboard');
@@ -61,10 +61,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:optima,admin,tif,telkom_akses'])->group(function () {
 
-    
-    Route::get('/deployment/b2b', function () {
-        return view('deployment.b2b');
-    })->name('deployment.b2b');
+
 
     
     Route::get('/deployment/olo', function () {
