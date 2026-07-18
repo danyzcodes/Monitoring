@@ -487,9 +487,8 @@
                             <div class="flex-1 overflow-y-auto no-scrollbar space-y-3">
                                 <template x-if="selectedDay && selectedDay.details && selectedDay.details.length > 0">
                                     <template x-for="(detail, i) in selectedDay.details" :key="i">
-                                        <a :href="'/admin/workload?date=' + (selectedDay ? selectedDay.date : '') + '&mitra[]=' + encodeURIComponent(detail.mitra)"
-                                           class="flex items-center justify-between p-3.5 rounded-2xl border transition-all cursor-pointer group hover:-translate-y-0.5 hover:shadow-md"
-                                           :class="detail.count > 3 ? 'bg-red-50 border-red-200 hover:border-red-400' : 'bg-slate-50 border-slate-100 hover:border-blue-300 hover:bg-blue-50/40'">
+                                        <div class="flex items-center justify-between p-3.5 rounded-2xl border transition-all"
+                                             :class="detail.count > 3 ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-100'">
                                             <div class="flex items-center gap-3">
                                                 <div class="flex flex-col">
                                                     <span class="text-sm font-bold" :style="'color: ' + getMitraColor(detail.mitra)" x-text="detail.mitra"></span>
@@ -513,12 +512,8 @@
                                                     <span class="text-lg font-black" :class="detail.count > 3 ? 'text-red-600' : 'text-slate-800'" x-text="(detail.stages || []).length"></span>
                                                 </div>
                                                 <span class="text-[7px] font-bold uppercase tracking-widest block -mt-1" :class="detail.count > 3 ? 'text-red-400' : 'text-slate-400'">Stages</span>
-                                                <span class="text-[8px] font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity mt-1 flex items-center gap-0.5">
-                                                    Lihat
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
-                                                </span>
                                             </div>
-                                        </a>
+                                        </div>
                                     </template>
                                 </template>
                                 
