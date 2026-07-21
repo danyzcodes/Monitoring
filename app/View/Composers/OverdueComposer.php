@@ -28,7 +28,7 @@ class OverdueComposer
 
             $userId = Auth::id();
 
-            $overdueOrders = EbisManualInput::whereHas('planning', function($q) {
+            $query = EbisManualInput::whereHas('planning', function($q) {
                 
                 $q->whereNotIn('status_order', ['Success', 'Gagal', 'Cancel']);
             })
@@ -40,9 +40,13 @@ class OverdueComposer
                 $q->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.commitment_updated_by')) IS NULL")
                   ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(data, '$.commitment_updated_by')) = ?", [$userId]);
             })
-            
-            ->whereNotIn('progres', ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON'])
-            ->get();
+            ->whereNotIn('progres', ['GOLIVE', 'PS', 'UJI TERIMA', 'REKON']);
+
+            if (Auth::user()->role !== 'admin') {
+                $query->where('user_id', $userId);
+            }
+
+            $overdueOrders = $query->get();
 
             $overdueCount = $overdueOrders->count();
         }

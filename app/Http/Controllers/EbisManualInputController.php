@@ -447,15 +447,14 @@ class EbisManualInputController extends Controller
         return redirect()->route('deployment.update')->with('success', 'Progress deployment berhasil diperbarui');
     }
 
-    /**
-     * Hapus cache update list untuk halaman tanpa filter (page 1-5).
-     */
     private function clearUpdateListCache(): void
     {
+        $userId = auth()->id();
+        if (!$userId) return;
+
+        \Illuminate\Support\Facades\Cache::forget('update_list_' . $userId . '_' . md5(''));
         for ($page = 1; $page <= 5; $page++) {
-            \Illuminate\Support\Facades\Cache::forget('update_list_' . md5('page=' . $page));
-            // Default (tanpa parameter apapun, page 1)
-            \Illuminate\Support\Facades\Cache::forget('update_list_' . md5(''));
+            \Illuminate\Support\Facades\Cache::forget('update_list_' . $userId . '_' . md5('page=' . $page));
         }
     }
 
@@ -464,9 +463,12 @@ class EbisManualInputController extends Controller
      */
     private function clearLihatDataCache(): void
     {
+        $userId = auth()->id();
+        if (!$userId) return;
+
+        \Illuminate\Support\Facades\Cache::forget('lihat_data_' . $userId . '_' . md5(''));
         for ($page = 1; $page <= 5; $page++) {
-            \Illuminate\Support\Facades\Cache::forget('lihat_data_' . md5('page=' . $page));
-            \Illuminate\Support\Facades\Cache::forget('lihat_data_' . md5(''));
+            \Illuminate\Support\Facades\Cache::forget('lihat_data_' . $userId . '_' . md5('page=' . $page));
         }
     }
 
