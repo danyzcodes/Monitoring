@@ -169,14 +169,19 @@ class EbisPlanningController extends Controller
 
     public function lihatData(Request $request)
     {
-        // Cache key berdasarkan semua parameter request (filter + page)
-        $cacheKey = 'lihat_data_' . md5(http_build_query($request->except(['_token'])));
+        $user = auth()->user();
+        // Cache key berdasarkan user id dan semua parameter request (filter + page)
+        $cacheKey = 'lihat_data_' . $user->id . '_' . md5(http_build_query($request->except(['_token'])));
 
         $filters = DropdownHelper::getDynamicFilters();
 
-        $rows = \Illuminate\Support\Facades\Cache::remember($cacheKey, 90, function () use ($request) {
+        $rows = \Illuminate\Support\Facades\Cache::remember($cacheKey, 90, function () use ($request, $user) {
 
             $query = EbisManualInput::with('planning');
+
+            if ($user->role !== 'admin') {
+                $query->where('ebis_manual_inputs.user_id', $user->id);
+            }
 
             if ($request->filled('starclick')) {
                 $query->where('ebis_manual_inputs.star_click_id', $request->starclick);

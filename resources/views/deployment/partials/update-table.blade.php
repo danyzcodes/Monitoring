@@ -1,3 +1,15 @@
+@php
+    $isAdmin = auth()->user()->role === 'admin';
+    $userHeaders = ['Starclick ID', 'Nama', 'Alamat', 'Telepon', 'Tikor', 'Datel', 'STO', 'Batch'];
+    $adminHeaders = ['Status Alokasi', 'Status Order', 'LoP ID', 'Tipe Desain', 'Total BOQ', 'Program', 'CFU', 'Status Proyek'];
+    
+    $headers = $userHeaders;
+    if ($isAdmin) {
+        $headers = array_merge($headers, $adminHeaders);
+    }
+    $headers = array_merge($headers, ['Progres', 'Usia Order', 'Action']);
+@endphp
+
 <div class="relative overflow-x-auto">
     <table class="w-full text-sm text-left text-slate-600">
         <thead class="text-xs text-slate-500 uppercase border-b border-slate-200" style="background:#fafafa;">
@@ -5,7 +17,7 @@
                 <th class="px-6 py-4 font-semibold sticky left-0 bg-slate-50 z-10 border-r border-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                     NDE JT
                 </th>
-                @foreach (['Starclick ID', 'Nama', 'Alamat', 'Telepon', 'Tikor', 'Datel', 'STO', 'Batch', 'Status Alokasi', 'Status Order', 'LoP ID', 'Tipe Desain', 'Total BOQ', 'Program', 'CFU', 'Status Proyek', 'Progres', 'Usia Order', 'Action'] as $head)
+                @foreach ($headers as $head)
                     <th class="px-6 py-4 font-semibold whitespace-nowrap {{ $head === 'Action' ? 'text-center sticky right-0 bg-slate-50 z-10 border-l border-slate-100' : '' }}">
                         {{ $head }}
                     </th>
@@ -29,7 +41,7 @@
                 <td class="px-6 py-4 whitespace-nowrap">{{ $row->sto ?? '-' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ $row->nomor_batch ?? '-' }}</td>
 
-                
+                @if($isAdmin)
                 <td class="px-6 py-4 whitespace-nowrap">
                     <x-status-badge :value="optional($row->planning)->status_alokasi_alpro" />
                 </td>
@@ -48,18 +60,16 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     <x-status-badge :value="optional($row->planning)->nama_cfu" />
                 </td>
-
                 
                 <td class="px-6 py-4 whitespace-nowrap">
                     <x-status-badge :value="optional($row->planning)->status_proyek" />
                 </td>
+                @endif
 
-                
                 <td class="px-6 py-4 whitespace-nowrap">
                     <x-status-badge :value="$row->progres" />
                 </td>
 
-                
                  <td class="px-6 py-4 whitespace-nowrap">
                     @php
                         $commitmentDate = $row->data['commitment_date'] ?? null;
@@ -123,7 +133,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="19" class="px-6 py-12 text-center">
+                <td colspan="{{ $isAdmin ? 20 : 12 }}" class="px-6 py-12 text-center">
                     <div class="flex flex-col items-center justify-center">
                         <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                             <svg class="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">

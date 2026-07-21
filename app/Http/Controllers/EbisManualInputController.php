@@ -22,7 +22,11 @@ class EbisManualInputController extends Controller
         $stos = MasterSto::orderBy('nama_sto')->pluck('nama_sto');
         $mitras = MasterMitra::orderBy('nama_mitra')->pluck('nama_mitra');
 
-        $rows = EbisManualInput::orderBy('created_at', 'desc')->paginate(10);
+        $query = EbisManualInput::query();
+        if (auth()->user()->role !== 'admin') {
+            $query->where('user_id', auth()->id());
+        }
+        $rows = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return view('deployment.input', compact('datels', 'stos', 'rows', 'mitras'));
     }
@@ -59,6 +63,7 @@ class EbisManualInputController extends Controller
             ],
         );
 
+        $validated['user_id'] = auth()->id();
         $order = EbisManualInput::create($validated);
 
         
@@ -77,14 +82,19 @@ class EbisManualInputController extends Controller
     
     public function updateList(Request $request)
     {
-        // Cache key berdasarkan semua parameter request (filter + page)
-        $cacheKey = 'update_list_' . md5(http_build_query($request->except(['_token'])));
+        $user = auth()->user();
+        // Cache key berdasarkan user id dan semua parameter request (filter + page)
+        $cacheKey = 'update_list_' . $user->id . '_' . md5(http_build_query($request->except(['_token'])));
 
         $filters = DropdownHelper::getDynamicFilters();
 
-        $rows = \Illuminate\Support\Facades\Cache::remember($cacheKey, 90, function () use ($request) {
+        $rows = \Illuminate\Support\Facades\Cache::remember($cacheKey, 90, function () use ($request, $user) {
 
             $query = EbisManualInput::with('planning');
+
+            if ($user->role !== 'admin') {
+                $query->where('user_id', $user->id);
+            }
 
             if ($request->filled('starclick')) {
                 $query->where('star_click_id', $request->starclick);
@@ -220,7 +230,7 @@ class EbisManualInputController extends Controller
     
     public function edit($id)
     {
-        $data = EbisManualInput::with('planning')->findOrFail($id);
+        $data = EbisManualInput::with(['planning.logs.user'])->findOrFail($id);
 
         $datels = MasterDatel::orderBy('nama_datel')->get();
         $stos = MasterSto::orderBy('nama_sto')->get();
@@ -235,10 +245,11 @@ class EbisManualInputController extends Controller
         
         
         $manual = EbisManualInput::findOrFail($id);
+        $allowedOptions = $manual->getAllowedProgressOptions(auth()->user());
         $existingData = is_array($manual->data) ? $manual->data : [];
 
         $rules = [
-            'progres' => 'required|string|max:50',
+            'progres' => 'required|string|max:50|in:' . implode(',', $allowedOptions),
             'keterangan' => 'nullable|string',
             'commitment_date' => 'nullable|date',
         ];

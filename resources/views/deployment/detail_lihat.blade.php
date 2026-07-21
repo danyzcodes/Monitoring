@@ -292,6 +292,7 @@
                         <div class="text-slate-500 text-xs mb-1">STO</div>
                         <div class="font-medium text-slate-800">{{ $data->sto ?? '-' }}</div>
                     </div>
+                    @if(auth()->user()->role === 'admin')
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Status Order</div>
                         <x-status-badge :value="optional($data->planning)->status_order" />
@@ -330,6 +331,7 @@
                         <div class="text-slate-500 text-xs mb-1">Status Proyek</div>
                         <x-status-badge :value="optional($data->planning)->status_proyek" />
                     </div>
+                    @endif
                     <div>
                         <div class="text-slate-500 text-xs mb-1">Keterangan</div>
                         <div class="font-medium text-slate-800">{{ $data->keterangan ?? '-' }}</div>
@@ -425,9 +427,9 @@
                                         <div class="flex flex-wrap gap-3">
                                             @foreach($evidences as $eKey => $ePath)
                                             <div class="group relative">
-                                                <img src="{{ asset('storage/' . $ePath) }}" loading="lazy"
+                                                <img src="/storage/{{ $ePath }}" loading="lazy"
                                                      class="h-14 w-auto rounded border border-slate-200 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.1)] cursor-zoom-in group-hover:shadow-[0_4px_12px_-4px_rgba(227,43,43,0.3)] group-hover:border-red-200 transition-all duration-300"
-                                                     @click.prevent="imageUrl = '{{ asset('storage/' . $ePath) }}'; showImageModal = true"
+                                                     @click.prevent="imageUrl = '/storage/{{ $ePath }}'; showImageModal = true"
                                                      title="{{ str_replace('_', ' ', $eKey) }}">
                                                 <div class="absolute bottom-1 left-1 opacity-0 group-hover:opacity-100 px-1.5 py-0.5 bg-black/70 text-white text-[9px] rounded font-medium capitalize transition-opacity pointer-events-none">
                                                     {{ str_replace(['evidence_', '_'], ['', ' '], $eKey) }}
@@ -491,9 +493,9 @@
                                 <div class="text-sm font-medium text-slate-700 capitalize">{{ str_replace('_', ' ', $key) }}</div>
                                 @if(str_contains($key, 'evidence') && !str_starts_with($key, 'link_'))
                                     <div class="relative group w-fit">
-                                        <img src="{{ asset('storage/' . $value) }}" loading="lazy"
+                                        <img src="/storage/{{ $value }}" loading="lazy"
                                              class="h-20 w-auto rounded-lg border border-slate-200 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.1)] cursor-zoom-in group-hover:shadow-[0_4px_12px_-4px_rgba(227,43,43,0.3)] group-hover:border-red-200 transition-all duration-300"
-                                             @click.prevent="imageUrl = '{{ asset('storage/' . $value) }}'; showImageModal = true">
+                                             @click.prevent="imageUrl = '/storage/{{ $value }}'; showImageModal = true">
                                              
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-lg flex items-center justify-center pointer-events-none">
                                             <svg class="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -90,58 +90,87 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Status Order</label>
-                    <select id="u_status_order" name="status_order[]" multiple>
-                        @foreach ($filters['status_orders'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('status_order',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
-                    </select></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">STO</label>
-                    <select id="u_sto" name="sto[]" multiple>
-                        @foreach ($filters['stos'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('sto',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
-                    </select></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Jenis Program</label>
-                    <select id="u_jenis_program" name="jenis_program[]" multiple>
-                        @foreach ($filters['jenis_programs'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('jenis_program',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
-                    </select></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Datel</label>
-                    <select id="u_datel" name="datel[]" multiple>
-                        @foreach ($filters['datels'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('datel',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
-                    </select></div>
-                </div>
+                    @if(auth()->user()->role === 'admin')
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Status Order</label>
+                        <select id="u_status_order" name="status_order[]" multiple>
+                            @foreach ($filters['status_orders'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('status_order',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">STO</label>
+                        <select id="u_sto" name="sto[]" multiple>
+                            @foreach ($filters['stos'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('sto',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Jenis Program</label>
+                        <select id="u_jenis_program" name="jenis_program[]" multiple>
+                            @foreach ($filters['jenis_programs'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('jenis_program',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Datel</label>
+                        <select id="u_datel" name="datel[]" multiple>
+                            @foreach ($filters['datels'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('datel',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                    </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Tipe Desain</label>
-                    <select id="u_tipe_desain" name="tipe_desain[]" multiple>
-                        @foreach ($filters['tipe_desains'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('tipe_desain',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
-                    </select></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">CFU</label>
-                    <select id="u_cfu" name="cfu[]" multiple>
-                        @foreach ($filters['cfus'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('cfu',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
-                    </select></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Progress</label>
-                    <select id="u_progres" name="progres[]" multiple>
-                        @foreach ($filters['progresses'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('progres',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
-                    </select></div>
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Status Proyek</label>
-                    <select id="u_status_proyek" name="status_proyek[]" multiple>
-                        @foreach ($filters['status_proyeks'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('status_proyek',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
-                    </select></div>
-                </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Tipe Desain</label>
+                        <select id="u_tipe_desain" name="tipe_desain[]" multiple>
+                            @foreach ($filters['tipe_desains'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('tipe_desain',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">CFU</label>
+                        <select id="u_cfu" name="cfu[]" multiple>
+                            @foreach ($filters['cfus'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('cfu',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Progress</label>
+                        <select id="u_progres" name="progres[]" multiple>
+                            @foreach ($filters['progresses'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('progres',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Status Proyek</label>
+                        <select id="u_status_proyek" name="status_proyek[]" multiple>
+                            @foreach ($filters['status_proyeks'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('status_proyek',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                    </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Nomor Batch</label>
-                    <select id="u_nomor_batch" name="nomor_batch[]" multiple>
-                        @foreach ($filters['nomor_batches'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('nomor_batch',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
-                    </select></div>
-                    <div class="flex items-end col-span-1 gap-2">
-                        <a href="{{ route('deployment.update') }}" class="w-1/3 bg-slate-100 text-slate-600 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-slate-200 transition shadow-sm text-center flex items-center justify-center" title="Reset Filter">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Nomor Batch</label>
+                        <select id="u_nomor_batch" name="nomor_batch[]" multiple>
+                            @foreach ($filters['nomor_batches'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('nomor_batch',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div class="flex items-end col-span-1 gap-2">
+                            <a href="{{ route('deployment.update') }}" class="w-1/3 bg-slate-100 text-slate-600 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-slate-200 transition shadow-sm text-center flex items-center justify-center" title="Reset Filter">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </a>
+                            <button type="submit" class="w-2/3 bg-red-600 text-white rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-red-700 transition shadow-sm">Terapkan</button>
+                        </div>
+                    </div>
+                    @else
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">STO</label>
+                        <select id="u_sto" name="sto[]" multiple>
+                            @foreach ($filters['stos'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('sto',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Datel</label>
+                        <select id="u_datel" name="datel[]" multiple>
+                            @foreach ($filters['datels'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('datel',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Progress</label>
+                        <select id="u_progres" name="progres[]" multiple>
+                            @foreach ($filters['progresses'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('progres',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                        <div><label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Nomor Batch</label>
+                        <select id="u_nomor_batch" name="nomor_batch[]" multiple>
+                            @foreach ($filters['nomor_batches'] as $item)<option value="{{ $item }}" {{ in_array($item,(array)request('nomor_batch',[])) ? 'selected':'' }}>{{ $item }}</option>@endforeach
+                        </select></div>
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <a href="{{ route('deployment.update') }}" class="bg-slate-100 text-slate-600 border border-slate-200 rounded-xl px-6 py-2.5 text-sm font-semibold hover:bg-slate-200 transition shadow-sm text-center flex items-center justify-center" title="Reset Filter">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </a>
-                        <button type="submit" class="w-2/3 bg-red-600 text-white rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-red-700 transition shadow-sm">Terapkan</button>
+                        <button type="submit" class="bg-red-600 text-white rounded-xl px-8 py-2.5 text-sm font-semibold hover:bg-red-700 transition shadow-sm">Terapkan</button>
                     </div>
-                </div>
+                    @endif
             </form>
 
             <style>

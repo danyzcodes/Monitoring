@@ -161,11 +161,109 @@
                                     window.dispatchEvent(new CustomEvent('address-selected', {
                                         detail: { lat: item.lat, lon: item.lon }
                                     }));
+                                },
+
+                                fetchIpLocation() {
+                                    fetch('https://ipapi.co/json/')
+                                        .then(res => res.json())
+                                        .then(ipData => {
+                                            if (ipData.latitude && ipData.longitude) {
+                                                const lat = ipData.latitude;
+                                                const lon = ipData.longitude;
+                                                
+                                                // Reverse geocode using Nominatim
+                                                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                                                    .then(res => res.json())
+                                                    .then(data => {
+                                                        this.value = data.display_name || `${ipData.city || ''}, ${ipData.region || ''}, Indonesia`;
+                                                        this.loading = false;
+                                                        
+                                                        window.dispatchEvent(new CustomEvent('address-selected', {
+                                                            detail: { lat: lat, lon: lon }
+                                                        }));
+                                                    })
+                                                    .catch(() => {
+                                                        this.value = `${ipData.city || ''}, ${ipData.region || ''}, Indonesia`;
+                                                        this.loading = false;
+                                                        window.dispatchEvent(new CustomEvent('address-selected', {
+                                                            detail: { lat: lat, lon: lon }
+                                                        }));
+                                                    });
+                                            } else {
+                                                throw new Error('IP Location data invalid');
+                                            }
+                                        })
+                                        .catch(() => {
+                                            this.loading = false;
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Gagal Mengambil Lokasi',
+                                                text: 'Lokasi GPS tidak dapat diakses dan pencarian lokasi berbasis IP gagal. Silakan isi koordinat secara manual.',
+                                                confirmButtonColor: '#dc2626'
+                                            });
+                                        });
+                                },
+
+                                getCurrentLocation() {
+                                    if (!navigator.geolocation) {
+                                        this.fetchIpLocation();
+                                        return;
+                                    }
+                                    
+                                    this.loading = true;
+                                    
+                                    navigator.geolocation.getCurrentPosition(
+                                        (position) => {
+                                            const lat = position.coords.latitude;
+                                            const lon = position.coords.longitude;
+                                            
+                                            // Reverse geocode via Nominatim
+                                            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                                                .then(res => res.json())
+                                                .then(data => {
+                                                    this.value = data.display_name || `${lat}, ${lon}`;
+                                                    this.loading = false;
+                                                    
+                                                    // Auto-fill coordinates via event dispatch
+                                                    window.dispatchEvent(new CustomEvent('address-selected', {
+                                                        detail: { lat: lat, lon: lon }
+                                                    }));
+                                                })
+                                                .catch(() => {
+                                                    this.value = `${lat}, ${lon}`;
+                                                    this.loading = false;
+                                                    window.dispatchEvent(new CustomEvent('address-selected', {
+                                                        detail: { lat: lat, lon: lon }
+                                                    }));
+                                                });
+                                        },
+                                        (error) => {
+                                            console.log('GPS Geolocation failed. Code:', error.code, 'Message:', error.message);
+                                            console.log('Attempting IP Geolocation fallback...');
+                                            this.fetchIpLocation();
+                                        },
+                                        {
+                                            enableHighAccuracy: false,
+                                            timeout: 6000,
+                                            maximumAge: 0
+                                        }
+                                    );
                                 }
                             }">
-                                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                                    Alamat Lengkap <span class="text-red-500">*</span>
-                                </label>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        Alamat Lengkap <span class="text-red-500">*</span>
+                                    </label>
+                                    <button type="button" @click="getCurrentLocation()"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold
+                                               bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        Gunakan Lokasi Saat Ini
+                                    </button>
+                                </div>
                                 <div class="relative">
                                     <input name="alamat_pelanggan" type="text" data-required="true"
                                         x-model="value"

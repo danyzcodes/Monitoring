@@ -28,6 +28,11 @@ class RekapExport implements FromQuery, WithHeadings, WithMapping, WithStyles, W
     {
         $query = EbisManualInput::with(['planning.logs']);
 
+        $user = auth()->user();
+        if ($user && $user->role !== 'admin') {
+            $query->where('ebis_manual_inputs.user_id', $user->id);
+        }
+
         
         if ($this->request->filled('starclick')) {
             $query->where('ebis_manual_inputs.star_click_id', $this->request->starclick);

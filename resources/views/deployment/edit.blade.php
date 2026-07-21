@@ -102,6 +102,7 @@
                 </div>
 
                 
+                @if(auth()->user()->role === 'admin')
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                     <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                         
@@ -122,6 +123,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
 
             </div>
 
@@ -140,14 +142,10 @@
                                 Status Progres  <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
-                                <select name="progres" id="progres" x-model="currentProgress" @change="renderDynamicFields()"
+                                <select name="progres" id="progres" x-model="currentProgress" @change="onProgressChange()"
                                     class="w-full appearance-none rounded-xl border border-slate-300 bg-white px-4 py-3 pr-10 text-base focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100 transition shadow-sm">
                                     <option value="">-- Pilih Status --</option>
-                                    @foreach ([
-                                        'ON DESK','SURVEY','PERIJINAN','DRM','APPROVED BY EBIS',
-                                        'MATDEV','INSTALASI','SELESAI FISIK','GOLIVE',
-                                        'PS','KENDALA','UJI TERIMA','REKON'
-                                    ] as $item)
+                                    @foreach ($data->getAllowedProgressOptions(auth()->user()) as $item)
                                         <option value="{{ $item }}">{{ $item }}</option>
                                     @endforeach
                                 </select>
@@ -243,6 +241,17 @@
                 if (this.currentProgress) {
                     this.renderDynamicFields();
                 }
+            },
+
+            onProgressChange() {
+                const originalProgress = "{{ $data->progres }}";
+                if (this.currentProgress !== originalProgress) {
+                    const commitmentInput = document.querySelector('input[name="commitment_date"]');
+                    if (commitmentInput) {
+                        commitmentInput.value = '';
+                    }
+                }
+                this.renderDynamicFields();
             },
 
              initiateSubmit() {
