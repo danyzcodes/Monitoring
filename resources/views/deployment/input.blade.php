@@ -164,57 +164,62 @@
                                 },
 
                                 fetchIpLocation(reason = '') {
-                                    let warningText = 'Lokasi GPS tidak dapat diakses. Lokasi dideteksi berdasarkan IP internet Anda (mungkin tidak akurat).';
-                                    if (reason === 'insecure') {
-                                        warningText = 'Browser memblokir akses GPS presisi karena situs ini diakses melalui HTTP biasa (bukan HTTPS). Lokasi dibaca berdasarkan IP internet Anda (mungkin tidak akurat).';
-                                    } else if (reason === 'denied') {
-                                        warningText = 'Izin lokasi (GPS) ditolak. Lokasi dibaca berdasarkan IP internet Anda (mungkin tidak akurat). Silakan izinkan akses lokasi di browser untuk hasil presisi.';
-                                    }
+                                    console.log('Using IP Geolocation fallback. Reason:', reason);
 
-                                    Swal.fire({
-                                        icon: 'warning',
-                                        title: 'Akurasi Lokasi Rendah',
-                                        text: warningText,
-                                        confirmButtonColor: '#dc2626'
-                                    });
+                                    const handleIpData = (lat, lon, city = '', region = '') => {
+                                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                                            .then(res => res.json())
+                                            .then(data => {
+                                                this.value = data.display_name || `${city || ''}, ${region || ''}, Indonesia`;
+                                                this.loading = false;
+                                                window.dispatchEvent(new CustomEvent('address-selected', {
+                                                    detail: { lat: lat, lon: lon }
+                                                }));
+                                            })
+                                            .catch(() => {
+                                                this.value = `${city || ''}, ${region || ''}, Indonesia`;
+                                                this.loading = false;
+                                                window.dispatchEvent(new CustomEvent('address-selected', {
+                                                    detail: { lat: lat, lon: lon }
+                                                }));
+                                            });
+                                    };
 
+                                    // First try: ipapi.co
                                     fetch('https://ipapi.co/json/')
                                         .then(res => res.json())
                                         .then(ipData => {
                                             if (ipData.latitude && ipData.longitude) {
-                                                const lat = ipData.latitude;
-                                                const lon = ipData.longitude;
-                                                
-                                                // Reverse geocode using Nominatim
-                                                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-                                                    .then(res => res.json())
-                                                    .then(data => {
-                                                        this.value = data.display_name || `${ipData.city || ''}, ${ipData.region || ''}, Indonesia`;
-                                                        this.loading = false;
-                                                        
-                                                        window.dispatchEvent(new CustomEvent('address-selected', {
-                                                            detail: { lat: lat, lon: lon }
-                                                        }));
-                                                    })
-                                                    .catch(() => {
-                                                        this.value = `${ipData.city || ''}, ${ipData.region || ''}, Indonesia`;
-                                                        this.loading = false;
-                                                        window.dispatchEvent(new CustomEvent('address-selected', {
-                                                            detail: { lat: lat, lon: lon }
-                                                        }));
-                                                    });
+                                                handleIpData(ipData.latitude, ipData.longitude, ipData.city, ipData.region);
                                             } else {
                                                 throw new Error('IP Location data invalid');
                                             }
                                         })
-                                        .catch(() => {
-                                            this.loading = false;
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Gagal Mengambil Lokasi',
-                                                text: 'Lokasi GPS tidak dapat diakses dan pencarian lokasi berbasis IP gagal. Silakan isi koordinat secara manual.',
-                                                confirmButtonColor: '#dc2626'
-                                            });
+                                        .catch((err) => {
+                                            console.log('ipapi.co failed, trying ipinfo.io...', err);
+                                            // Second try: ipinfo.io
+                                            fetch('https://ipinfo.io/json')
+                                                .then(res => res.json())
+                                                .then(ipData => {
+                                                    if (ipData.loc) {
+                                                        const parts = ipData.loc.split(',');
+                                                        const lat = parseFloat(parts[0]);
+                                                        const lon = parseFloat(parts[1]);
+                                                        handleIpData(lat, lon, ipData.city, ipData.region);
+                                                    } else {
+                                                        throw new Error('ipinfo.io data invalid');
+                                                    }
+                                                })
+                                                .catch((err2) => {
+                                                    console.log('ipinfo.io failed as well:', err2);
+                                                    this.loading = false;
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Gagal Mengambil Lokasi',
+                                                        text: 'Lokasi GPS tidak dapat diakses dan pencarian lokasi berbasis IP gagal. Silakan isi koordinat secara manual.',
+                                                        confirmButtonColor: '#dc2626'
+                                                    });
+                                                });
                                         });
                                 },
 
