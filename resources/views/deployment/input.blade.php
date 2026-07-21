@@ -163,7 +163,21 @@
                                     }));
                                 },
 
-                                fetchIpLocation() {
+                                fetchIpLocation(reason = '') {
+                                    let warningText = 'Lokasi GPS tidak dapat diakses. Lokasi dideteksi berdasarkan IP internet Anda (mungkin tidak akurat).';
+                                    if (reason === 'insecure') {
+                                        warningText = 'Browser memblokir akses GPS presisi karena situs ini diakses melalui HTTP biasa (bukan HTTPS). Lokasi dibaca berdasarkan IP internet Anda (mungkin tidak akurat).';
+                                    } else if (reason === 'denied') {
+                                        warningText = 'Izin lokasi (GPS) ditolak. Lokasi dibaca berdasarkan IP internet Anda (mungkin tidak akurat). Silakan izinkan akses lokasi di browser untuk hasil presisi.';
+                                    }
+
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Akurasi Lokasi Rendah',
+                                        text: warningText,
+                                        confirmButtonColor: '#dc2626'
+                                    });
+
                                     fetch('https://ipapi.co/json/')
                                         .then(res => res.json())
                                         .then(ipData => {
@@ -205,6 +219,11 @@
                                 },
 
                                 getCurrentLocation() {
+                                    if (!window.isSecureContext) {
+                                        this.fetchIpLocation('insecure');
+                                        return;
+                                    }
+
                                     if (!navigator.geolocation) {
                                         this.fetchIpLocation();
                                         return;
@@ -239,12 +258,15 @@
                                         },
                                         (error) => {
                                             console.log('GPS Geolocation failed. Code:', error.code, 'Message:', error.message);
-                                            console.log('Attempting IP Geolocation fallback...');
-                                            this.fetchIpLocation();
+                                            let reason = '';
+                                            if (error.code === error.PERMISSION_DENIED) {
+                                                reason = 'denied';
+                                            }
+                                            this.fetchIpLocation(reason);
                                         },
                                         {
-                                            enableHighAccuracy: false,
-                                            timeout: 6000,
+                                            enableHighAccuracy: true,
+                                            timeout: 10000,
                                             maximumAge: 0
                                         }
                                     );
