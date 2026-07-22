@@ -358,18 +358,55 @@
                         @foreach($timelineLogs as $stepIndex => $log)
                         @php
                             $logData = is_array($log->data) ? $log->data : [];
-                            // Extract evidence images for this step — only show evidence relevant to THIS step
+                            
+                            $stepFieldsMap = [
+                                'ON DESK'          => ['boq_on_desk'],
+                                'SURVEY'           => ['boq_survey'],
+                                'PERIJINAN'        => ['evidence_perijinan', 'link_evidence_perijinan'],
+                                'DRM'              => ['boq_drm'],
+                                'APPROVED BY EBIS' => ['evidence_approved', 'link_evidence_approved'],
+                                'MATDEV'           => ['evidence_matdev', 'link_evidence_matdev'],
+                                'INSTALASI'        => ['evidence_instalasi', 'link_evidence_instalasi'],
+                                'SELESAI FISIK'    => ['evidence_selesai_fisik', 'link_evidence_selesai_fisik'],
+                                'GOLIVE'           => ['nama_odp', 'id_smallworld'],
+                                'PS'               => ['nomor_order_ps', 'tanggal_ps'],
+                                'UJI TERIMA'       => ['status'],
+                                'REKON'            => ['boq_rekon'],
+                                'KENDALA'          => ['jenis_kendala'],
+                            ];
+
+                            $progresUpper = strtoupper(trim($log->progres));
+                            $allowedStepKeys = $stepFieldsMap[$progresUpper] ?? null;
                             $stepKey = strtolower(str_replace(' ', '_', $log->progres));
-                            $evidences = collect($logData)->filter(function($v, $k) use ($stepKey) {
-                                return $v && str_contains($k, 'evidence') && !str_starts_with($k, 'link_') && str_contains($k, $stepKey);
+
+                            // Extract evidence images for this step — only show evidence relevant to THIS step
+                            $evidences = collect($logData)->filter(function($v, $k) use ($stepKey, $allowedStepKeys) {
+                                if (!$v || str_starts_with($k, 'link_')) return false;
+                                if (!str_contains($k, 'evidence')) return false;
+                                if ($allowedStepKeys !== null) {
+                                    return in_array($k, $allowedStepKeys);
+                                }
+                                return str_contains($k, $stepKey);
                             });
-                            // Extract links
-                            $links = collect($logData)->filter(function($v, $k) {
-                                return $v && (str_starts_with($k, 'link_') || (is_string($v) && str_starts_with($v, 'http')));
+                            // Extract links — only show links relevant to THIS step
+                            $links = collect($logData)->filter(function($v, $k) use ($stepKey, $allowedStepKeys) {
+                                if (!$v) return false;
+                                $isLink = str_starts_with($k, 'link_') || (is_string($v) && str_starts_with($v, 'http'));
+                                if (!$isLink) return false;
+                                if ($allowedStepKeys !== null) {
+                                    return in_array($k, $allowedStepKeys);
+                                }
+                                return str_contains($k, $stepKey);
                             });
-                            // Extract other data
-                            $otherData = collect($logData)->filter(function($v, $k) {
-                                return $v && !str_contains($k, 'evidence') && !str_starts_with($k, 'link_') && !str_starts_with($v ?? '', 'http') && !in_array($k, ['commitment_date', 'commitment_updated_by']);
+                            // Extract other data — only show data relevant to THIS step
+                            $otherData = collect($logData)->filter(function($v, $k) use ($stepKey, $allowedStepKeys) {
+                                if (!$v) return false;
+                                if (str_contains($k, 'evidence') || str_starts_with($k, 'link_') || (is_string($v) && str_starts_with($v, 'http'))) return false;
+                                if (in_array($k, ['commitment_date', 'commitment_updated_by'])) return false;
+                                if ($allowedStepKeys !== null) {
+                                    return in_array($k, $allowedStepKeys);
+                                }
+                                return true;
                             });
                             $isLast = $stepIndex === $timelineLogs->count() - 1;
                         @endphp

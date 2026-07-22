@@ -399,11 +399,15 @@ class EbisManualInputController extends Controller
                 $filename = uniqid() . '.' . $file->getClientOriginalExtension();
                 $path = $file->storeAs('deployment/' . $request->progres, $filename, 'public');
                 $data[$key] = $path;
+                $newData[$key] = $path;
             }
         }
 
-
         $data = array_filter($data, function ($value) {
+            return $value !== null && $value !== '';
+        });
+
+        $logData = array_filter($newData, function ($value) {
             return $value !== null && $value !== '';
         });
 
@@ -425,7 +429,7 @@ class EbisManualInputController extends Controller
             'user_id' => auth()->id(),
             'progres' => $request->progres,
             'keterangan' => $request->keterangan,
-            'data' => $data,
+            'data' => $logData,
         ]);
 
         
